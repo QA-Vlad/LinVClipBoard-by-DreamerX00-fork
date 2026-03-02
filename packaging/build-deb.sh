@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Build a single .deb package containing clipd, clipctl, and linvclip-ui.
 
-VERSION="1.0.0"
+VERSION="1.0.1"
 ARCH="amd64"
 PKG_NAME="linvclipboard"
 PKG_DIR="$(mktemp -d)"

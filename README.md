@@ -53,10 +53,10 @@ Items are stored in a local SQLite database with FTS5 full-text search. Images a
 
 ### From .deb package (recommended)
 
-Download `linvclipboard_1.0.0-1_amd64.deb` from [Releases](https://github.com/akash-singh8/LinVClipBoard/releases):
+Download `linvclipboard_1.0.1-1_amd64.deb` from [Releases](https://github.com/akash-singh8/LinVClipBoard/releases):
 
 ```bash
-sudo dpkg -i linvclipboard_1.0.0-1_amd64.deb
+sudo dpkg -i linvclipboard_1.0.1-1_amd64.deb
 
 # Enable the clipboard daemon
 systemctl --user daemon-reload
@@ -90,7 +90,7 @@ sudo apt install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev
 ```bash
 # Build everything (daemon + CLI + UI) and package as .deb
 make deb
-sudo dpkg -i target/debian/linvclipboard_1.0.0-1_amd64.deb
+sudo dpkg -i target/debian/linvclipboard_1.0.1-1_amd64.deb
 
 # Or install directly without packaging
 make build-all
