@@ -27,6 +27,7 @@
     "unpin": "Unpin",
     "delete": "Delete",
     "copied": "Copied!",
+    "inserted": "Inserted!",
     "copy_failed": "Failed",
     "cleared": "Cleared!",
     "image_preview": "Clipboard image"

@@ -39,12 +39,16 @@ function EmojiPicker({ searchQuery, onToast }) {
 
     const handleClick = useCallback(async (emoji) => {
         try {
-            await invoke("paste_raw_text", { text: emoji });
+            const result = await invoke("type_text", { text: emoji });
             addRecent(emoji);
             setRecent(getRecent());
-            if (onToast) onToast("✅ " + t("clipboard.copied"));
+            if (result === "typed") {
+                if (onToast) onToast("✅ " + t("clipboard.inserted"));
+            } else {
+                if (onToast) onToast("📋 " + t("clipboard.copied"));
+            }
         } catch (err) {
-            console.error("Failed to copy emoji:", err);
+            console.error("Failed to insert emoji:", err);
             if (onToast) onToast("❌ " + t("clipboard.copy_failed"));
         }
     }, [t, onToast]);

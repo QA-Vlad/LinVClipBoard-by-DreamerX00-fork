@@ -72,6 +72,81 @@ async fn paste_raw_text(text: String) -> Result<String, String> {
     Ok("ok".to_string())
 }
 
+/// Type text into the previously focused application (like the Windows emoji panel).
+///
+/// 1. Hides the window so focus returns to the previous app.
+/// 2. Tries to type the text using `wtype` (Wayland) / `xdotool` / `ydotool`.
+/// 3. Falls back to clipboard copy if no typing tool is available.
+///
+/// Returns `"typed"` on success, `"copied"` when falling back to clipboard.
+#[tauri::command]
+async fn type_text(text: String, app: tauri::AppHandle) -> Result<String, String> {
+    // Hide window → focus returns to the previous application
+    if let Some(win) = app.get_webview_window("main") {
+        let _ = win.hide();
+    }
+
+    // Allow the compositor to transfer focus
+    tokio::time::sleep(std::time::Duration::from_millis(120)).await;
+
+    // Try direct typing first (doesn't touch the clipboard)
+    if try_type_direct(&text) {
+        return Ok("typed".to_string());
+    }
+
+    // Fallback: copy to clipboard, then try simulating Ctrl+V
+    let mut clipboard = arboard::Clipboard::new().map_err(|e| format!("Clipboard error: {}", e))?;
+    clipboard
+        .set_text(&text)
+        .map_err(|e| format!("Failed to set clipboard: {}", e))?;
+
+    if try_paste_shortcut() {
+        return Ok("typed".to_string());
+    }
+
+    // Last resort: text is on the clipboard, user can Ctrl+V manually
+    Ok("copied".to_string())
+}
+
+/// Try to type text directly into the currently focused window.
+fn try_type_direct(text: &str) -> bool {
+    // wtype — works on wlroots-based Wayland compositors (Sway, Hyprland, etc.)
+    if run_silent("wtype", &["--", text]) {
+        return true;
+    }
+    // xdotool — works on X11 and XWayland
+    if run_silent("xdotool", &["type", "--clearmodifiers", "--", text]) {
+        return true;
+    }
+    // ydotool — works on both X11 and Wayland (needs ydotoold)
+    if run_silent("ydotool", &["type", "--", text]) {
+        return true;
+    }
+    false
+}
+
+/// Try to simulate Ctrl+V in the currently focused window.
+fn try_paste_shortcut() -> bool {
+    if run_silent("wtype", &["-M", "ctrl", "-P", "v", "-p", "v", "-m", "ctrl"]) {
+        return true;
+    }
+    if run_silent("xdotool", &["key", "--clearmodifiers", "ctrl+v"]) {
+        return true;
+    }
+    false
+}
+
+/// Run a command silently, returning true if it exits successfully.
+fn run_silent(program: &str, args: &[&str]) -> bool {
+    std::process::Command::new(program)
+        .args(args)
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .status()
+        .map(|s| s.success())
+        .unwrap_or(false)
+}
+
 /// Toggle pin on an item.
 #[tauri::command]
 async fn pin_item(id: String) -> Result<ClipboardItem, String> {
@@ -322,6 +397,7 @@ pub fn run() {
             search_items,
             paste_item,
             paste_raw_text,
+            type_text,
             pin_item,
             delete_item,
             get_status,

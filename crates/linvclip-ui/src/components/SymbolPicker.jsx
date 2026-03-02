@@ -36,12 +36,16 @@ function SymbolPicker({ searchQuery, onToast }) {
 
     const handleClick = useCallback(async (sym) => {
         try {
-            await invoke("paste_raw_text", { text: sym });
+            const result = await invoke("type_text", { text: sym });
             addRecent(sym);
             setRecent(getRecent());
-            if (onToast) onToast("✅ " + t("clipboard.copied"));
+            if (result === "typed") {
+                if (onToast) onToast("✅ " + t("clipboard.inserted"));
+            } else {
+                if (onToast) onToast("📋 " + t("clipboard.copied"));
+            }
         } catch (err) {
-            console.error("Failed to copy symbol:", err);
+            console.error("Failed to insert symbol:", err);
             if (onToast) onToast("❌ " + t("clipboard.copy_failed"));
         }
     }, [t, onToast]);
