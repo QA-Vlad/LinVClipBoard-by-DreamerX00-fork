@@ -205,13 +205,16 @@ async fn remove_tag(id: String, tag: String) -> Result<ClipboardItem, String> {
     }
 }
 
-/// Center the window on the monitor that contains the cursor (#44).
-fn center_on_active_monitor(window: &tauri::WebviewWindow) {
+/// Position the window based on the configured mode.
+///
+/// - `"mouse"` → spawn near cursor on the active monitor, clamped to screen edges
+/// - `"fixed"` → center on the monitor that contains the cursor (or primary fallback)
+fn position_window(window: &tauri::WebviewWindow) {
     let config = AppConfig::load();
     let w = config.ui.window_width as i32;
     let h = config.ui.window_height as i32;
+    let mode = config.ui.window_position.as_str();
 
-    // Try to position on the monitor the cursor is currently on.
     if let Ok(cursor) = window.cursor_position() {
         if let Ok(monitors) = window.available_monitors() {
             for mon in monitors {
@@ -219,13 +222,26 @@ fn center_on_active_monitor(window: &tauri::WebviewWindow) {
                 let size = mon.size();
                 let right = pos.x + size.width as i32;
                 let bottom = pos.y + size.height as i32;
+
                 if (cursor.x as i32) >= pos.x
                     && (cursor.x as i32) < right
                     && (cursor.y as i32) >= pos.y
                     && (cursor.y as i32) < bottom
                 {
-                    let x = pos.x + (size.width as i32 - w) / 2;
-                    let y = pos.y + (size.height as i32 - h) / 2;
+                    let (x, y) = if mode == "mouse" {
+                        // Place near cursor, offset slightly, clamp to screen edges
+                        let raw_x = cursor.x as i32 - w / 2;
+                        let raw_y = cursor.y as i32 + 20; // 20px below cursor
+                        let cx = raw_x.max(pos.x + 8).min(right - w - 8);
+                        let cy = raw_y.max(pos.y + 8).min(bottom - h - 8);
+                        (cx, cy)
+                    } else {
+                        // "fixed" — center on the monitor
+                        let cx = pos.x + (size.width as i32 - w) / 2;
+                        let cy = pos.y + (size.height as i32 - h) / 2;
+                        (cx, cy)
+                    };
+
                     let _ = window.set_position(tauri::Position::Physical(
                         tauri::PhysicalPosition { x, y },
                     ));
@@ -422,7 +438,7 @@ pub fn run() {
                             if visible {
                                 let _ = sc_win.hide();
                             } else {
-                                center_on_active_monitor(&sc_win);
+                                position_window(&sc_win);
                                 let _ = sc_win.show();
                                 let _ = sc_win.set_focus();
                             }

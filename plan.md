@@ -153,50 +153,50 @@ crates/linvclip-ui/src/
 ## Phase 7 — Settings Panel Redesign
 > Match the reference design: Language, Window Position, Size/Zoom, Keyboard Shortcuts.
 
-- [ ] **7.1** Redesign layout with icon-labeled sections instead of `<fieldset>`:
+- [x] **7.1** Redesign layout with icon-labeled sections instead of `<fieldset>`:
   - 🌐 Language — toggle buttons: Português / English
   - 🖥️ Window Position — toggle buttons: Fixed / Mouse
   - 🔍 Size (Zoom) — slider 50%–200% with percentage label
   - ⌨️ Keyboard Shortcuts — informational panel (instructions for creating system shortcuts)
-- [ ] **7.2** Add `window_position` field to `UiConfig` in `config.rs`: `"fixed" | "mouse"` (default: `"mouse"`)
-- [ ] **7.3** Add `zoom` field (u32, percent) to `UiConfig` (default: `100`)
-- [ ] **7.4** Implement zoom via CSS `transform: scale()` or `font-size` on `:root`
-- [ ] **7.5** Implement window positioning logic in Tauri `lib.rs`:
+- [x] **7.2** Add `window_position` field to `UiConfig` in `config.rs`: `"fixed" | "mouse"` (default: `"mouse"`)
+- [x] **7.3** Add `zoom` field (u32, percent) to `UiConfig` (default: `100`)
+- [x] **7.4** Implement zoom via CSS `transform: scale()` or `font-size` on `:root`
+- [x] **7.5** Implement window positioning logic in Tauri `lib.rs`:
   - `"fixed"` → always center on primary monitor
   - `"mouse"` → spawn at cursor position (existing `center_on_active_monitor` enhanced)
-- [ ] **7.6** Auto-save on close: "Close to save and apply" behavior instead of Save/Cancel buttons
-- [ ] **7.7** i18n: all settings labels through `t()`
-- [ ] **7.8** Move Daemon/Storage/Security settings to an "Advanced" collapsible section
+- [x] **7.6** Auto-save on close: "Close to save and apply" behavior instead of Save/Cancel buttons
+- [x] **7.7** i18n: all settings labels through `t()`
+- [x] **7.8** Move Daemon/Storage/Security settings to an "Advanced" collapsible section
 
 ---
 
 ## Phase 8 — Zoom System
 > User can scale the entire UI from 50% to 200%.
 
-- [ ] **8.1** Create `src/hooks/useZoom.js` — reads zoom from config, applies `document.documentElement.style.fontSize` or CSS custom property
-- [ ] **8.2** Persist zoom in `UiConfig.zoom` via backend config
-- [ ] **8.3** Settings slider updates zoom in real-time (live preview)
-- [ ] **8.4** Keyboard shortcuts: `Ctrl++` / `Ctrl+-` / `Ctrl+0` for zoom in/out/reset
-- [ ] **8.5** Ensure all UI components scale properly (use `rem`/`em` units, not `px` where possible)
+- [x] **8.1** Create `src/hooks/useZoom.js` — reads zoom from config, applies `document.documentElement.style.fontSize` or CSS custom property
+- [x] **8.2** Persist zoom in `UiConfig.zoom` via backend config
+- [x] **8.3** Settings slider updates zoom in real-time (live preview)
+- [x] **8.4** Keyboard shortcuts: `Ctrl++` / `Ctrl+-` / `Ctrl+0` for zoom in/out/reset
+- [x] **8.5** Ensure all UI components scale properly (use `rem`/`em` units, not `px` where possible)
 
 ---
 
 ## Phase 9 — Window Position Logic
 > "Fixed" (center of screen) vs "Mouse" (near cursor).
 
-- [ ] **9.1** Read `ui.window_position` from config in Tauri `run()` setup
-- [ ] **9.2** `"mouse"` mode: position window near cursor with screen-edge clamping (don't go off-screen)
-- [ ] **9.3** `"fixed"` mode: center on primary monitor (current `center_on_active_monitor`)
-- [ ] **9.4** Apply on every show (shortcut press, tray click)
-- [ ] **9.5** Update `center_on_active_monitor` → generalize to `position_window(window, mode)`
+- [x] **9.1** Read `ui.window_position` from config in Tauri `run()` setup
+- [x] **9.2** `"mouse"` mode: position window near cursor with screen-edge clamping (don't go off-screen)
+- [x] **9.3** `"fixed"` mode: center on primary monitor (current `center_on_active_monitor`)
+- [x] **9.4** Apply on every show (shortcut press, tray click)
+- [x] **9.5** Update `center_on_active_monitor` → generalize to `position_window(window, mode)`
 
 ---
 
 ## Phase 10 — Tauri Backend Additions
 > New commands needed by the UI features.
 
-- [ ] **10.1** `paste_raw_text` command — write arbitrary text (emoji/symbol) directly to system clipboard, then simulate Ctrl+V or just set clipboard
-- [ ] **10.2** `get_config` / `save_config` — already exist, just ensure `language`, `zoom`, `window_position` fields survive round-trip
+- [x] **10.1** `paste_raw_text` command — write arbitrary text (emoji/symbol) directly to system clipboard, then simulate Ctrl+V or just set clipboard
+- [x] **10.2** `get_config` / `save_config` — already exist, just ensure `language`, `zoom`, `window_position` fields survive round-trip
 - [ ] **10.3** Update Tauri window config: make window resizable within bounds for zoom
 - [ ] **10.4** Add `window.set_size()` call when zoom changes to adjust window dimensions
 - [ ] **10.5** Persist recently-used emojis/symbols: could use localStorage (simpler) or a new Tauri command

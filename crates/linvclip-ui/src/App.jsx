@@ -3,6 +3,7 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { useTranslation } from "./i18n/index.jsx";
+import { useZoom } from "./hooks/useZoom.js";
 import AppHeader from "./components/AppHeader";
 import TabBar from "./components/TabBar";
 import SearchBar from "./components/SearchBar";
@@ -16,6 +17,7 @@ import ConfirmDialog from "./components/ConfirmDialog";
 
 function App() {
     const { t } = useTranslation();
+    const { zoom, setZoom, zoomIn, zoomOut, zoomReset } = useZoom();
     const [activeTab, setActiveTab] = useState("clipboard");
     const [filterType, setFilterType] = useState("all");
     const [items, setItems] = useState([]);
@@ -254,11 +256,25 @@ function App() {
                     }
                     break;
             }
+
+            // Zoom shortcuts: Ctrl++ / Ctrl+- / Ctrl+0
+            if (e.ctrlKey || e.metaKey) {
+                if (e.key === "+" || e.key === "=") {
+                    e.preventDefault();
+                    zoomIn();
+                } else if (e.key === "-") {
+                    e.preventDefault();
+                    zoomOut();
+                } else if (e.key === "0") {
+                    e.preventDefault();
+                    zoomReset();
+                }
+            }
         };
 
         document.addEventListener("keydown", handleKeyDown, true); // capture phase
         return () => document.removeEventListener("keydown", handleKeyDown, true);
-    }, []); // Empty deps — uses refs for state
+    }, [zoomIn, zoomOut, zoomReset]); // zoom callbacks are stable via useCallback
 
     // Clear search when switching tabs
     const handleTabChange = (tab) => {
@@ -331,7 +347,11 @@ function App() {
             {toast && <div className="copy-toast" role="alert">{toast}</div>}
 
             {showSettings && (
-                <SettingsPanel onClose={() => setShowSettings(false)} />
+                <SettingsPanel
+                    onClose={() => setShowSettings(false)}
+                    zoom={zoom}
+                    onZoomChange={setZoom}
+                />
             )}
 
             {showConfirm && (

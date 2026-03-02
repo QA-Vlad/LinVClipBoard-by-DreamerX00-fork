@@ -972,7 +972,7 @@ kbd {
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
-    width: 360px;
+    width: 380px;
     max-height: 85vh;
     overflow-y: auto;
     display: flex;
@@ -1014,45 +1014,224 @@ kbd {
     padding: 12px 16px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 14px;
 }
 
-.settings-body fieldset {
+.settings-error {
+    background: rgba(255, 80, 80, 0.12);
+    color: #ff6b6b;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+}
+
+/* ── Settings section (icon-labeled rows) ── */
+.settings-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.settings-section-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* Toggle button group (Language, Theme, Window Position) */
+.toggle-group {
+    display: flex;
+    gap: 6px;
+}
+
+.toggle-btn {
+    flex: 1;
+    padding: 7px 12px;
     border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg-glass);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 500;
+    text-align: center;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.toggle-btn:hover {
+    border-color: var(--accent);
+    color: var(--text-primary);
+}
+
+.toggle-btn-active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
+
+/* Zoom slider row */
+.zoom-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.zoom-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--bg-glass);
+    outline: none;
+    cursor: pointer;
+}
+
+.zoom-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.zoom-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.zoom-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: none;
+}
+
+.zoom-value {
+    min-width: 40px;
+    text-align: right;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Keyboard Shortcuts info */
+.shortcuts-info {
+    background: var(--bg-glass);
     border-radius: var(--radius-sm);
     padding: 10px 12px;
-    margin: 0;
 }
 
-.settings-body legend {
+.shortcuts-instruction {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin: 0 0 6px 0;
+    line-height: 1.45;
+}
+
+.shortcuts-steps {
+    margin: 0 0 8px 0;
+    padding-left: 20px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.shortcuts-steps li {
+    margin-bottom: 2px;
+}
+
+.shortcuts-keys {
+    font-size: 11px;
+    color: var(--text-tertiary);
+}
+
+.shortcuts-keys kbd {
+    display: inline-block;
+    padding: 1px 5px;
+    font-size: 10px;
+    font-family: var(--font-mono, monospace);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text-primary);
+}
+
+/* ── Advanced collapsible section ── */
+.settings-advanced {
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+}
+
+.settings-advanced-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    padding: 4px 0;
+    transition: color var(--transition-fast);
+}
+
+.settings-advanced-toggle:hover {
+    color: var(--text-primary);
+}
+
+.advanced-chevron {
+    display: inline-block;
+    font-size: 9px;
+    transition: transform 0.2s ease;
+}
+
+.advanced-chevron.open {
+    transform: rotate(90deg);
+}
+
+.settings-advanced-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 10px;
+    animation: fadeIn 150ms ease-out;
+}
+
+.advanced-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.advanced-group-title {
     font-size: 11px;
     font-weight: 600;
     color: var(--accent);
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    padding: 0 4px;
+    margin-bottom: 2px;
 }
 
-.settings-group {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    margin-bottom: 8px;
-}
-
-.settings-group:last-child {
-    margin-bottom: 0;
-}
-
-.settings-group label {
+.advanced-group label {
     font-size: 12px;
     color: var(--text-secondary);
     font-weight: 500;
 }
 
-.settings-group input[type="number"],
-.settings-group input[type="text"],
-.settings-group select {
+.advanced-group input[type="number"],
+.advanced-group input[type="text"],
+.advanced-group select {
     background: var(--bg-glass);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
@@ -1064,87 +1243,22 @@ kbd {
     transition: all var(--transition-fast);
 }
 
-.settings-group input:focus,
-.settings-group select:focus {
+.advanced-group input:focus,
+.advanced-group select:focus {
     border-color: var(--border-focus);
     box-shadow: 0 0 0 2px var(--accent-glow);
 }
 
-.settings-group input[type="checkbox"] {
+.advanced-group input[type="checkbox"] {
     accent-color: var(--accent);
 }
 
-/* Language toggle buttons */
-.language-toggle {
-    display: flex;
-    gap: 6px;
-    margin-top: 4px;
-}
-
-.lang-btn {
-    padding: 6px 16px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--item-bg);
-    color: var(--text);
-    cursor: pointer;
-    font-size: 0.85rem;
-    transition: background 0.15s, border-color 0.15s, color 0.15s;
-}
-
-.lang-btn:hover {
-    border-color: var(--accent);
-}
-
-.lang-btn-active {
-    background: var(--accent);
-    color: #fff;
-    border-color: var(--accent);
-}
-
-.settings-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    padding: 12px 16px;
-    border-top: 1px solid var(--border);
-}
-
-.settings-cancel,
-.settings-save {
-    padding: 6px 16px;
-    border-radius: var(--radius-sm);
-    font-family: var(--font-family);
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    border: 1px solid var(--border);
-    transition: all var(--transition-fast);
-}
-
-.settings-cancel {
-    background: var(--bg-glass);
-    color: var(--text-secondary);
-}
-
-.settings-cancel:hover {
-    background: var(--bg-glass-hover);
-    color: var(--text-primary);
-}
-
-.settings-save {
-    background: var(--accent);
-    color: #fff;
-    border-color: var(--accent);
-}
-
-.settings-save:hover {
-    background: var(--accent-hover);
-}
-
-.settings-save:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+.settings-save-hint {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    padding: 8px 0 4px;
+    font-style: italic;
 }
 
 .settings-loading {

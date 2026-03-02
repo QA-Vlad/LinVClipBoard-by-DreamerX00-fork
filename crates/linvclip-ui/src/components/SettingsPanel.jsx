@@ -1,12 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { useTranslation } from "../i18n/index.jsx";
 
-function SettingsPanel({ onClose }) {
+function SettingsPanel({ onClose, zoom, onZoomChange }) {
     const { t, lang, setLang, availableLanguages } = useTranslation();
     const [config, setConfig] = useState(null);
-    const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
+    const [advancedOpen, setAdvancedOpen] = useState(false);
+    const configRef = useRef(null);
+    const dirtyRef = useRef(false);
 
     useEffect(() => {
         loadConfig();
@@ -16,229 +18,340 @@ function SettingsPanel({ onClose }) {
         try {
             const cfg = await invoke("get_config");
             setConfig(cfg);
-            // Sync i18n context with the persisted language from backend config
+            configRef.current = cfg;
             if (cfg.ui?.language && cfg.ui.language !== lang) {
                 setLang(cfg.ui.language);
             }
         } catch (err) {
-            setError(t("settings.title") + ": " + err);
+            setError(String(err));
         }
     };
 
+    // Auto-save on close
+    const autoSave = useCallback(async () => {
+        if (!dirtyRef.current || !configRef.current) return;
+        try {
+            await invoke("save_config", { config: configRef.current });
+        } catch (err) {
+            console.error("Auto-save failed:", err);
+        }
+    }, []);
+
+    const handleClose = useCallback(() => {
+        autoSave().then(() => onClose());
+    }, [autoSave, onClose]);
+
+    const updateConfig = (updater) => {
+        dirtyRef.current = true;
+        setConfig((prev) => {
+            const next = updater(prev);
+            configRef.current = next;
+            return next;
+        });
+    };
+
     const handleLanguageChange = (newLang) => {
-        // Update i18n context immediately for live preview
         setLang(newLang);
-        // Update config state so it gets persisted on save
-        setConfig((prev) => ({
+        updateConfig((prev) => ({
             ...prev,
             ui: { ...prev.ui, language: newLang },
         }));
     };
 
-    const saveConfig = async () => {
-        setSaving(true);
-        setError(null);
-        try {
-            await invoke("save_config", { config });
-            onClose();
-        } catch (err) {
-            setError(t("settings.title") + ": " + err);
-        } finally {
-            setSaving(false);
-        }
+    const handlePositionChange = (mode) => {
+        updateConfig((prev) => ({
+            ...prev,
+            ui: { ...prev.ui, window_position: mode },
+        }));
+    };
+
+    const handleZoomChange = (val) => {
+        const z = Math.max(50, Math.min(200, parseInt(val) || 100));
+        if (onZoomChange) onZoomChange(z);
+        updateConfig((prev) => ({
+            ...prev,
+            ui: { ...prev.ui, zoom: z },
+        }));
+    };
+
+    const handleThemeChange = (newTheme) => {
+        updateConfig((prev) => ({
+            ...prev,
+            ui: { ...prev.ui, theme: newTheme },
+        }));
+        document.documentElement.setAttribute("data-theme", newTheme === "auto" ? "dark" : newTheme);
+        localStorage.setItem("theme", newTheme);
     };
 
     if (!config) {
         return (
-            <div className="settings-panel" role="dialog" aria-label={t("settings.title")} aria-modal="true">
-                <div className="settings-loading">{error || "Loading…"}</div>
+            <div className="settings-overlay" onClick={handleClose}>
+                <div className="settings-panel" role="dialog" aria-label={t("settings.title")} aria-modal="true" onClick={(e) => e.stopPropagation()}>
+                    <div className="settings-loading">{error || "Loading…"}</div>
+                </div>
             </div>
         );
     }
 
+    const currentZoom = zoom ?? config.ui?.zoom ?? 100;
+    const currentPosition = config.ui?.window_position ?? "mouse";
+
     return (
-        <div className="settings-panel" role="dialog" aria-label={t("settings.title")} aria-modal="true">
-            <div className="settings-header">
-                <h2 id="settings-title">⚙️ {t("settings.title")}</h2>
-                <button className="settings-close" onClick={onClose} aria-label={t("settings.title")}>
-                    ✕
-                </button>
-            </div>
+        <div className="settings-overlay" onClick={handleClose}>
+            <div className="settings-panel" role="dialog" aria-label={t("settings.title")} aria-modal="true" onClick={(e) => e.stopPropagation()}>
+                <div className="settings-header">
+                    <h2 id="settings-title">⚙️ {t("settings.title")}</h2>
+                    <button className="settings-close" onClick={handleClose} aria-label="Close">✕</button>
+                </div>
 
-            <div className="settings-body" role="form" aria-labelledby="settings-title">
-                {error && <div className="settings-error" role="alert">{error}</div>}
+                <div className="settings-body" role="form" aria-labelledby="settings-title">
+                    {error && <div className="settings-error" role="alert">{error}</div>}
 
-                <fieldset className="settings-group">
-                    <legend>🌐 {t("settings.language")}</legend>
-                    <div className="language-toggle" role="radiogroup" aria-label={t("settings.language")}>
-                        {availableLanguages.map((code) => (
+                    {/* ── 🌐 Language ── */}
+                    <div className="settings-section">
+                        <div className="settings-section-label">🌐 {t("settings.language")}</div>
+                        <div className="toggle-group" role="radiogroup" aria-label={t("settings.language")}>
+                            {availableLanguages.map((code) => (
+                                <button
+                                    key={code}
+                                    type="button"
+                                    role="radio"
+                                    aria-checked={lang === code}
+                                    className={`toggle-btn${lang === code ? " toggle-btn-active" : ""}`}
+                                    onClick={() => handleLanguageChange(code)}
+                                >
+                                    {code === "pt" ? "Português" : "English"}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* ── 🎨 Theme ── */}
+                    <div className="settings-section">
+                        <div className="settings-section-label">🎨 {t("settings.theme")}</div>
+                        <div className="toggle-group" role="radiogroup" aria-label={t("settings.theme")}>
+                            {[
+                                { value: "dark", label: t("settings.theme_dark") },
+                                { value: "light", label: t("settings.theme_light") },
+                                { value: "auto", label: t("settings.theme_auto") },
+                            ].map((opt) => (
+                                <button
+                                    key={opt.value}
+                                    type="button"
+                                    role="radio"
+                                    aria-checked={(config.ui?.theme ?? "dark") === opt.value}
+                                    className={`toggle-btn${(config.ui?.theme ?? "dark") === opt.value ? " toggle-btn-active" : ""}`}
+                                    onClick={() => handleThemeChange(opt.value)}
+                                >
+                                    {opt.label}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* ── 🖥️ Window Position ── */}
+                    <div className="settings-section">
+                        <div className="settings-section-label">🖥️ {t("settings.window_position")}</div>
+                        <div className="toggle-group" role="radiogroup" aria-label={t("settings.window_position")}>
                             <button
-                                key={code}
                                 type="button"
                                 role="radio"
-                                aria-checked={lang === code}
-                                className={`lang-btn${lang === code ? " lang-btn-active" : ""}`}
-                                onClick={() => handleLanguageChange(code)}
+                                aria-checked={currentPosition === "fixed"}
+                                className={`toggle-btn${currentPosition === "fixed" ? " toggle-btn-active" : ""}`}
+                                onClick={() => handlePositionChange("fixed")}
                             >
-                                {code === "pt" ? "Português" : "English"}
+                                {t("settings.position_fixed")}
                             </button>
-                        ))}
+                            <button
+                                type="button"
+                                role="radio"
+                                aria-checked={currentPosition === "mouse"}
+                                className={`toggle-btn${currentPosition === "mouse" ? " toggle-btn-active" : ""}`}
+                                onClick={() => handlePositionChange("mouse")}
+                            >
+                                {t("settings.position_mouse")}
+                            </button>
+                        </div>
                     </div>
-                </fieldset>
 
-                <fieldset className="settings-group">
-                    <legend>{t("settings.daemon")}</legend>
-                    <label htmlFor="poll-interval">{t("settings.poll_interval")}</label>
-                    <input
-                        id="poll-interval"
-                        type="number"
-                        min="50"
-                        max="5000"
-                        step="50"
-                        value={config.daemon?.poll_interval_ms ?? 250}
-                        onChange={(e) =>
-                            setConfig({
-                                ...config,
-                                daemon: { ...config.daemon, poll_interval_ms: parseInt(e.target.value) || 250 },
-                            })
-                        }
-                    />
-                    <label htmlFor="log-level">{t("settings.log_level")}</label>
-                    <select
-                        id="log-level"
-                        value={config.daemon?.log_level ?? "info"}
-                        onChange={(e) =>
-                            setConfig({
-                                ...config,
-                                daemon: { ...config.daemon, log_level: e.target.value },
-                            })
-                        }
-                    >
-                        <option value="trace">Trace</option>
-                        <option value="debug">Debug</option>
-                        <option value="info">Info</option>
-                        <option value="warn">Warn</option>
-                        <option value="error">Error</option>
-                    </select>
-                </fieldset>
+                    {/* ── 🔍 Size (Zoom) ── */}
+                    <div className="settings-section">
+                        <div className="settings-section-label">🔍 {t("settings.size_zoom")}</div>
+                        <div className="zoom-slider-row">
+                            <input
+                                type="range"
+                                min="50"
+                                max="200"
+                                step="10"
+                                value={currentZoom}
+                                onChange={(e) => handleZoomChange(e.target.value)}
+                                className="zoom-slider"
+                                aria-label={t("settings.size_zoom")}
+                            />
+                            <span className="zoom-value">{currentZoom}%</span>
+                        </div>
+                    </div>
 
-                <fieldset className="settings-group">
-                    <legend>{t("settings.storage")}</legend>
-                    <label htmlFor="max-items">{t("settings.max_items")}</label>
-                    <input
-                        id="max-items"
-                        type="number"
-                        min="100"
-                        max="100000"
-                        value={config.storage?.max_items ?? 10000}
-                        onChange={(e) =>
-                            setConfig({
-                                ...config,
-                                storage: { ...config.storage, max_items: parseInt(e.target.value) || 10000 },
-                            })
-                        }
-                    />
-                    <label htmlFor="expiry-days">{t("settings.expiry_days")}</label>
-                    <input
-                        id="expiry-days"
-                        type="number"
-                        min="1"
-                        max="365"
-                        value={config.storage?.expiry_days ?? 30}
-                        onChange={(e) =>
-                            setConfig({
-                                ...config,
-                                storage: { ...config.storage, expiry_days: parseInt(e.target.value) || 30 },
-                            })
-                        }
-                    />
-                    <label htmlFor="max-size">{t("settings.max_size")}</label>
-                    <input
-                        id="max-size"
-                        type="number"
-                        min="1"
-                        max="200"
-                        value={Math.round((config.storage?.max_item_size_bytes ?? 52428800) / 1048576)}
-                        onChange={(e) =>
-                            setConfig({
-                                ...config,
-                                storage: {
-                                    ...config.storage,
-                                    max_item_size_bytes: (parseInt(e.target.value) || 50) * 1048576,
-                                },
-                            })
-                        }
-                    />
-                </fieldset>
+                    {/* ── ⌨️ Keyboard Shortcuts ── */}
+                    <div className="settings-section">
+                        <div className="settings-section-label">⌨️ {t("settings.keyboard_shortcuts")}</div>
+                        <div className="shortcuts-info">
+                            <p className="shortcuts-instruction">{t("settings.shortcut_instructions")}</p>
+                            <ol className="shortcuts-steps">
+                                <li>{t("settings.shortcut_step1")}</li>
+                                <li>{t("settings.shortcut_step2")}</li>
+                                <li>{t("settings.shortcut_step3")}</li>
+                            </ol>
+                            <div className="shortcuts-keys">
+                                <kbd>Ctrl</kbd>+<kbd>+</kbd> / <kbd>Ctrl</kbd>+<kbd>-</kbd> Zoom
+                                &nbsp;&middot;&nbsp;
+                                <kbd>Ctrl</kbd>+<kbd>0</kbd> Reset
+                            </div>
+                        </div>
+                    </div>
 
-                <fieldset className="settings-group">
-                    <legend>{t("settings.theme")}</legend>
-                    <label htmlFor="theme-select">{t("settings.theme")}</label>
-                    <select
-                        id="theme-select"
-                        value={config.ui?.theme ?? "dark"}
-                        onChange={(e) =>
-                            setConfig({ ...config, ui: { ...config.ui, theme: e.target.value } })
-                        }
-                    >
-                        <option value="auto">{t("settings.theme_auto")}</option>
-                        <option value="dark">{t("settings.theme_dark")}</option>
-                        <option value="light">{t("settings.theme_light")}</option>
-                    </select>
-                    <label htmlFor="shortcut-input">{t("settings.keyboard_shortcuts")}</label>
-                    <input
-                        id="shortcut-input"
-                        type="text"
-                        value={config.ui?.shortcut ?? "Super+."}
-                        onChange={(e) =>
-                            setConfig({ ...config, ui: { ...config.ui, shortcut: e.target.value } })
-                        }
-                    />
-                </fieldset>
+                    {/* ── Advanced (collapsible) ── */}
+                    <div className="settings-advanced">
+                        <button
+                            type="button"
+                            className="settings-advanced-toggle"
+                            onClick={() => setAdvancedOpen((o) => !o)}
+                            aria-expanded={advancedOpen}
+                        >
+                            <span className={`advanced-chevron${advancedOpen ? " open" : ""}`}>▶</span>
+                            {t("settings.advanced")}
+                        </button>
 
-                <fieldset className="settings-group">
-                    <legend>{t("settings.security")}</legend>
-                    <label className="checkbox-label">
-                        <input
-                            type="checkbox"
-                            checked={config.security?.incognito ?? false}
-                            onChange={(e) =>
-                                setConfig({
-                                    ...config,
-                                    security: { ...config.security, incognito: e.target.checked },
-                                })
-                            }
-                        />
-                        {t("settings.incognito")}
-                    </label>
-                    <label htmlFor="blacklist">{t("settings.blacklisted_apps")}</label>
-                    <input
-                        id="blacklist"
-                        type="text"
-                        value={(config.security?.blacklisted_apps ?? []).join(", ")}
-                        onChange={(e) =>
-                            setConfig({
-                                ...config,
-                                security: {
-                                    ...config.security,
-                                    blacklisted_apps: e.target.value
-                                        .split(",")
-                                        .map((s) => s.trim())
-                                        .filter(Boolean),
-                                },
-                            })
-                        }
-                    />
-                </fieldset>
-            </div>
+                        {advancedOpen && (
+                            <div className="settings-advanced-body">
+                                {/* Daemon */}
+                                <div className="advanced-group">
+                                    <div className="advanced-group-title">{t("settings.daemon")}</div>
+                                    <label htmlFor="poll-interval">{t("settings.poll_interval")}</label>
+                                    <input
+                                        id="poll-interval"
+                                        type="number"
+                                        min="50"
+                                        max="5000"
+                                        step="50"
+                                        value={config.daemon?.poll_interval_ms ?? 250}
+                                        onChange={(e) =>
+                                            updateConfig((prev) => ({
+                                                ...prev,
+                                                daemon: { ...prev.daemon, poll_interval_ms: parseInt(e.target.value) || 250 },
+                                            }))
+                                        }
+                                    />
+                                    <label htmlFor="log-level">{t("settings.log_level")}</label>
+                                    <select
+                                        id="log-level"
+                                        value={config.daemon?.log_level ?? "info"}
+                                        onChange={(e) =>
+                                            updateConfig((prev) => ({
+                                                ...prev,
+                                                daemon: { ...prev.daemon, log_level: e.target.value },
+                                            }))
+                                        }
+                                    >
+                                        <option value="trace">Trace</option>
+                                        <option value="debug">Debug</option>
+                                        <option value="info">Info</option>
+                                        <option value="warn">Warn</option>
+                                        <option value="error">Error</option>
+                                    </select>
+                                </div>
 
-            <div className="settings-footer">
-                <button className="settings-cancel" onClick={onClose}>
-                    {t("confirm.cancel")}
-                </button>
-                <button className="settings-save" onClick={saveConfig} disabled={saving}>
-                    {saving ? "…" : "💾 Save"}
-                </button>
+                                {/* Storage */}
+                                <div className="advanced-group">
+                                    <div className="advanced-group-title">{t("settings.storage")}</div>
+                                    <label htmlFor="max-items">{t("settings.max_items")}</label>
+                                    <input
+                                        id="max-items"
+                                        type="number"
+                                        min="100"
+                                        max="100000"
+                                        value={config.storage?.max_items ?? 10000}
+                                        onChange={(e) =>
+                                            updateConfig((prev) => ({
+                                                ...prev,
+                                                storage: { ...prev.storage, max_items: parseInt(e.target.value) || 10000 },
+                                            }))
+                                        }
+                                    />
+                                    <label htmlFor="expiry-days">{t("settings.expiry_days")}</label>
+                                    <input
+                                        id="expiry-days"
+                                        type="number"
+                                        min="1"
+                                        max="365"
+                                        value={config.storage?.expiry_days ?? 30}
+                                        onChange={(e) =>
+                                            updateConfig((prev) => ({
+                                                ...prev,
+                                                storage: { ...prev.storage, expiry_days: parseInt(e.target.value) || 30 },
+                                            }))
+                                        }
+                                    />
+                                    <label htmlFor="max-size">{t("settings.max_size")}</label>
+                                    <input
+                                        id="max-size"
+                                        type="number"
+                                        min="1"
+                                        max="200"
+                                        value={Math.round((config.storage?.max_item_size_bytes ?? 52428800) / 1048576)}
+                                        onChange={(e) =>
+                                            updateConfig((prev) => ({
+                                                ...prev,
+                                                storage: {
+                                                    ...prev.storage,
+                                                    max_item_size_bytes: (parseInt(e.target.value) || 50) * 1048576,
+                                                },
+                                            }))
+                                        }
+                                    />
+                                </div>
+
+                                {/* Security */}
+                                <div className="advanced-group">
+                                    <div className="advanced-group-title">{t("settings.security")}</div>
+                                    <label className="checkbox-label">
+                                        <input
+                                            type="checkbox"
+                                            checked={config.security?.incognito ?? false}
+                                            onChange={(e) =>
+                                                updateConfig((prev) => ({
+                                                    ...prev,
+                                                    security: { ...prev.security, incognito: e.target.checked },
+                                                }))
+                                            }
+                                        />
+                                        {t("settings.incognito")}
+                                    </label>
+                                    <label htmlFor="blacklist">{t("settings.blacklisted_apps")}</label>
+                                    <input
+                                        id="blacklist"
+                                        type="text"
+                                        value={(config.security?.blacklisted_apps ?? []).join(", ")}
+                                        onChange={(e) =>
+                                            updateConfig((prev) => ({
+                                                ...prev,
+                                                security: {
+                                                    ...prev.security,
+                                                    blacklisted_apps: e.target.value
+                                                        .split(",")
+                                                        .map((s) => s.trim())
+                                                        .filter(Boolean),
+                                                },
+                                            }))
+                                        }
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="settings-save-hint">{t("settings.close_to_save")}</div>
+                </div>
             </div>
         </div>
     );
