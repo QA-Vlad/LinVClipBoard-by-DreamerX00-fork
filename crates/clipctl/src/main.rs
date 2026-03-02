@@ -117,7 +117,10 @@ async fn main() {
     if !socket_path.exists() {
         eprintln!("{}", "Error: clipd daemon is not running.".red().bold());
         eprintln!("Start it with: {}", "clipd".cyan());
-        eprintln!("Or enable the service: {}", "systemctl --user enable --now clipd".cyan());
+        eprintln!(
+            "Or enable the service: {}",
+            "systemctl --user enable --now clipd".cyan()
+        );
         std::process::exit(1);
     }
 
@@ -211,7 +214,11 @@ fn print_response(_command: &Commands, response: IpcResponse) {
         }
 
         IpcResponse::Item(item) => {
-            let pin_status = if item.pinned { "📌 Pinned" } else { "Unpinned" };
+            let pin_status = if item.pinned {
+                "📌 Pinned"
+            } else {
+                "Unpinned"
+            };
             println!("{} {}", "Item:".bold(), item.id.cyan());
             println!("  Type: {:?}", item.content_type);
             println!("  Status: {}", pin_status);
@@ -249,7 +256,10 @@ fn print_response(_command: &Commands, response: IpcResponse) {
 
         IpcResponse::Config(config) => {
             println!("{}", "⚙️  Current Configuration".bold().cyan());
-            println!("{}", serde_json::to_string_pretty(&config).unwrap_or_default());
+            println!(
+                "{}",
+                serde_json::to_string_pretty(&config).unwrap_or_default()
+            );
         }
     }
 }

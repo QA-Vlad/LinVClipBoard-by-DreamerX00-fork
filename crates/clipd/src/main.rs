@@ -23,7 +23,10 @@ async fn main() -> anyhow::Result<()> {
         .compact()
         .init();
 
-    tracing::info!("🚀 LinVClipBoard daemon v{} starting...", env!("CARGO_PKG_VERSION"));
+    tracing::info!(
+        "🚀 LinVClipBoard daemon v{} starting...",
+        env!("CARGO_PKG_VERSION")
+    );
     tracing::info!(
         "Config loaded (poll: {}ms, max_items: {})",
         config.daemon.poll_interval_ms,
@@ -60,8 +63,14 @@ async fn main() -> anyhow::Result<()> {
     let socket_path = AppConfig::socket_path();
     let server_cancel = cancel.clone();
     let server_handle = tokio::spawn(async move {
-        if let Err(e) =
-            server::run(server_db, server_config, &socket_path, start_time, server_cancel).await
+        if let Err(e) = server::run(
+            server_db,
+            server_config,
+            &socket_path,
+            start_time,
+            server_cancel,
+        )
+        .await
         {
             tracing::error!("Server error: {}", e);
         }
@@ -115,8 +124,7 @@ async fn main() -> anyhow::Result<()> {
     );
 
     // ── Wait for shutdown signal (SIGINT **or** SIGTERM) ─────────────────
-    let mut sigterm =
-        tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())?;
+    let mut sigterm = tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())?;
 
     tokio::select! {
         _ = tokio::signal::ctrl_c() => {

@@ -40,10 +40,7 @@ pub fn run_migrations(conn: &Connection) -> Result<(), rusqlite::Error> {
     // records that the baseline schema is in place.
     if current < 1 {
         tracing::info!("Migration v1: recording baseline schema");
-        conn.execute(
-            "INSERT INTO schema_version (version) VALUES (?1)",
-            [1],
-        )?;
+        conn.execute("INSERT INTO schema_version (version) VALUES (?1)", [1])?;
     }
 
     // ── Future migrations ────────────────────────────────────────────────

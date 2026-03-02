@@ -4,7 +4,10 @@ use shared::models::*;
 
 #[test]
 fn roundtrip_list() {
-    let req = IpcRequest::List { offset: 5, limit: 20 };
+    let req = IpcRequest::List {
+        offset: 5,
+        limit: 20,
+    };
     let json = serde_json::to_string(&req).unwrap();
     let parsed: IpcRequest = serde_json::from_str(&json).unwrap();
     match parsed {
@@ -35,7 +38,9 @@ fn roundtrip_search() {
 
 #[test]
 fn roundtrip_get() {
-    let req = IpcRequest::Get { id: "abc-123".into() };
+    let req = IpcRequest::Get {
+        id: "abc-123".into(),
+    };
     let json = serde_json::to_string(&req).unwrap();
     let parsed: IpcRequest = serde_json::from_str(&json).unwrap();
     match parsed {
@@ -70,7 +75,9 @@ fn roundtrip_bulk_delete() {
 
 #[test]
 fn roundtrip_toggle_pin() {
-    let req = IpcRequest::TogglePin { id: "pin-me".into() };
+    let req = IpcRequest::TogglePin {
+        id: "pin-me".into(),
+    };
     let json = serde_json::to_string(&req).unwrap();
     let parsed: IpcRequest = serde_json::from_str(&json).unwrap();
     match parsed {

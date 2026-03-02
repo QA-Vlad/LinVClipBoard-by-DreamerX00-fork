@@ -234,9 +234,7 @@ async fn handle_request(
             },
         },
 
-        IpcRequest::GetConfig => {
-            IpcResponse::Config(config.clone())
-        }
+        IpcRequest::GetConfig => IpcResponse::Config(config.clone()),
 
         IpcRequest::SaveConfig { config: new_config } => {
             let path = AppConfig::config_path();

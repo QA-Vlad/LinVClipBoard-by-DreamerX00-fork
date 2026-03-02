@@ -1,11 +1,11 @@
+use base64::Engine;
+use serde::{Deserialize, Serialize};
 use shared::config::AppConfig;
 use shared::ipc::send_request;
 use shared::models::{ClipboardItem, IpcRequest, IpcResponse};
-use serde::{Deserialize, Serialize};
-use tauri::Manager;
 use tauri::Emitter;
+use tauri::Manager;
 use tauri_plugin_global_shortcut::GlobalShortcutExt;
-use base64::Engine;
 
 #[derive(Serialize, Deserialize)]
 pub struct ItemsResult {
@@ -242,9 +242,8 @@ fn position_window(window: &tauri::WebviewWindow) {
                         (cx, cy)
                     };
 
-                    let _ = window.set_position(tauri::Position::Physical(
-                        tauri::PhysicalPosition { x, y },
-                    ));
+                    let _ = window
+                        .set_position(tauri::Position::Physical(tauri::PhysicalPosition { x, y }));
                     return;
                 }
             }
@@ -257,11 +256,14 @@ fn position_window(window: &tauri::WebviewWindow) {
 
 /// Refresh the tray menu with the latest 5 clipboard items.
 async fn refresh_tray_menu(app: &tauri::AppHandle) {
-    use tauri::menu::{MenuBuilder, MenuItemBuilder};
     use shared::models::IpcResponse;
+    use tauri::menu::{MenuBuilder, MenuItemBuilder};
 
     let socket = AppConfig::socket_path();
-    let request = IpcRequest::List { offset: 0, limit: 5 };
+    let request = IpcRequest::List {
+        offset: 0,
+        limit: 5,
+    };
 
     let items = match send_request(&socket, &request).await {
         Ok(IpcResponse::Items { items, .. }) => items,
@@ -269,12 +271,14 @@ async fn refresh_tray_menu(app: &tauri::AppHandle) {
     };
 
     // Build the menu
-    let Ok(show_item) = MenuItemBuilder::with_id("toggle", "📋 Show / Hide").build(app) else { return };
-    let Ok(quit_item) = MenuItemBuilder::with_id("quit", "❌ Quit").build(app) else { return };
+    let Ok(show_item) = MenuItemBuilder::with_id("toggle", "📋 Show / Hide").build(app) else {
+        return;
+    };
+    let Ok(quit_item) = MenuItemBuilder::with_id("quit", "❌ Quit").build(app) else {
+        return;
+    };
 
-    let mut builder = MenuBuilder::new(app)
-        .item(&show_item)
-        .separator();
+    let mut builder = MenuBuilder::new(app).item(&show_item).separator();
 
     for item in &items {
         let type_icon = match item.content_type.as_str() {
@@ -285,7 +289,8 @@ async fn refresh_tray_menu(app: &tauri::AppHandle) {
         };
 
         // Truncate preview for menu
-        let preview: String = item.preview_text
+        let preview: String = item
+            .preview_text
             .replace('\n', " ↵ ")
             .chars()
             .take(45)
@@ -298,7 +303,9 @@ async fn refresh_tray_menu(app: &tauri::AppHandle) {
         }
     }
 
-    let Ok(menu) = builder.separator().item(&quit_item).build() else { return };
+    let Ok(menu) = builder.separator().item(&quit_item).build() else {
+        return;
+    };
 
     if let Some(tray) = app.tray_by_id("main-tray") {
         let _ = tray.set_menu(Some(menu));
@@ -342,8 +349,10 @@ pub fn run() {
                 .item(&quit_item)
                 .build()?;
 
-            let icon = app.default_window_icon().cloned()
-                .unwrap_or_else(|| tauri::image::Image::from_bytes(include_bytes!("../icons/icon.png")).expect("Failed to load tray icon"));
+            let icon = app.default_window_icon().cloned().unwrap_or_else(|| {
+                tauri::image::Image::from_bytes(include_bytes!("../icons/icon.png"))
+                    .expect("Failed to load tray icon")
+            });
 
             let tray_window = window.clone();
             let _tray = TrayIconBuilder::with_id("main-tray")

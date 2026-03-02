@@ -51,20 +51,18 @@ pub async fn run(
 
             // Try to capture text
             match capture_text(&mut clipboard, &last_text_checksum) {
-                Ok(Some((item, checksum))) => {
-                    match db.insert(&item) {
-                        Ok(true) => {
-                            last_text_checksum = checksum;
-                            tracing::debug!("Captured text: {} chars", item.size_bytes);
-                            had_activity = true;
-                        }
-                        Ok(false) => {
-                            last_text_checksum = checksum;
-                            tracing::debug!("Duplicate text skipped");
-                        }
-                        Err(e) => tracing::error!("DB insert error: {}", e),
+                Ok(Some((item, checksum))) => match db.insert(&item) {
+                    Ok(true) => {
+                        last_text_checksum = checksum;
+                        tracing::debug!("Captured text: {} chars", item.size_bytes);
+                        had_activity = true;
                     }
-                }
+                    Ok(false) => {
+                        last_text_checksum = checksum;
+                        tracing::debug!("Duplicate text skipped");
+                    }
+                    Err(e) => tracing::error!("DB insert error: {}", e),
+                },
                 Ok(None) => {} // No change
                 Err(_) => {
                     had_failure = true;
@@ -73,19 +71,17 @@ pub async fn run(
 
             // Try to capture image
             match capture_image(&mut clipboard, &last_image_checksum, &config) {
-                Ok(Some((item, checksum))) => {
-                    match db.insert(&item) {
-                        Ok(true) => {
-                            last_image_checksum = checksum;
-                            tracing::debug!("Captured image: {} bytes", item.size_bytes);
-                            had_activity = true;
-                        }
-                        Ok(false) => {
-                            last_image_checksum = checksum;
-                        }
-                        Err(e) => tracing::error!("DB insert error: {}", e),
+                Ok(Some((item, checksum))) => match db.insert(&item) {
+                    Ok(true) => {
+                        last_image_checksum = checksum;
+                        tracing::debug!("Captured image: {} bytes", item.size_bytes);
+                        had_activity = true;
                     }
-                }
+                    Ok(false) => {
+                        last_image_checksum = checksum;
+                    }
+                    Err(e) => tracing::error!("DB insert error: {}", e),
+                },
                 Ok(None) => {}
                 Err(_) => {
                     had_failure = true;
@@ -253,13 +249,7 @@ fn capture_image(
     let preview = format!("Image {}x{}", img_data.width, img_data.height);
     let content = blob_path.to_string_lossy().to_string();
 
-    let item = ClipboardItem::new(
-        ContentType::Image,
-        content,
-        preview,
-        checksum.clone(),
-        size,
-    );
+    let item = ClipboardItem::new(ContentType::Image, content, preview, checksum.clone(), size);
 
     Ok(Some((item, checksum)))
 }

@@ -33,9 +33,7 @@ impl Database {
         }
 
         let manager = SqliteConnectionManager::file(path);
-        let pool = Pool::builder()
-            .max_size(8)
-            .build(manager)?;
+        let pool = Pool::builder().max_size(8).build(manager)?;
 
         // Initialize schema on one connection
         {
@@ -89,8 +87,7 @@ impl Database {
             )?;
 
             // Run schema migrations
-            crate::migration::run_migrations(&conn)
-                .map_err(DbError::Sqlite)?;
+            crate::migration::run_migrations(&conn).map_err(DbError::Sqlite)?;
         }
 
         Ok(Self { pool })
@@ -108,7 +105,10 @@ impl Database {
         )?;
 
         if bumped > 0 {
-            tracing::debug!("Bumped duplicate item to top (checksum={})", &item.checksum[..8]);
+            tracing::debug!(
+                "Bumped duplicate item to top (checksum={})",
+                &item.checksum[..8]
+            );
             return Ok(false);
         }
 
@@ -131,11 +131,18 @@ impl Database {
 
         if result == 0 {
             // Race: another connection inserted the same checksum between our UPDATE and INSERT
-            tracing::debug!("Duplicate caught by UNIQUE constraint (checksum={})", &item.checksum[..8]);
+            tracing::debug!(
+                "Duplicate caught by UNIQUE constraint (checksum={})",
+                &item.checksum[..8]
+            );
             return Ok(false);
         }
 
-        tracing::debug!("Inserted item: {} ({})", item.id, item.content_type.as_str());
+        tracing::debug!(
+            "Inserted item: {} ({})",
+            item.id,
+            item.content_type.as_str()
+        );
         Ok(true)
     }
 
@@ -143,11 +150,8 @@ impl Database {
     pub fn list(&self, offset: u32, limit: u32) -> DbResult<(Vec<ClipboardItem>, u64)> {
         let conn = self.pool.get()?;
 
-        let total: u64 = conn.query_row(
-            "SELECT COUNT(*) FROM clipboard_items",
-            [],
-            |row| row.get(0),
-        )?;
+        let total: u64 =
+            conn.query_row("SELECT COUNT(*) FROM clipboard_items", [], |row| row.get(0))?;
 
         let mut stmt = conn.prepare(
             "SELECT id, content_type, content, preview_text, created_at, pinned, app_source, checksum, size_bytes
@@ -157,9 +161,7 @@ impl Database {
         )?;
 
         let items = stmt
-            .query_map(params![limit, offset], |row| {
-                Ok(row_to_item(row))
-            })?
+            .query_map(params![limit, offset], |row| Ok(row_to_item(row)))?
             .collect::<Result<Vec<_>, _>>()?;
 
         Ok((items, total))
@@ -194,9 +196,7 @@ impl Database {
         )?;
 
         let items = stmt
-            .query_map(params![fts_query, limit], |row| {
-                Ok(row_to_item(row))
-            })?
+            .query_map(params![fts_query, limit], |row| Ok(row_to_item(row)))?
             .collect::<Result<Vec<_>, _>>()?;
 
         Ok((items, total))
@@ -246,10 +246,7 @@ impl Database {
         let tx = conn.unchecked_transaction()?;
         let mut count = 0u64;
         for id in ids {
-            count += tx.execute(
-                "DELETE FROM clipboard_items WHERE id = ?1",
-                params![id],
-            )? as u64;
+            count += tx.execute("DELETE FROM clipboard_items WHERE id = ?1", params![id])? as u64;
         }
         tx.commit()?;
 
@@ -302,9 +299,8 @@ impl Database {
     pub fn cleanup_orphan_blobs(&self, blob_dir: &Path) -> DbResult<u64> {
         let conn = self.pool.get()?;
 
-        let mut stmt = conn.prepare(
-            "SELECT content FROM clipboard_items WHERE content_type = 'image'",
-        )?;
+        let mut stmt =
+            conn.prepare("SELECT content FROM clipboard_items WHERE content_type = 'image'")?;
         let known: std::collections::HashSet<String> = stmt
             .query_map([], |row| row.get(0))?
             .filter_map(|r| r.ok())
@@ -316,9 +312,7 @@ impl Database {
                 let path = entry.path();
                 if path.is_file() {
                     let path_str = path.to_string_lossy().to_string();
-                    if !known.contains(&path_str)
-                        && std::fs::remove_file(&path).is_ok()
-                    {
+                    if !known.contains(&path_str) && std::fs::remove_file(&path).is_ok() {
                         removed += 1;
                     }
                 }
@@ -335,11 +329,8 @@ impl Database {
     pub fn enforce_limits(&self, config: &crate::config::StorageConfig) -> DbResult<()> {
         let conn = self.pool.get()?;
 
-        let total: u64 = conn.query_row(
-            "SELECT COUNT(*) FROM clipboard_items",
-            [],
-            |row| row.get(0),
-        )?;
+        let total: u64 =
+            conn.query_row("SELECT COUNT(*) FROM clipboard_items", [], |row| row.get(0))?;
 
         if total > config.max_items {
             let to_remove = total - config.max_items;
@@ -408,11 +399,8 @@ impl Database {
     /// Get the total count of items.
     pub fn total_items(&self) -> DbResult<u64> {
         let conn = self.pool.get()?;
-        let count: u64 = conn.query_row(
-            "SELECT COUNT(*) FROM clipboard_items",
-            [],
-            |row| row.get(0),
-        )?;
+        let count: u64 =
+            conn.query_row("SELECT COUNT(*) FROM clipboard_items", [], |row| row.get(0))?;
         Ok(count)
     }
 
@@ -441,11 +429,13 @@ impl Database {
     /// Add a tag to an item.
     pub fn add_tag(&self, id: &str, tag: &str) -> DbResult<ClipboardItem> {
         let conn = self.pool.get()?;
-        let tags_json: String = conn.query_row(
-            "SELECT tags FROM clipboard_items WHERE id = ?1",
-            params![id],
-            |row| row.get(0),
-        ).map_err(|_| DbError::NotFound(id.to_string()))?;
+        let tags_json: String = conn
+            .query_row(
+                "SELECT tags FROM clipboard_items WHERE id = ?1",
+                params![id],
+                |row| row.get(0),
+            )
+            .map_err(|_| DbError::NotFound(id.to_string()))?;
 
         let mut tags: Vec<String> = serde_json::from_str(&tags_json).unwrap_or_default();
         let tag_str = tag.to_string();
@@ -464,11 +454,13 @@ impl Database {
     /// Remove a tag from an item.
     pub fn remove_tag(&self, id: &str, tag: &str) -> DbResult<ClipboardItem> {
         let conn = self.pool.get()?;
-        let tags_json: String = conn.query_row(
-            "SELECT tags FROM clipboard_items WHERE id = ?1",
-            params![id],
-            |row| row.get(0),
-        ).map_err(|_| DbError::NotFound(id.to_string()))?;
+        let tags_json: String = conn
+            .query_row(
+                "SELECT tags FROM clipboard_items WHERE id = ?1",
+                params![id],
+                |row| row.get(0),
+            )
+            .map_err(|_| DbError::NotFound(id.to_string()))?;
 
         let mut tags: Vec<String> = serde_json::from_str(&tags_json).unwrap_or_default();
         tags.retain(|t| t != tag);
@@ -491,7 +483,8 @@ fn row_to_item(row: &rusqlite::Row) -> ClipboardItem {
 
     ClipboardItem {
         id: row.get(0).unwrap_or_default(),
-        content_type: row.get::<_, String>(1)
+        content_type: row
+            .get::<_, String>(1)
             .unwrap_or_default()
             .parse::<ContentType>()
             .unwrap_or(ContentType::PlainText),
