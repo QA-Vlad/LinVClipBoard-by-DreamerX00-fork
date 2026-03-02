@@ -1,4 +1,21 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
+import { invoke } from "@tauri-apps/api/core";
+
+/** Small hook to lazily load image thumbnails (#38). */
+function useImagePreview(item) {
+    const [src, setSrc] = useState(null);
+    const loaded = useRef(false);
+
+    useEffect(() => {
+        if (item.content_type !== "image" || loaded.current) return;
+        loaded.current = true;
+        invoke("get_image_base64", { path: item.content })
+            .then(setSrc)
+            .catch(() => {});
+    }, [item.content, item.content_type]);
+
+    return src;
+}
 
 function ClipboardList({
     items,
@@ -59,6 +76,8 @@ function ClipboardList({
                 return "📄";
             case "files":
                 return "📁";
+            case "uri":
+                return "🔗";
             default:
                 return "📋";
         }
@@ -73,7 +92,7 @@ function ClipboardList({
 
     if (items.length === 0 && !loading) {
         return (
-            <div className="empty-state">
+            <div className="empty-state" role="status" aria-label="No clipboard items">
                 <span className="empty-icon">📋</span>
                 <p className="empty-title">No clipboard items yet</p>
                 <p className="empty-sub">Copy something to get started!</p>
@@ -82,61 +101,127 @@ function ClipboardList({
     }
 
     return (
-        <div className="clipboard-list" ref={listRef} onScroll={handleScroll}>
+        <div
+            className="clipboard-list"
+            ref={listRef}
+            onScroll={handleScroll}
+            role="listbox"
+            aria-label="Clipboard items"
+        >
             {items.map((item, index) => (
-                <div
+                <ClipItem
                     key={item.id}
-                    ref={index === selectedIndex ? selectedRef : null}
-                    className={`clip-item ${index === selectedIndex ? "selected" : ""} ${item.pinned ? "pinned" : ""
-                        }`}
-                    onClick={() => onPaste(item.id)}
-                >
-                    <div className="clip-item-header">
-                        <span className="clip-type-icon">{getTypeIcon(item.content_type)}</span>
-                        {item.pinned && <span className="pin-badge">📌</span>}
-                        <span className="clip-time">{formatTime(item.created_at)}</span>
-                    </div>
-
-                    <div className="clip-content">
-                        {item.content_type === "image" ? (
-                            <div className="clip-image-preview">
-                                <span className="image-dims">{item.preview_text}</span>
-                            </div>
-                        ) : (
-                            <p className="clip-text">{formatPreview(item.preview_text)}</p>
-                        )}
-                    </div>
-
-                    <div className="clip-actions">
-                        <button
-                            className="action-btn pin-btn"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onPin(item.id);
-                            }}
-                            title={item.pinned ? "Unpin" : "Pin"}
-                        >
-                            {item.pinned ? "📌" : "📍"}
-                        </button>
-                        <button
-                            className="action-btn delete-btn"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onDelete(item.id);
-                            }}
-                            title="Delete"
-                        >
-                            🗑️
-                        </button>
-                    </div>
-                </div>
+                    item={item}
+                    index={index}
+                    selectedIndex={selectedIndex}
+                    selectedRef={selectedRef}
+                    onPaste={onPaste}
+                    onPin={onPin}
+                    onDelete={onDelete}
+                    getTypeIcon={getTypeIcon}
+                    formatPreview={formatPreview}
+                    formatTime={formatTime}
+                />
             ))}
 
             {loading && (
-                <div className="loading-indicator">
+                <div className="loading-indicator" role="status" aria-label="Loading more items">
                     <div className="spinner"></div>
                 </div>
             )}
+        </div>
+    );
+}
+
+/** Individual clip item – extracted for the image preview hook. */
+function ClipItem({
+    item,
+    index,
+    selectedIndex,
+    selectedRef,
+    onPaste,
+    onPin,
+    onDelete,
+    getTypeIcon,
+    formatPreview,
+    formatTime,
+}) {
+    const imgSrc = useImagePreview(item);
+    const tags = (() => {
+        try {
+            return JSON.parse(item.tags || "[]");
+        } catch {
+            return [];
+        }
+    })();
+
+    return (
+        <div
+            ref={index === selectedIndex ? selectedRef : null}
+            className={`clip-item ${index === selectedIndex ? "selected" : ""} ${
+                item.pinned ? "pinned" : ""
+            }`}
+            onClick={() => onPaste(item.id)}
+            role="option"
+            aria-selected={index === selectedIndex}
+            aria-label={`${getTypeIcon(item.content_type)} ${formatPreview(item.preview_text, 40)}`}
+        >
+            <div className="clip-item-header">
+                <span className="clip-type-icon">{getTypeIcon(item.content_type)}</span>
+                {item.pinned && <span className="pin-badge">📌</span>}
+                {tags.length > 0 && (
+                    <span className="tag-badges">
+                        {tags.map((t) => (
+                            <span key={t} className="tag-badge">{t}</span>
+                        ))}
+                    </span>
+                )}
+                <span className="clip-time">{formatTime(item.created_at)}</span>
+            </div>
+
+            <div className="clip-content">
+                {item.content_type === "image" ? (
+                    <div className="clip-image-preview">
+                        {imgSrc ? (
+                            <img
+                                src={imgSrc}
+                                alt="Clipboard image"
+                                className="clip-thumbnail"
+                                loading="lazy"
+                            />
+                        ) : (
+                            <span className="image-dims">{item.preview_text}</span>
+                        )}
+                    </div>
+                ) : (
+                    <p className="clip-text">{formatPreview(item.preview_text)}</p>
+                )}
+            </div>
+
+            <div className="clip-actions">
+                <button
+                    className="action-btn pin-btn"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onPin(item.id);
+                    }}
+                    title={item.pinned ? "Unpin" : "Pin"}
+                    aria-label={item.pinned ? "Unpin item" : "Pin item"}
+                >
+                    {item.pinned ? "📌" : "📍"}
+                </button>
+                <button
+                    className="action-btn delete-btn"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete(item.id);
+                    }}
+                    title="Delete"
+                    aria-label="Delete item"
+                >
+                    🗑️
+                </button>
+            </div>
         </div>
     );
 }

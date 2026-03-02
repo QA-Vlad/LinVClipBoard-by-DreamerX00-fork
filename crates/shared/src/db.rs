@@ -87,6 +87,10 @@ impl Database {
                     INSERT INTO clipboard_fts(rowid, preview_text) VALUES (new.rowid, new.preview_text);
                 END;",
             )?;
+
+            // Run schema migrations
+            crate::migration::run_migrations(&conn)
+                .map_err(DbError::Sqlite)?;
         }
 
         Ok(Self { pool })
@@ -165,8 +169,12 @@ impl Database {
     pub fn search(&self, query: &str, limit: u32) -> DbResult<(Vec<ClipboardItem>, u64)> {
         let conn = self.pool.get()?;
 
-        // Escape FTS5 special characters and create a prefix search
-        let fts_query = format!("\"{}\"*", query.replace('"', "\"\""));
+        // Escape ALL FTS5 special characters, then wrap as a phrase prefix query.
+        let sanitized: String = query
+            .chars()
+            .filter(|c| !matches!(c, '"' | '*' | '^' | ':' | '+' | '-' | '(' | ')' | '{' | '}'))
+            .collect();
+        let fts_query = format!("\"{}\"*", sanitized);
 
         let total: u64 = conn.query_row(
             "SELECT COUNT(*) FROM clipboard_items c
@@ -224,13 +232,35 @@ impl Database {
         Ok(())
     }
 
-    /// Bulk delete items.
+    /// Bulk delete items inside a single transaction.
     pub fn bulk_delete(&self, ids: &[String]) -> DbResult<u64> {
+        // Collect blob paths before deletion so we can remove files after commit.
+        let blob_paths: Vec<String> = ids
+            .iter()
+            .filter_map(|id| self.get(id).ok())
+            .filter(|item| item.content_type == ContentType::Image)
+            .map(|item| item.content.clone())
+            .collect();
+
+        let conn = self.pool.get()?;
+        let tx = conn.unchecked_transaction()?;
         let mut count = 0u64;
         for id in ids {
-            self.delete(id)?;
-            count += 1;
+            count += tx.execute(
+                "DELETE FROM clipboard_items WHERE id = ?1",
+                params![id],
+            )? as u64;
         }
+        tx.commit()?;
+
+        // Clean up blob files outside the transaction.
+        for path_str in &blob_paths {
+            let path = std::path::Path::new(path_str);
+            if path.exists() {
+                let _ = std::fs::remove_file(path);
+            }
+        }
+
         Ok(count)
     }
 
@@ -286,10 +316,10 @@ impl Database {
                 let path = entry.path();
                 if path.is_file() {
                     let path_str = path.to_string_lossy().to_string();
-                    if !known.contains(&path_str) {
-                        if std::fs::remove_file(&path).is_ok() {
-                            removed += 1;
-                        }
+                    if !known.contains(&path_str)
+                        && std::fs::remove_file(&path).is_ok()
+                    {
+                        removed += 1;
                     }
                 }
             }
@@ -313,7 +343,16 @@ impl Database {
 
         if total > config.max_items {
             let to_remove = total - config.max_items;
-            // Remove oldest non-pinned items
+            // Collect blob paths for image items that will be removed.
+            let mut blob_stmt = conn.prepare(
+                "SELECT content FROM clipboard_items
+                 WHERE pinned = 0 AND content_type = 'image'
+                 ORDER BY created_at ASC LIMIT ?1",
+            )?;
+            let blobs: Vec<String> = blob_stmt
+                .query_map(params![to_remove as i64], |row| row.get(0))?
+                .collect::<Result<Vec<_>, _>>()?;
+
             conn.execute(
                 "DELETE FROM clipboard_items WHERE id IN (
                     SELECT id FROM clipboard_items WHERE pinned = 0
@@ -321,15 +360,44 @@ impl Database {
                 )",
                 params![to_remove as i64],
             )?;
+
+            // Remove blob files for evicted images.
+            for blob_path in &blobs {
+                let p = std::path::Path::new(blob_path);
+                if p.exists() {
+                    let _ = std::fs::remove_file(p);
+                }
+            }
+
             tracing::info!("Enforced limits: removed {} items", to_remove);
         }
 
-        // Remove expired items
-        let expiry_date = chrono::Utc::now() - chrono::Duration::days(config.expiry_days as i64);
+        // Remove expired items (use TimeDelta to avoid deprecation).
+        let expiry_delta = chrono::TimeDelta::try_days(config.expiry_days as i64)
+            .unwrap_or_else(|| chrono::TimeDelta::days(30));
+        let expiry_date = chrono::Utc::now() - expiry_delta;
+
+        // Collect blob paths for expired images.
+        let mut exp_blob_stmt = conn.prepare(
+            "SELECT content FROM clipboard_items
+             WHERE pinned = 0 AND content_type = 'image' AND created_at < ?1",
+        )?;
+        let expired_blobs: Vec<String> = exp_blob_stmt
+            .query_map(params![expiry_date.to_rfc3339()], |row| row.get(0))?
+            .collect::<Result<Vec<_>, _>>()?;
+
         let removed = conn.execute(
             "DELETE FROM clipboard_items WHERE pinned = 0 AND created_at < ?1",
             params![expiry_date.to_rfc3339()],
         )?;
+
+        for blob_path in &expired_blobs {
+            let p = std::path::Path::new(blob_path);
+            if p.exists() {
+                let _ = std::fs::remove_file(p);
+            }
+        }
+
         if removed > 0 {
             tracing::info!("Removed {} expired items", removed);
         }
@@ -369,6 +437,49 @@ impl Database {
         )?;
         Ok(count > 0)
     }
+
+    /// Add a tag to an item.
+    pub fn add_tag(&self, id: &str, tag: &str) -> DbResult<ClipboardItem> {
+        let conn = self.pool.get()?;
+        let tags_json: String = conn.query_row(
+            "SELECT tags FROM clipboard_items WHERE id = ?1",
+            params![id],
+            |row| row.get(0),
+        ).map_err(|_| DbError::NotFound(id.to_string()))?;
+
+        let mut tags: Vec<String> = serde_json::from_str(&tags_json).unwrap_or_default();
+        let tag_str = tag.to_string();
+        if !tags.contains(&tag_str) {
+            tags.push(tag_str);
+        }
+        let new_json = serde_json::to_string(&tags).unwrap_or_else(|_| "[]".to_string());
+        conn.execute(
+            "UPDATE clipboard_items SET tags = ?1 WHERE id = ?2",
+            params![new_json, id],
+        )?;
+        drop(conn);
+        self.get(id)
+    }
+
+    /// Remove a tag from an item.
+    pub fn remove_tag(&self, id: &str, tag: &str) -> DbResult<ClipboardItem> {
+        let conn = self.pool.get()?;
+        let tags_json: String = conn.query_row(
+            "SELECT tags FROM clipboard_items WHERE id = ?1",
+            params![id],
+            |row| row.get(0),
+        ).map_err(|_| DbError::NotFound(id.to_string()))?;
+
+        let mut tags: Vec<String> = serde_json::from_str(&tags_json).unwrap_or_default();
+        tags.retain(|t| t != tag);
+        let new_json = serde_json::to_string(&tags).unwrap_or_else(|_| "[]".to_string());
+        conn.execute(
+            "UPDATE clipboard_items SET tags = ?1 WHERE id = ?2",
+            params![new_json, id],
+        )?;
+        drop(conn);
+        self.get(id)
+    }
 }
 
 /// Convert a rusqlite row to a ClipboardItem.
@@ -380,7 +491,10 @@ fn row_to_item(row: &rusqlite::Row) -> ClipboardItem {
 
     ClipboardItem {
         id: row.get(0).unwrap_or_default(),
-        content_type: ContentType::from_str(&row.get::<_, String>(1).unwrap_or_default()),
+        content_type: row.get::<_, String>(1)
+            .unwrap_or_default()
+            .parse::<ContentType>()
+            .unwrap_or(ContentType::PlainText),
         content: row.get(2).unwrap_or_default(),
         preview_text: row.get(3).unwrap_or_default(),
         created_at,
@@ -396,9 +510,6 @@ mod tests {
     use super::*;
     use crate::models::ContentType;
     use std::path::PathBuf;
-    use std::sync::atomic::{AtomicU32, Ordering};
-
-    static TEST_COUNTER: AtomicU32 = AtomicU32::new(0);
 
     fn create_test_db() -> (Database, tempfile::TempDir) {
         let dir = tempfile::tempdir().unwrap();

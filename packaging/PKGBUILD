@@ -1,0 +1,50 @@
+# Maintainer: LinVClipBoard Contributors
+pkgname=linvclipboard
+pkgver=1.1.0
+pkgrel=1
+pkgdesc="Win+V style clipboard manager for Linux — daemon, CLI, and overlay UI"
+arch=('x86_64' 'aarch64')
+url="https://github.com/akash-singh8/LinVClipBoard"
+license=('MIT')
+depends=(
+    'sqlite'
+    'libxcb'
+    'wayland'
+    'webkit2gtk-4.1'
+    'libappindicator-gtk3'
+    'librsvg'
+)
+makedepends=(
+    'rust'
+    'cargo'
+    'nodejs>=18'
+    'npm'
+    'pkg-config'
+)
+source=("${pkgname}-${pkgver}.tar.gz::${url}/archive/v${pkgver}.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+    cd "LinVClipBoard-${pkgver}"
+    cargo build --release -p clipd -p clipctl
+    cd crates/linvclip-ui
+    npm ci
+    npx tauri build
+}
+
+package() {
+    cd "LinVClipBoard-${pkgver}"
+
+    install -Dm755 target/release/clipd        "${pkgdir}/usr/bin/clipd"
+    install -Dm755 target/release/clipctl      "${pkgdir}/usr/bin/clipctl"
+    install -Dm755 target/release/linvclip-ui  "${pkgdir}/usr/bin/linvclip-ui"
+
+    install -Dm644 install/clipd.service \
+        "${pkgdir}/usr/lib/systemd/user/clipd.service"
+    install -Dm644 install/linvclipboard.desktop \
+        "${pkgdir}/usr/share/applications/linvclipboard.desktop"
+    install -Dm644 crates/linvclip-ui/src-tauri/icons/icon.png \
+        "${pkgdir}/usr/share/icons/hicolor/128x128/apps/linvclipboard.png"
+
+    install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

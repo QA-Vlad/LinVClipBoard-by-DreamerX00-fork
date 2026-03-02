@@ -1,5 +1,5 @@
 use chrono::{DateTime, Utc};
-use clap::{Parser, Subcommand};
+use clap::{CommandFactory, Parser, Subcommand};
 use colored::*;
 use shared::config::AppConfig;
 use shared::ipc::send_request;
@@ -48,15 +48,70 @@ enum Commands {
         /// Item ID
         id: String,
     },
+    /// Add a tag to an item
+    Tag {
+        /// Item ID
+        id: String,
+        /// Tag to add
+        tag: String,
+    },
+    /// Remove a tag from an item
+    Untag {
+        /// Item ID
+        id: String,
+        /// Tag to remove
+        tag: String,
+    },
     /// Clear all non-pinned items
     Clear,
     /// Show daemon status
     Status,
+    /// Generate shell completions
+    Completions {
+        /// Shell to generate completions for
+        shell: clap_complete::Shell,
+    },
+    /// Generate man pages
+    Manpage {
+        /// Output directory for man pages
+        out_dir: std::path::PathBuf,
+    },
 }
 
 #[tokio::main]
 async fn main() {
     let cli = Cli::parse();
+
+    // Handle offline subcommands that don't need the daemon
+    match &cli.command {
+        Commands::Completions { shell } => {
+            let mut cmd = Cli::command();
+            clap_complete::generate(*shell, &mut cmd, "clipctl", &mut std::io::stdout());
+            return;
+        }
+        Commands::Manpage { out_dir } => {
+            let cmd = Cli::command();
+            if let Err(e) = std::fs::create_dir_all(out_dir) {
+                eprintln!("{} Failed to create dir: {}", "Error:".red().bold(), e);
+                std::process::exit(1);
+            }
+            let man = clap_mangen::Man::new(cmd);
+            let mut buf = Vec::new();
+            if let Err(e) = man.render(&mut buf) {
+                eprintln!("{} {}", "Error:".red().bold(), e);
+                std::process::exit(1);
+            }
+            let out_path = out_dir.join("clipctl.1");
+            if let Err(e) = std::fs::write(&out_path, buf) {
+                eprintln!("{} {}", "Error:".red().bold(), e);
+                std::process::exit(1);
+            }
+            println!("Man page written to {}", out_path.display());
+            return;
+        }
+        _ => {}
+    }
+
     let socket_path = AppConfig::socket_path();
 
     if !socket_path.exists() {
@@ -78,8 +133,18 @@ async fn main() {
         Commands::Paste { id } => IpcRequest::Paste { id: id.clone() },
         Commands::Pin { id } => IpcRequest::TogglePin { id: id.clone() },
         Commands::Delete { id } => IpcRequest::Delete { id: id.clone() },
+        Commands::Tag { id, tag } => IpcRequest::AddTag {
+            id: id.clone(),
+            tag: tag.clone(),
+        },
+        Commands::Untag { id, tag } => IpcRequest::RemoveTag {
+            id: id.clone(),
+            tag: tag.clone(),
+        },
         Commands::Clear => IpcRequest::Clear,
         Commands::Status => IpcRequest::Status,
+        // Completions and Manpage are handled above and never reach here
+        Commands::Completions { .. } | Commands::Manpage { .. } => unreachable!(),
     };
 
     match send_request(&socket_path, &request).await {
@@ -112,6 +177,8 @@ fn print_response(_command: &Commands, response: IpcResponse) {
                     ContentType::Html => "🌐",
                     ContentType::Image => "🖼️",
                     ContentType::RichText => "📄",
+                    ContentType::Files => "📁",
+                    ContentType::Uri => "🔗",
                 };
 
                 let time = format_time(&item.created_at);
@@ -178,6 +245,11 @@ fn print_response(_command: &Commands, response: IpcResponse) {
             println!("  Uptime:      {}", format_duration(uptime_secs).yellow());
             println!("  Total items: {}", total_items.to_string().yellow());
             println!("  DB size:     {}", format_bytes(db_size_bytes).yellow());
+        }
+
+        IpcResponse::Config(config) => {
+            println!("{}", "⚙️  Current Configuration".bold().cyan());
+            println!("{}", serde_json::to_string_pretty(&config).unwrap_or_default());
         }
     }
 }

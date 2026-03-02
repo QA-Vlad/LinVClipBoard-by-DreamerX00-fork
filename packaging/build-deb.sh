@@ -3,7 +3,8 @@ set -euo pipefail
 
 # Build a single .deb package containing clipd, clipctl, and linvclip-ui.
 
-VERSION="1.0.1"
+# Extract version from workspace Cargo.toml (#25)
+VERSION=$(grep '^version' "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/Cargo.toml" | head -1 | sed 's/.*"\(.*\)".*/\1/')
 ARCH="amd64"
 PKG_NAME="linvclipboard"
 PKG_DIR="$(mktemp -d)"
@@ -120,17 +121,30 @@ echo ""
 POSTINST
 chmod 755 "${PKG_DIR}/DEBIAN/postinst"
 
-# DEBIAN/prerm
+# DEBIAN/prerm — runs as root, must iterate real user sessions (#6)
 cat > "${PKG_DIR}/DEBIAN/prerm" <<'PRERM'
 #!/bin/sh
 set -e
 
-echo "Stopping clipd service (if running)..."
-systemctl --user stop clipd.service 2>/dev/null || true
-systemctl --user disable clipd.service 2>/dev/null || true
+echo "Stopping clipd service for active users..."
 
-# Kill linvclip-ui if running
-pkill linvclip-ui 2>/dev/null || true
+# When dpkg runs as root, systemctl --user targets root's session,
+# not the actual desktop user's. Iterate over /run/user/* to find
+# real user sessions and stop clipd in each.
+for user_run in /run/user/[0-9]*; do
+    uid=$(basename "$user_run")
+    # Skip root (uid 0) and system users (<1000)
+    [ "$uid" -ge 1000 ] 2>/dev/null || continue
+    username=$(id -nu "$uid" 2>/dev/null) || continue
+    export XDG_RUNTIME_DIR="$user_run"
+    export DBUS_SESSION_BUS_ADDRESS="unix:path=$user_run/bus"
+    su - "$username" -c "systemctl --user stop clipd.service" 2>/dev/null || true
+    su - "$username" -c "systemctl --user disable clipd.service" 2>/dev/null || true
+done
+
+# Fallback: kill any remaining processes
+pkill -x clipd 2>/dev/null || true
+pkill -x linvclip-ui 2>/dev/null || true
 PRERM
 chmod 755 "${PKG_DIR}/DEBIAN/prerm"
 

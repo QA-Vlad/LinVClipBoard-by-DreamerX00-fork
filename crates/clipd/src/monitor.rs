@@ -5,19 +5,24 @@ use shared::db::Database;
 use shared::models::{ClipboardItem, ContentType};
 use std::sync::Arc;
 use std::time::Duration;
+use tokio_util::sync::CancellationToken;
 use uuid::Uuid;
 
 /// Run the clipboard monitor loop.
 pub async fn run(
     db: Arc<Database>,
     config: Arc<AppConfig>,
+    cancel: CancellationToken,
 ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    let poll_interval = Duration::from_millis(config.daemon.poll_interval_ms);
+    let base_poll = Duration::from_millis(config.daemon.poll_interval_ms);
     let mut last_text_checksum = String::new();
     let mut last_image_checksum = String::new();
 
     // Track limit enforcement — run every 100 polls
     let mut poll_count: u64 = 0;
+
+    // Adaptive polling: speed up when activity detected, slow down when idle
+    let mut idle_streak: u64 = 0;
 
     // Consecutive failure counter for clipboard reconnect
     let mut consecutive_failures: u32 = 0;
@@ -26,11 +31,21 @@ pub async fn run(
     const RECONNECT_THRESHOLD: u32 = 3;
 
     // Create clipboard instance ONCE — avoids Wayland fallback warning spam.
-    // arboard will try Wayland first, fall back to X11, and log one warning.
     let mut clipboard = Clipboard::new()?;
-    tracing::info!("📋 Clipboard monitor started (polling every {}ms)", config.daemon.poll_interval_ms);
+    tracing::info!(
+        "📋 Clipboard monitor started (polling every {}ms)",
+        config.daemon.poll_interval_ms
+    );
 
     loop {
+        // Check for cancellation before each poll
+        if cancel.is_cancelled() {
+            tracing::info!("Monitor received cancellation, stopping");
+            break;
+        }
+
+        let mut had_activity = false;
+
         if !config.security.incognito {
             let mut had_failure = false;
 
@@ -41,6 +56,7 @@ pub async fn run(
                         Ok(true) => {
                             last_text_checksum = checksum;
                             tracing::debug!("Captured text: {} chars", item.size_bytes);
+                            had_activity = true;
                         }
                         Ok(false) => {
                             last_text_checksum = checksum;
@@ -50,7 +66,9 @@ pub async fn run(
                     }
                 }
                 Ok(None) => {} // No change
-                Err(_) => { had_failure = true; }
+                Err(_) => {
+                    had_failure = true;
+                }
             }
 
             // Try to capture image
@@ -60,6 +78,7 @@ pub async fn run(
                         Ok(true) => {
                             last_image_checksum = checksum;
                             tracing::debug!("Captured image: {} bytes", item.size_bytes);
+                            had_activity = true;
                         }
                         Ok(false) => {
                             last_image_checksum = checksum;
@@ -68,15 +87,20 @@ pub async fn run(
                     }
                 }
                 Ok(None) => {}
-                Err(_) => { had_failure = true; }
+                Err(_) => {
+                    had_failure = true;
+                }
             }
 
             // Reconnect clipboard on consecutive failures
             if had_failure {
                 consecutive_failures += 1;
                 if consecutive_failures >= RECONNECT_THRESHOLD {
-                    tracing::warn!("Clipboard failed {} times, reconnecting (backoff {}s)...",
-                        consecutive_failures, backoff_secs);
+                    tracing::warn!(
+                        "Clipboard failed {} times, reconnecting (backoff {}s)...",
+                        consecutive_failures,
+                        backoff_secs
+                    );
                     tokio::time::sleep(Duration::from_secs(backoff_secs)).await;
                     match Clipboard::new() {
                         Ok(new_clip) => {
@@ -99,7 +123,7 @@ pub async fn run(
 
         // Enforce storage limits periodically
         poll_count += 1;
-        if poll_count % 100 == 0 {
+        if poll_count.is_multiple_of(100) {
             if let Err(e) = db.enforce_limits(&config.storage) {
                 tracing::error!("Limit enforcement error: {}", e);
             }
@@ -110,8 +134,29 @@ pub async fn run(
             }
         }
 
-        tokio::time::sleep(poll_interval).await;
+        // Adaptive polling: use base interval when active, gradually slow down when idle
+        if had_activity {
+            idle_streak = 0;
+        } else {
+            idle_streak += 1;
+        }
+        let poll_interval = if idle_streak > 40 {
+            // After ~10 seconds of inactivity, slow to 2x base interval
+            base_poll * 2
+        } else {
+            base_poll
+        };
+
+        tokio::select! {
+            _ = tokio::time::sleep(poll_interval) => {}
+            _ = cancel.cancelled() => {
+                tracing::info!("Monitor cancelled during sleep");
+                break;
+            }
+        }
     }
+
+    Ok(())
 }
 
 /// Attempt to capture text from clipboard. Returns Some if content changed.
@@ -137,12 +182,13 @@ fn capture_text(
         return Ok(None);
     }
 
-    let preview = text.chars().take(200).collect::<String>();
-    let size = text.len() as u64;
+    let preview = normalized.chars().take(200).collect::<String>();
+    let size = normalized.len() as u64;
 
+    // Store the *normalized* text so content matches its checksum (#1)
     let item = ClipboardItem::new(
         ContentType::PlainText,
-        text,
+        normalized,
         preview,
         checksum.clone(),
         size,
@@ -176,7 +222,11 @@ fn capture_image(
     // Check size limit
     let size = raw_bytes.len() as u64;
     if size > config.storage.max_item_size_bytes {
-        tracing::warn!("Image too large: {} bytes (limit: {})", size, config.storage.max_item_size_bytes);
+        tracing::warn!(
+            "Image too large: {} bytes (limit: {})",
+            size,
+            config.storage.max_item_size_bytes
+        );
         return Ok(None);
     }
 

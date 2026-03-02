@@ -13,8 +13,10 @@ path = "src/main.rs"
 shared = { path = "../shared" }
 arboard = { version = "3", features = ["wayland-data-control"] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "io-util", "sync", "signal", "time"] }
+tokio-util = "0.7"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+toml = "0.8"
 sha2 = "0.10"
 hex = "0.4"
 chrono = "0.4"
@@ -25,6 +27,12 @@ dirs = "5"
 libc = "0.2"
 image = { version = "0.25", default-features = false, features = ["png"] }
 uuid = { version = "1", features = ["v4"] }
+notify = { version = "6", features = ["macos_fsevent"] }
+zbus = { version = "4", optional = true }
+
+[features]
+default = []
+dbus = ["zbus"]
 
 [package.metadata.deb]
 maintainer = "LinVClipBoard Contributors"

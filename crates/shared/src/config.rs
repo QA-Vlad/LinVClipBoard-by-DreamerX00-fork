@@ -37,6 +37,13 @@ pub struct UiConfig {
     pub theme: String,
     pub window_width: u32,
     pub window_height: u32,
+    /// Global shortcut to toggle the overlay (e.g. "Super+.").
+    #[serde(default = "default_shortcut")]
+    pub shortcut: String,
+}
+
+fn default_shortcut() -> String {
+    "Super+.".to_string()
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -68,6 +75,7 @@ impl Default for AppConfig {
                 theme: "auto".to_string(),
                 window_width: 420,
                 window_height: 520,
+                shortcut: "Super+.".to_string(),
             },
             storage: StorageConfig {
                 max_items: 10_000,

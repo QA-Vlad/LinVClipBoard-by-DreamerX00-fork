@@ -1,9 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { invoke } from "@tauri-apps/api/core";
+import { listen } from "@tauri-apps/api/event";
 import ClipboardList from "./components/ClipboardList";
 import SearchBar from "./components/SearchBar";
 import StatusBar from "./components/StatusBar";
+import SettingsPanel from "./components/SettingsPanel";
+import ConfirmDialog from "./components/ConfirmDialog";
 
 function App() {
     const [items, setItems] = useState([]);
@@ -13,8 +16,17 @@ function App() {
     const [status, setStatus] = useState(null);
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [toast, setToast] = useState(null);
+    const [showSettings, setShowSettings] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "dark");
     const offset = useRef(0);
     const LIMIT = 30;
+
+    // Apply theme to DOM (#39)
+    useEffect(() => {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+    }, [theme]);
 
     // Store latest values in refs so the document-level keydown handler
     // always sees current state without needing to re-attach the listener.
@@ -68,14 +80,30 @@ function App() {
         fetchItems(true);
         fetchStatus();
 
-        // Auto-refresh every 2 seconds
+        // Listen for push-based clipboard-updated events from the daemon (#13)
+        let unlisten;
+        const setupListener = async () => {
+            unlisten = await listen("clipboard-updated", () => {
+                if (!searchQuery.trim()) {
+                    fetchItems(true);
+                }
+                fetchStatus();
+            });
+        };
+        setupListener();
+
+        // Fallback polling every 5s in case events are missed
         const interval = setInterval(() => {
             if (!searchQuery.trim()) {
                 fetchItems(true);
             }
-        }, 2000);
+            fetchStatus();
+        }, 5000);
 
-        return () => clearInterval(interval);
+        return () => {
+            clearInterval(interval);
+            if (unlisten) unlisten();
+        };
     }, []);
 
     // Re-fetch on search change
@@ -151,6 +179,7 @@ function App() {
     };
 
     const handleClearAll = async () => {
+        // Actual clear logic (called after confirmation)
         try {
             await invoke("clear_all");
             showToast("🗑️ Cleared!");
@@ -168,6 +197,16 @@ function App() {
             fetchItems(true);
             fetchStatus();
         }
+    };
+
+    // Triggered by StatusBar — shows confirmation first (#41)
+    const requestClearAll = () => {
+        setShowConfirm(true);
+    };
+
+    const handleConfirmClear = () => {
+        setShowConfirm(false);
+        handleClearAll();
     };
 
     // ─── Global keyboard handler via document listener ───
@@ -213,24 +252,52 @@ function App() {
     }, []); // Empty deps — uses refs for state
 
     return (
-        <div className="app">
+        <div className="app" role="application" aria-label="LinVClipBoard">
             <div className="app-container">
-                <SearchBar value={searchQuery} onChange={setSearchQuery} />
+                <header role="banner">
+                    <SearchBar value={searchQuery} onChange={setSearchQuery} />
+                </header>
 
-                <ClipboardList
-                    items={items}
-                    selectedIndex={selectedIndex}
-                    onPaste={handlePaste}
-                    onPin={handlePin}
-                    onDelete={handleDelete}
-                    onLoadMore={handleLoadMore}
-                    loading={loading}
-                    hasMore={items.length < total}
-                />
+                <main role="main" aria-label="Clipboard history">
+                    <ClipboardList
+                        items={items}
+                        selectedIndex={selectedIndex}
+                        onPaste={handlePaste}
+                        onPin={handlePin}
+                        onDelete={handleDelete}
+                        onLoadMore={handleLoadMore}
+                        loading={loading}
+                        hasMore={items.length < total}
+                    />
+                </main>
 
-                <StatusBar total={total} status={status} onClearAll={handleClearAll} />
+                <footer role="contentinfo">
+                    <StatusBar
+                        total={total}
+                        status={status}
+                        onClearAll={requestClearAll}
+                        onOpenSettings={() => setShowSettings(true)}
+                        theme={theme}
+                        onThemeToggle={() =>
+                            setTheme((t) => (t === "dark" ? "light" : "dark"))
+                        }
+                    />
+                </footer>
             </div>
-            {toast && <div className="copy-toast">{toast}</div>}
+
+            {toast && <div className="copy-toast" role="alert">{toast}</div>}
+
+            {showSettings && (
+                <SettingsPanel onClose={() => setShowSettings(false)} />
+            )}
+
+            {showConfirm && (
+                <ConfirmDialog
+                    message="Delete all non-pinned clipboard items? This cannot be undone."
+                    onConfirm={handleConfirmClear}
+                    onCancel={() => setShowConfirm(false)}
+                />
+            )}
         </div>
     );
 }

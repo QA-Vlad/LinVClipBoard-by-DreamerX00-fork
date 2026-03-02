@@ -1,9 +1,11 @@
 use shared::config::AppConfig;
 use shared::ipc::send_request;
-use shared::models::{IpcRequest, IpcResponse, ClipboardItem};
+use shared::models::{ClipboardItem, IpcRequest, IpcResponse};
 use serde::{Deserialize, Serialize};
 use tauri::Manager;
+use tauri::Emitter;
 use tauri_plugin_global_shortcut::GlobalShortcutExt;
+use base64::Engine;
 
 #[derive(Serialize, Deserialize)]
 pub struct ItemsResult {
@@ -124,6 +126,109 @@ async fn clear_all() -> Result<String, String> {
     }
 }
 
+/// Get the current configuration.
+#[tauri::command]
+async fn get_config() -> Result<AppConfig, String> {
+    let socket = AppConfig::socket_path();
+    let request = IpcRequest::GetConfig;
+
+    match send_request(&socket, &request).await {
+        Ok(IpcResponse::Config(config)) => Ok(config),
+        Ok(IpcResponse::Error { message }) => Err(message),
+        // Fallback: load directly from file when daemon doesn't support GetConfig
+        Err(_) => Ok(AppConfig::load()),
+        _ => Ok(AppConfig::load()),
+    }
+}
+
+/// Save configuration.
+#[tauri::command]
+async fn save_config(config: AppConfig) -> Result<String, String> {
+    let socket = AppConfig::socket_path();
+    let request = IpcRequest::SaveConfig { config };
+
+    match send_request(&socket, &request).await {
+        Ok(IpcResponse::Ok { message }) => Ok(message),
+        Ok(IpcResponse::Error { message }) => Err(message),
+        Err(e) => Err(format!("Connection failed: {}", e)),
+        _ => Err("Unexpected response".to_string()),
+    }
+}
+
+/// Get a base64-encoded image for preview (#38).
+#[tauri::command]
+async fn get_image_base64(path: String) -> Result<String, String> {
+    let file_path = std::path::Path::new(&path);
+    if !file_path.exists() {
+        return Err("Image file not found".to_string());
+    }
+    let bytes = std::fs::read(file_path).map_err(|e| format!("Read failed: {}", e))?;
+    let encoded = base64::engine::general_purpose::STANDARD.encode(&bytes);
+    Ok(format!("data:image/png;base64,{}", encoded))
+}
+
+/// Add a tag to an item.
+#[tauri::command]
+async fn add_tag(id: String, tag: String) -> Result<ClipboardItem, String> {
+    let socket = AppConfig::socket_path();
+    let request = IpcRequest::AddTag { id, tag };
+
+    match send_request(&socket, &request).await {
+        Ok(IpcResponse::Item(item)) => Ok(item),
+        Ok(IpcResponse::Error { message }) => Err(message),
+        Err(e) => Err(format!("Connection failed: {}", e)),
+        _ => Err("Unexpected response".to_string()),
+    }
+}
+
+/// Remove a tag from an item.
+#[tauri::command]
+async fn remove_tag(id: String, tag: String) -> Result<ClipboardItem, String> {
+    let socket = AppConfig::socket_path();
+    let request = IpcRequest::RemoveTag { id, tag };
+
+    match send_request(&socket, &request).await {
+        Ok(IpcResponse::Item(item)) => Ok(item),
+        Ok(IpcResponse::Error { message }) => Err(message),
+        Err(e) => Err(format!("Connection failed: {}", e)),
+        _ => Err("Unexpected response".to_string()),
+    }
+}
+
+/// Center the window on the monitor that contains the cursor (#44).
+fn center_on_active_monitor(window: &tauri::WebviewWindow) {
+    let config = AppConfig::load();
+    let w = config.ui.window_width as i32;
+    let h = config.ui.window_height as i32;
+
+    // Try to position on the monitor the cursor is currently on.
+    if let Ok(cursor) = window.cursor_position() {
+        if let Ok(monitors) = window.available_monitors() {
+            for mon in monitors {
+                let pos = mon.position();
+                let size = mon.size();
+                let right = pos.x + size.width as i32;
+                let bottom = pos.y + size.height as i32;
+                if (cursor.x as i32) >= pos.x
+                    && (cursor.x as i32) < right
+                    && (cursor.y as i32) >= pos.y
+                    && (cursor.y as i32) < bottom
+                {
+                    let x = pos.x + (size.width as i32 - w) / 2;
+                    let y = pos.y + (size.height as i32 - h) / 2;
+                    let _ = window.set_position(tauri::Position::Physical(
+                        tauri::PhysicalPosition { x, y },
+                    ));
+                    return;
+                }
+            }
+        }
+    }
+
+    // Fallback: center on current monitor
+    let _ = window.center();
+}
+
 /// Refresh the tray menu with the latest 5 clipboard items.
 async fn refresh_tray_menu(app: &tauri::AppHandle) {
     use tauri::menu::{MenuBuilder, MenuItemBuilder};
@@ -187,6 +292,11 @@ pub fn run() {
             delete_item,
             get_status,
             clear_all,
+            get_config,
+            save_config,
+            get_image_base64,
+            add_tag,
+            remove_tag,
         ])
         .setup(|app| {
             let window = app.get_webview_window("main").unwrap();
@@ -213,7 +323,7 @@ pub fn run() {
                 .icon(icon)
                 .menu(&tray_menu)
                 .tooltip("LinVClipBoard")
-                .menu_on_left_click(true)
+                .show_menu_on_left_click(true)
                 .on_menu_event(move |app, event| {
                     let id = event.id().as_ref().to_string();
                     match id.as_str() {
@@ -286,24 +396,53 @@ pub fn run() {
                 }
             });
 
-            // --- Global Shortcut: Super+Period (Win+.) ---
+            // --- Global Shortcut: configurable (defaults to Super+.) (#21) ---
             use tauri_plugin_global_shortcut::ShortcutState;
 
+            let config = AppConfig::load();
+            let shortcut_str = config.ui.shortcut.clone();
+
             let sc_win = app.get_webview_window("main").unwrap();
-            if let Err(e) = app.global_shortcut().on_shortcut("Super+.", move |_app, _shortcut, event| {
-                if event.state == ShortcutState::Pressed {
-                    if let Ok(visible) = sc_win.is_visible() {
-                        if visible {
-                            let _ = sc_win.hide();
-                        } else {
-                            let _ = sc_win.show();
-                            let _ = sc_win.set_focus();
+            if let Err(e) = app.global_shortcut().on_shortcut(
+                shortcut_str.as_str(),
+                move |_app, _shortcut, event| {
+                    if event.state == ShortcutState::Pressed {
+                        if let Ok(visible) = sc_win.is_visible() {
+                            if visible {
+                                let _ = sc_win.hide();
+                            } else {
+                                center_on_active_monitor(&sc_win);
+                                let _ = sc_win.show();
+                                let _ = sc_win.set_focus();
+                            }
+                        }
+                    }
+                },
+            ) {
+                eprintln!(
+                    "Note: Could not register shortcut '{}': {}",
+                    shortcut_str, e
+                );
+            }
+
+            // --- Background task: push clipboard-updated events to the UI (#13) ---
+            let event_handle = app.handle().clone();
+            tauri::async_runtime::spawn(async move {
+                let mut last_total: u64 = 0;
+                loop {
+                    tokio::time::sleep(std::time::Duration::from_secs(2)).await;
+                    let socket = AppConfig::socket_path();
+                    let req = IpcRequest::Status;
+                    if let Ok(IpcResponse::Status { total_items, .. }) =
+                        send_request(&socket, &req).await
+                    {
+                        if total_items != last_total {
+                            last_total = total_items;
+                            let _ = event_handle.emit("clipboard-updated", total_items);
                         }
                     }
                 }
-            }) {
-                eprintln!("Note: Could not register Super+.: {}", e);
-            }
+            });
 
             Ok(())
         })

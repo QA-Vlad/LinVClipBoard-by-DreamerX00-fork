@@ -1,7 +1,9 @@
 [Unit]
 Description=LinVClipBoard Clipboard Daemon
-Documentation=https://github.com/LinVClipBoard/linvclipboard
+Documentation=https://github.com/akash-singh8/LinVClipBoard
 After=graphical-session.target
+ConditionEnvironment=WAYLAND_DISPLAY
+ConditionEnvironment=|DISPLAY
 
 [Service]
 Type=simple
@@ -10,9 +12,20 @@ Restart=on-failure
 RestartSec=3
 Environment=RUST_LOG=info
 
+# Graceful shutdown: SIGTERM then SIGKILL after 5s
+TimeoutStopSec=5
+KillSignal=SIGTERM
+
 # Resource limits
 MemoryMax=50M
 CPUQuota=5%
+
+# Sandboxing (systemd hardening)
+ProtectHome=read-only
+ProtectSystem=strict
+ReadWritePaths=%h/.local/share/linvclip %h/.config/linvclip %t/linvclip
+NoNewPrivileges=true
+PrivateTmp=true
 
 [Install]
 WantedBy=default.target

@@ -10,6 +10,8 @@ pub enum ContentType {
     Html,
     Image,
     RichText,
+    Files,
+    Uri,
 }
 
 impl ContentType {
@@ -19,17 +21,25 @@ impl ContentType {
             ContentType::Html => "html",
             ContentType::Image => "image",
             ContentType::RichText => "rich_text",
+            ContentType::Files => "files",
+            ContentType::Uri => "uri",
         }
     }
+}
 
-    pub fn from_str(s: &str) -> Self {
-        match s {
+impl std::str::FromStr for ContentType {
+    type Err = std::convert::Infallible;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(match s {
             "plain_text" => ContentType::PlainText,
             "html" => ContentType::Html,
             "image" => ContentType::Image,
             "rich_text" => ContentType::RichText,
+            "files" => ContentType::Files,
+            "uri" => ContentType::Uri,
             _ => ContentType::PlainText,
-        }
+        })
     }
 }
 
@@ -94,6 +104,14 @@ pub enum IpcRequest {
     Clear,
     /// Get daemon status.
     Status,
+    /// Add a tag to an item.
+    AddTag { id: String, tag: String },
+    /// Remove a tag from an item.
+    RemoveTag { id: String, tag: String },
+    /// Get the current daemon/app configuration.
+    GetConfig,
+    /// Save updated configuration.
+    SaveConfig { config: crate::config::AppConfig },
 }
 
 /// IPC response from daemon to client.
@@ -117,10 +135,6 @@ pub enum IpcResponse {
         total_items: u64,
         db_size_bytes: u64,
     },
-}
-
-/// IPC message envelope with length-prefix framing.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct IpcMessage<T> {
-    pub payload: T,
+    /// Current configuration.
+    Config(crate::config::AppConfig),
 }

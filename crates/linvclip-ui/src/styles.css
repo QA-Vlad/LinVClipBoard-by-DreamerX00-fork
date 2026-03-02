@@ -1,8 +1,10 @@
 /* ============================================
    LinVClipBoard — Glassmorphism Dark Theme
+   v1.1.0 — Light theme + Settings + A11y
    ============================================ */
 
-:root {
+:root,
+[data-theme="dark"] {
     /* Color System — Opaque Dark */
     --bg-primary: rgba(15, 15, 25, 0.98);
     --bg-secondary: rgba(25, 25, 40, 0.96);
@@ -40,11 +42,45 @@
     --radius-lg: 14px;
     --radius-xl: 18px;
 
-    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-family: 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
     --transition-fast: 120ms ease;
     --transition-normal: 200ms ease;
     --transition-smooth: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ---- Light Theme (#39) ---- */
+[data-theme="light"] {
+    --bg-primary: rgba(248, 250, 252, 0.98);
+    --bg-secondary: rgba(241, 245, 249, 0.96);
+    --bg-glass: rgba(226, 232, 240, 0.80);
+    --bg-glass-hover: rgba(203, 213, 225, 0.85);
+    --bg-glass-active: rgba(186, 198, 210, 0.90);
+    --bg-selected: rgba(99, 102, 241, 0.18);
+    --bg-pinned: rgba(245, 158, 11, 0.10);
+
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --text-tertiary: #64748b;
+    --text-dimmed: #94a3b8;
+
+    --accent: #6366f1;
+    --accent-glow: rgba(99, 102, 241, 0.2);
+    --accent-hover: #818cf8;
+    --accent-active: #4f46e5;
+
+    --danger: #ef4444;
+    --danger-hover: #dc2626;
+    --warning: #f59e0b;
+    --success: #10b981;
+
+    --border: rgba(100, 116, 139, 0.18);
+    --border-focus: rgba(99, 102, 241, 0.5);
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.10);
+    --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.08);
 }
 
 /* ---- Reset & Base ---- */
@@ -612,5 +648,314 @@ kbd {
     100% {
         background: transparent;
         transform: scale(1);
+    }
+}
+
+/* ---- Image Thumbnail (#38) ---- */
+.clip-thumbnail {
+    max-width: 100%;
+    max-height: 80px;
+    border-radius: var(--radius-sm);
+    object-fit: contain;
+}
+
+/* ---- Tag Badges (#42) ---- */
+.tag-badges {
+    display: inline-flex;
+    gap: 3px;
+    margin-left: 4px;
+}
+
+.tag-badge {
+    display: inline-block;
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 8px;
+    background: var(--accent-glow);
+    color: var(--accent);
+    border: 1px solid var(--border);
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+/* ---- Theme Toggle & Settings Buttons (#39, #40) ---- */
+.theme-toggle-btn,
+.settings-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-tertiary);
+    font-size: 13px;
+    padding: 3px 6px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    line-height: 1;
+}
+
+.theme-toggle-btn:hover,
+.settings-btn:hover {
+    background: var(--bg-glass);
+    color: var(--text-primary);
+    border-color: var(--border-focus);
+}
+
+/* ---- Settings Panel (#40) ---- */
+.settings-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 900;
+    animation: fadeIn 150ms ease-out;
+}
+
+.settings-panel {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    width: 360px;
+    max-height: 85vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.settings-header h2 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.settings-close {
+    background: none;
+    border: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+}
+
+.settings-close:hover {
+    color: var(--text-primary);
+    background: var(--bg-glass);
+}
+
+.settings-body {
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.settings-body fieldset {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    margin: 0;
+}
+
+.settings-body legend {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0 4px;
+}
+
+.settings-group {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-bottom: 8px;
+}
+
+.settings-group:last-child {
+    margin-bottom: 0;
+}
+
+.settings-group label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.settings-group input[type="number"],
+.settings-group input[type="text"],
+.settings-group select {
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 6px 8px;
+    color: var(--text-primary);
+    font-family: var(--font-family);
+    font-size: 13px;
+    outline: none;
+    transition: all var(--transition-fast);
+}
+
+.settings-group input:focus,
+.settings-group select:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.settings-group input[type="checkbox"] {
+    accent-color: var(--accent);
+}
+
+.settings-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+}
+
+.settings-cancel,
+.settings-save {
+    padding: 6px 16px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    transition: all var(--transition-fast);
+}
+
+.settings-cancel {
+    background: var(--bg-glass);
+    color: var(--text-secondary);
+}
+
+.settings-cancel:hover {
+    background: var(--bg-glass-hover);
+    color: var(--text-primary);
+}
+
+.settings-save {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
+
+.settings-save:hover {
+    background: var(--accent-hover);
+}
+
+.settings-save:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.settings-loading {
+    padding: 40px;
+    text-align: center;
+    color: var(--text-dimmed);
+    font-size: 13px;
+}
+
+/* ---- Confirm Dialog (#41) ---- */
+.confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 120ms ease-out;
+}
+
+.confirm-dialog {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: 20px 24px;
+    max-width: 320px;
+    width: 90%;
+}
+
+.confirm-message {
+    font-size: 14px;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+.confirm-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.confirm-cancel,
+.confirm-ok {
+    padding: 6px 16px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    transition: all var(--transition-fast);
+}
+
+.confirm-cancel {
+    background: var(--bg-glass);
+    color: var(--text-secondary);
+}
+
+.confirm-cancel:hover {
+    background: var(--bg-glass-hover);
+    color: var(--text-primary);
+}
+
+.confirm-ok {
+    background: var(--danger);
+    color: #fff;
+    border-color: var(--danger);
+}
+
+.confirm-ok:hover {
+    background: var(--danger-hover);
+}
+
+/* ---- Accessibility focus-visible (#43) ---- */
+*:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 }
