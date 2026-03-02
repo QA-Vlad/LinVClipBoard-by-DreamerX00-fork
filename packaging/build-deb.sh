@@ -72,7 +72,7 @@ Homepage: https://github.com/akash-singh8/LinVClipBoard
 EOF
 
 # DEBIAN/postinst
-cat > "${PKG_DIR}/DEBIAN/postinst" <<'EOF'
+cat > "${PKG_DIR}/DEBIAN/postinst" <<'POSTINST'
 #!/bin/sh
 set -e
 
@@ -82,6 +82,29 @@ if command -v update-desktop-database >/dev/null 2>&1; then
 fi
 if command -v gtk-update-icon-cache >/dev/null 2>&1; then
     gtk-update-icon-cache -f /usr/share/icons/hicolor 2>/dev/null || true
+fi
+
+# Free up Super+. from IBus emoji picker so LinVClipBoard can use it.
+# Save the original value so we can restore on uninstall.
+free_shortcut() {
+    USER="$1"
+    HOME_DIR="$2"
+    # Run gsettings as the actual user, not root
+    ORIG=$(su - "$USER" -c "gsettings get org.freedesktop.ibus.panel.emoji hotkey" 2>/dev/null) || return 0
+    # Save original if not already saved
+    SAVE_FILE="${HOME_DIR}/.config/linvclip/.ibus-emoji-hotkey-backup"
+    if [ ! -f "$SAVE_FILE" ]; then
+        mkdir -p "${HOME_DIR}/.config/linvclip"
+        echo "$ORIG" > "$SAVE_FILE"
+        chown "$USER":"$USER" "$SAVE_FILE"
+    fi
+    su - "$USER" -c "gsettings set org.freedesktop.ibus.panel.emoji hotkey '[]'" 2>/dev/null || true
+}
+
+# Apply to all logged-in users with a graphical session, or SUDO_USER
+if [ -n "$SUDO_USER" ] && [ "$SUDO_USER" != "root" ]; then
+    SUDO_HOME=$(getent passwd "$SUDO_USER" | cut -d: -f6)
+    free_shortcut "$SUDO_USER" "$SUDO_HOME"
 fi
 
 echo ""
@@ -94,30 +117,52 @@ echo ""
 echo "Then press Super+. (Win+Period) to open the overlay,"
 echo "or use 'clipctl' from the terminal."
 echo ""
-EOF
+POSTINST
 chmod 755 "${PKG_DIR}/DEBIAN/postinst"
 
 # DEBIAN/prerm
-cat > "${PKG_DIR}/DEBIAN/prerm" <<'EOF'
+cat > "${PKG_DIR}/DEBIAN/prerm" <<'PRERM'
 #!/bin/sh
 set -e
+
 echo "Stopping clipd service (if running)..."
 systemctl --user stop clipd.service 2>/dev/null || true
 systemctl --user disable clipd.service 2>/dev/null || true
-EOF
+
+# Kill linvclip-ui if running
+pkill linvclip-ui 2>/dev/null || true
+PRERM
 chmod 755 "${PKG_DIR}/DEBIAN/prerm"
 
 # DEBIAN/postrm
-cat > "${PKG_DIR}/DEBIAN/postrm" <<'EOF'
+cat > "${PKG_DIR}/DEBIAN/postrm" <<'POSTRM'
 #!/bin/sh
 set -e
+
 if command -v update-desktop-database >/dev/null 2>&1; then
     update-desktop-database /usr/share/applications 2>/dev/null || true
 fi
 if command -v gtk-update-icon-cache >/dev/null 2>&1; then
     gtk-update-icon-cache -f /usr/share/icons/hicolor 2>/dev/null || true
 fi
-EOF
+
+# Restore the original IBus emoji hotkey if we saved a backup
+restore_shortcut() {
+    USER="$1"
+    HOME_DIR="$2"
+    SAVE_FILE="${HOME_DIR}/.config/linvclip/.ibus-emoji-hotkey-backup"
+    if [ -f "$SAVE_FILE" ]; then
+        ORIG=$(cat "$SAVE_FILE")
+        su - "$USER" -c "gsettings set org.freedesktop.ibus.panel.emoji hotkey \"$ORIG\"" 2>/dev/null || true
+        rm -f "$SAVE_FILE"
+    fi
+}
+
+if [ -n "$SUDO_USER" ] && [ "$SUDO_USER" != "root" ]; then
+    SUDO_HOME=$(getent passwd "$SUDO_USER" | cut -d: -f6)
+    restore_shortcut "$SUDO_USER" "$SUDO_HOME"
+fi
+POSTRM
 chmod 755 "${PKG_DIR}/DEBIAN/postrm"
 
 # Build the .deb
