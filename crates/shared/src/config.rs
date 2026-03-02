@@ -1,0 +1,153 @@
+use serde::{Deserialize, Serialize};
+use std::path::PathBuf;
+
+/// Application configuration.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AppConfig {
+    pub daemon: DaemonConfig,
+    pub security: SecurityConfig,
+    pub ui: UiConfig,
+    pub storage: StorageConfig,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DaemonConfig {
+    /// Clipboard poll interval in milliseconds.
+    pub poll_interval_ms: u64,
+    /// Log level: "trace", "debug", "info", "warn", "error".
+    #[serde(default = "default_log_level")]
+    pub log_level: String,
+}
+
+fn default_log_level() -> String {
+    "info".to_string()
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SecurityConfig {
+    /// Apps whose clipboard content should never be stored.
+    pub blacklisted_apps: Vec<String>,
+    /// If true, don't store any clipboard content.
+    pub incognito: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct UiConfig {
+    /// Theme: "auto", "dark", or "light".
+    pub theme: String,
+    pub window_width: u32,
+    pub window_height: u32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct StorageConfig {
+    /// Maximum number of items to keep.
+    pub max_items: u64,
+    /// Maximum size of a single item in bytes.
+    pub max_item_size_bytes: u64,
+    /// Days after which non-pinned items expire.
+    pub expiry_days: u32,
+}
+
+impl Default for AppConfig {
+    fn default() -> Self {
+        Self {
+            daemon: DaemonConfig {
+                poll_interval_ms: 250,
+                log_level: "info".to_string(),
+            },
+            security: SecurityConfig {
+                blacklisted_apps: vec![
+                    "keepassxc".to_string(),
+                    "1password".to_string(),
+                    "bitwarden".to_string(),
+                ],
+                incognito: false,
+            },
+            ui: UiConfig {
+                theme: "auto".to_string(),
+                window_width: 420,
+                window_height: 520,
+            },
+            storage: StorageConfig {
+                max_items: 10_000,
+                max_item_size_bytes: 50 * 1024 * 1024, // 50MB
+                expiry_days: 30,
+            },
+        }
+    }
+}
+
+impl AppConfig {
+    /// Path to the config file.
+    pub fn config_path() -> PathBuf {
+        dirs::config_dir()
+            .unwrap_or_else(|| PathBuf::from("~/.config"))
+            .join("linvclip")
+            .join("config.toml")
+    }
+
+    /// Path to the data directory.
+    pub fn data_dir() -> PathBuf {
+        dirs::data_local_dir()
+            .unwrap_or_else(|| PathBuf::from("~/.local/share"))
+            .join("linvclip")
+    }
+
+    /// Path to the blob storage directory.
+    pub fn blob_dir() -> PathBuf {
+        Self::data_dir().join("blobs")
+    }
+
+    /// Path to the database file.
+    pub fn db_path() -> PathBuf {
+        Self::data_dir().join("clipboard.db")
+    }
+
+    /// Path to the Unix domain socket.
+    pub fn socket_path() -> PathBuf {
+        let uid = unsafe { libc::getuid() };
+        let run_dir = PathBuf::from(format!("/run/user/{}", uid));
+        if run_dir.exists() {
+            run_dir.join("linvclip.sock")
+        } else {
+            // Fallback to /tmp
+            PathBuf::from(format!("/tmp/linvclip-{}.sock", uid))
+        }
+    }
+
+    /// Load config from file, or create with defaults if missing.
+    pub fn load() -> Self {
+        let path = Self::config_path();
+        if path.exists() {
+            match std::fs::read_to_string(&path) {
+                Ok(content) => match toml::from_str::<AppConfig>(&content) {
+                    Ok(config) => return config,
+                    Err(e) => {
+                        tracing::warn!("Failed to parse config: {}, using defaults", e);
+                    }
+                },
+                Err(e) => {
+                    tracing::warn!("Failed to read config: {}, using defaults", e);
+                }
+            }
+        } else {
+            // Create default config file
+            let config = AppConfig::default();
+            if let Some(parent) = path.parent() {
+                let _ = std::fs::create_dir_all(parent);
+            }
+            match toml::to_string_pretty(&config) {
+                Ok(content) => {
+                    let _ = std::fs::write(&path, content);
+                    tracing::info!("Created default config at {:?}", path);
+                }
+                Err(e) => {
+                    tracing::warn!("Failed to serialize default config: {}", e);
+                }
+            }
+            return config;
+        }
+        AppConfig::default()
+    }
+}

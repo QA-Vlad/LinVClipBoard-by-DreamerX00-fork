@@ -1,0 +1,40 @@
+[package]
+name = "clipd"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "LinVClipBoard clipboard capture daemon"
+
+[[bin]]
+name = "clipd"
+path = "src/main.rs"
+
+[dependencies]
+shared = { path = "../shared" }
+arboard = { version = "3", features = ["wayland-data-control"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "io-util", "sync", "signal", "time"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+hex = "0.4"
+chrono = "0.4"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+anyhow = "1"
+dirs = "5"
+libc = "0.2"
+image = { version = "0.25", default-features = false, features = ["png"] }
+uuid = { version = "1", features = ["v4"] }
+
+[package.metadata.deb]
+maintainer = "LinVClipBoard Contributors"
+copyright = "2025-2026, LinVClipBoard Contributors"
+depends = "$auto"
+section = "utils"
+priority = "optional"
+assets = [
+    ["target/release/clipd", "usr/bin/", "755"],
+    ["../../install/clipd.service", "usr/lib/systemd/user/", "644"],
+    ["../../install/linvclipboard.desktop", "usr/share/applications/", "644"],
+]
+maintainer-scripts = "../../packaging"

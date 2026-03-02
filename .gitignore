@@ -1,0 +1,25 @@
+# Rust
+/target/
+**/*.rs.bk
+Cargo.lock
+
+# Tauri
+/crates/linvclip-ui/node_modules/
+/crates/linvclip-ui/dist/
+/crates/linvclip-ui/src-tauri/target/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# LinVClipBoard data (dev)
+*.db
+*.db-journal
+blobs/

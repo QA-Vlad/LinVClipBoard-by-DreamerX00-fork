@@ -1,0 +1,28 @@
+[package]
+name = "clipctl"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "LinVClipBoard CLI client"
+
+[[bin]]
+name = "clipctl"
+path = "src/main.rs"
+
+[dependencies]
+shared = { path = "../shared" }
+clap = { version = "4", features = ["derive"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "io-util"] }
+serde_json = "1"
+chrono = "0.4"
+colored = "2"
+
+[package.metadata.deb]
+maintainer = "LinVClipBoard Contributors"
+copyright = "2025-2026, LinVClipBoard Contributors"
+depends = "$auto"
+section = "utils"
+priority = "optional"
+assets = [
+    ["target/release/clipctl", "usr/bin/", "755"],
+]

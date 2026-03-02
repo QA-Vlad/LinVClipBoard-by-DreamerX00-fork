@@ -1,0 +1,9 @@
+#!/bin/sh
+set -e
+
+# Best-effort stop of the user service. This script runs as root,
+# so the systemctl --user call may not reach the right session.
+# We intentionally ignore failures here.
+echo "Stopping clipd service (if running)..."
+systemctl --user stop clipd.service 2>/dev/null || true
+systemctl --user disable clipd.service 2>/dev/null || true

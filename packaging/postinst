@@ -1,0 +1,12 @@
+#!/bin/sh
+set -e
+
+# Reload systemd user daemon so the new service file is picked up.
+# This runs as root during dpkg, so we hint the user to enable it.
+echo ""
+echo "LinVClipBoard installed successfully."
+echo ""
+echo "To enable the clipboard daemon for your user, run:"
+echo "  systemctl --user daemon-reload"
+echo "  systemctl --user enable --now clipd.service"
+echo ""

@@ -1,0 +1,15 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/shared",
+    "crates/clipd",
+    "crates/clipctl",
+    "crates/linvclip-ui/src-tauri",
+]
+
+[workspace.package]
+version = "1.0.0"
+edition = "2021"
+license = "MIT"
+authors = ["LinVClipBoard Contributors"]
+description = "A superior Win+V equivalent clipboard platform for Linux"

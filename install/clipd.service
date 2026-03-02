@@ -1,0 +1,18 @@
+[Unit]
+Description=LinVClipBoard Clipboard Daemon
+Documentation=https://github.com/LinVClipBoard/linvclipboard
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/clipd
+Restart=on-failure
+RestartSec=3
+Environment=RUST_LOG=info
+
+# Resource limits
+MemoryMax=50M
+CPUQuota=5%
+
+[Install]
+WantedBy=default.target
