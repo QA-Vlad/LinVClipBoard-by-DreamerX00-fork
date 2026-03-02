@@ -66,7 +66,7 @@ impl Database {
 
                 CREATE INDEX IF NOT EXISTS idx_created_at ON clipboard_items(created_at DESC);
                 CREATE INDEX IF NOT EXISTS idx_pinned ON clipboard_items(pinned);
-                CREATE INDEX IF NOT EXISTS idx_checksum ON clipboard_items(checksum);
+                CREATE UNIQUE INDEX IF NOT EXISTS idx_checksum ON clipboard_items(checksum);
 
                 CREATE VIRTUAL TABLE IF NOT EXISTS clipboard_fts USING fts5(
                     preview_text,
@@ -97,25 +97,20 @@ impl Database {
     pub fn insert(&self, item: &ClipboardItem) -> DbResult<bool> {
         let conn = self.pool.get()?;
 
-        // Check for duplicate by checksum
-        let existing_id: Option<String> = conn.query_row(
-            "SELECT id FROM clipboard_items WHERE checksum = ?1 LIMIT 1",
-            params![item.checksum],
-            |row| row.get(0),
-        ).ok();
+        // Atomic: try to bump existing duplicate first
+        let bumped = conn.execute(
+            "UPDATE clipboard_items SET created_at = ?1 WHERE checksum = ?2",
+            params![item.created_at.to_rfc3339(), item.checksum],
+        )?;
 
-        if let Some(eid) = existing_id {
-            // Bump the existing item to the top by updating created_at
-            conn.execute(
-                "UPDATE clipboard_items SET created_at = ?1 WHERE id = ?2",
-                params![item.created_at.to_rfc3339(), eid],
-            )?;
-            tracing::debug!("Bumped duplicate item {} to top", eid);
+        if bumped > 0 {
+            tracing::debug!("Bumped duplicate item to top (checksum={})", &item.checksum[..8]);
             return Ok(false);
         }
 
-        conn.execute(
-            "INSERT INTO clipboard_items (id, content_type, content, preview_text, created_at, pinned, app_source, checksum, size_bytes)
+        // No duplicate — insert. UNIQUE index on checksum guards against races.
+        let result = conn.execute(
+            "INSERT OR IGNORE INTO clipboard_items (id, content_type, content, preview_text, created_at, pinned, app_source, checksum, size_bytes)
              VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
             params![
                 item.id,
@@ -129,6 +124,12 @@ impl Database {
                 item.size_bytes as i64,
             ],
         )?;
+
+        if result == 0 {
+            // Race: another connection inserted the same checksum between our UPDATE and INSERT
+            tracing::debug!("Duplicate caught by UNIQUE constraint (checksum={})", &item.checksum[..8]);
+            return Ok(false);
+        }
 
         tracing::debug!("Inserted item: {} ({})", item.id, item.content_type.as_str());
         Ok(true)
