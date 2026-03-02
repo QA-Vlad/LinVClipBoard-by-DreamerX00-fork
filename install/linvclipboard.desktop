@@ -1,10 +1,10 @@
 [Desktop Entry]
 Name=LinVClipBoard
-Comment=Clipboard Manager for Linux — Win+V equivalent
+Comment=Clipboard Manager for Linux — Win+V equivalent with emoji/symbol pickers and i18n
 Exec=linvclip-ui
 Icon=linvclipboard
 Type=Application
 Categories=Utility;
 StartupNotify=true
 StartupWMClass=LinVClipBoard
-Keywords=clipboard;paste;history;copy;
+Keywords=clipboard;paste;history;copy;emoji;symbols;

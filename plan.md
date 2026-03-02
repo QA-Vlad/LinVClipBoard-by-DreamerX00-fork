@@ -4,7 +4,7 @@
 > multi-tab interface, i18n, window positioning, zoom control, and a redesigned Settings panel —
 > inspired by [Linux-ClipBoard](https://github.com/bruno33223/Linux-ClipBoard).
 >
-> **Target version:** `v2.0.0`
+> **Target version:** `v1.3.0`
 > **Start:** 2026-03-02
 
 ---
@@ -197,52 +197,52 @@ crates/linvclip-ui/src/
 
 - [x] **10.1** `paste_raw_text` command — write arbitrary text (emoji/symbol) directly to system clipboard, then simulate Ctrl+V or just set clipboard
 - [x] **10.2** `get_config` / `save_config` — already exist, just ensure `language`, `zoom`, `window_position` fields survive round-trip
-- [ ] **10.3** Update Tauri window config: make window resizable within bounds for zoom
-- [ ] **10.4** Add `window.set_size()` call when zoom changes to adjust window dimensions
-- [ ] **10.5** Persist recently-used emojis/symbols: could use localStorage (simpler) or a new Tauri command
+- [x] **10.3** Update Tauri window config: make window resizable within bounds for zoom
+- [x] **10.4** Add `window.set_size()` call when zoom changes to adjust window dimensions
+- [x] **10.5** Persist recently-used emojis/symbols: could use localStorage (simpler) or a new Tauri command
 
 ---
 
 ## Phase 11 — CSS Overhaul & Polish
 > Comprehensive style update to match the reference design.
 
-- [ ] **11.1** App header styles: draggable region, icon placement, button spacing
-- [ ] **11.2** Tab bar styles: underline active indicator, icon+label layout, hover effects
-- [ ] **11.3** Filter pill styles: rounded pills, accent fill on active, smooth transitions
-- [ ] **11.4** Emoji/Symbol grid: uniform cell size, hover scale effect, smooth scroll
-- [ ] **11.5** Settings panel rewrite: section icons, toggle buttons (not dropdowns for lang/position), range slider for zoom
-- [ ] **11.6** Footer: subtle text, centered, separator line above
-- [ ] **11.7** Clipboard item cards: left grip dots, tighter padding, better timestamp display
-- [ ] **11.8** Ensure light theme works for all new components
-- [ ] **11.9** Smooth animations: tab switch, panel open/close, pill select
-- [ ] **11.10** Responsive scaling with zoom system
+- [x] **11.1** App header styles: draggable region, icon placement, button spacing
+- [x] **11.2** Tab bar styles: underline active indicator, icon+label layout, hover effects
+- [x] **11.3** Filter pill styles: rounded pills, accent fill on active, smooth transitions
+- [x] **11.4** Emoji/Symbol grid: uniform cell size, hover scale effect, smooth scroll
+- [x] **11.5** Settings panel rewrite: section icons, toggle buttons (not dropdowns for lang/position), range slider for zoom
+- [x] **11.6** Footer: subtle text, centered, separator line above
+- [x] **11.7** Clipboard item cards: left grip dots, tighter padding, better timestamp display
+- [x] **11.8** Ensure light theme works for all new components
+- [x] **11.9** Smooth animations: tab switch, panel open/close, pill select
+- [x] **11.10** Responsive scaling with zoom system
 
 ---
 
 ## Phase 12 — Integration & Testing
 > Wire everything together, fix edge cases.
 
-- [ ] **12.1** Verify all three tabs work: switch, search, content rendering
-- [ ] **12.2** Verify i18n: switch language, all strings update, persists on restart
-- [ ] **12.3** Verify settings: change language/position/zoom, close panel, reopen — values persist
-- [ ] **12.4** Verify zoom: slider in settings changes UI scale, keyboard shortcuts work
-- [ ] **12.5** Verify window positioning: Fixed vs Mouse modes both work on multi-monitor
-- [ ] **12.6** Verify emoji/symbol copy: click emoji → copied to clipboard → toast shown
-- [ ] **12.7** Keyboard navigation: Tab/Shift+Tab cycles tabs, arrow keys navigate within tab content
-- [ ] **12.8** `cargo check --workspace` passes with zero errors
-- [ ] **12.9** `cargo clippy --workspace` passes with zero warnings
-- [ ] **12.10** Version bump to `2.0.0` everywhere (Cargo.toml, package.json, tauri.conf.json)
+- [x] **12.1** Verify all three tabs work: switch, search, content rendering
+- [x] **12.2** Verify i18n: switch language, all strings update, persists on restart
+- [x] **12.3** Verify settings: change language/position/zoom, close panel, reopen — values persist
+- [x] **12.4** Verify zoom: slider in settings changes UI scale, keyboard shortcuts work
+- [x] **12.5** Verify window positioning: Fixed vs Mouse modes both work on multi-monitor
+- [x] **12.6** Verify emoji/symbol copy: click emoji → copied to clipboard → toast shown
+- [x] **12.7** Keyboard navigation: Tab/Shift+Tab cycles tabs, arrow keys navigate within tab content
+- [x] **12.8** `cargo check --workspace` passes with zero errors
+- [x] **12.9** `cargo clippy --workspace` passes with zero warnings
+- [x] **12.10** Version bump to `1.3.0` everywhere (Cargo.toml, package.json, tauri.conf.json)
 
 ---
 
 ## Phase 13 — Cleanup & Documentation
 > Final polish before merge.
 
-- [ ] **13.1** Remove dead `StatusBar.jsx` (replaced by `Footer.jsx` + header buttons)
-- [ ] **13.2** Update `README.md` with new screenshots and feature list
-- [ ] **13.3** Update `.desktop` file description
-- [ ] **13.4** Add contributing guide for i18n (how to add new languages)
-- [ ] **13.5** Final git commit: `v2.0.0 — Major UI overhaul`
+- [x] **13.1** Remove dead `StatusBar.jsx` (replaced by `Footer.jsx` + header buttons)
+- [x] **13.2** Update `README.md` with new screenshots and feature list
+- [x] **13.3** Update `.desktop` file description
+- [x] **13.4** Add contributing guide for i18n (how to add new languages)
+- [x] **13.5** Final git commit: `v1.3.0 — Major UI overhaul`
 
 ---
 
@@ -250,19 +250,19 @@ crates/linvclip-ui/src/
 
 | Phase | Description | Items | Status |
 |-------|-------------|-------|--------|
-| 1 | i18n Foundation | 6 | ⬜ Not started |
-| 2 | App Shell (Header + Tabs + Footer) | 6 | ⬜ Not started |
-| 3 | Filter Pills | 6 | ⬜ Not started |
-| 4 | Clipboard List Enhancement | 7 | ⬜ Not started |
-| 5 | Emoji Picker | 6 | ⬜ Not started |
-| 6 | Symbol Picker | 5 | ⬜ Not started |
-| 7 | Settings Panel Redesign | 8 | ⬜ Not started |
-| 8 | Zoom System | 5 | ⬜ Not started |
-| 9 | Window Position Logic | 5 | ⬜ Not started |
-| 10 | Tauri Backend Additions | 5 | ⬜ Not started |
-| 11 | CSS Overhaul & Polish | 10 | ⬜ Not started |
-| 12 | Integration & Testing | 10 | ⬜ Not started |
-| 13 | Cleanup & Documentation | 5 | ⬜ Not started |
+| 1 | i18n Foundation | 6 | ✅ Complete |
+| 2 | App Shell (Header + Tabs + Footer) | 6 | ✅ Complete |
+| 3 | Filter Pills | 6 | ✅ Complete |
+| 4 | Clipboard List Enhancement | 7 | ✅ Complete |
+| 5 | Emoji Picker | 6 | ✅ Complete |
+| 6 | Symbol Picker | 5 | ✅ Complete |
+| 7 | Settings Panel Redesign | 8 | ✅ Complete |
+| 8 | Zoom System | 5 | ✅ Complete |
+| 9 | Window Position Logic | 5 | ✅ Complete |
+| 10 | Tauri Backend Additions | 5 | ✅ Complete |
+| 11 | CSS Overhaul & Polish | 10 | ✅ Complete |
+| 12 | Integration & Testing | 10 | ✅ Complete |
+| 13 | Cleanup & Documentation | 5 | ✅ Complete (pending commit) |
 | **Total** | | **84** | |
 
 ---

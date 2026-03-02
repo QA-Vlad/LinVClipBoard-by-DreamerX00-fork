@@ -6,7 +6,8 @@
 
 <p align="center">
   <strong>A Win+V style clipboard manager for Linux.</strong><br/>
-  Fast, lightweight, works on X11 and Wayland.
+  Fast, lightweight, works on X11 and Wayland.<br/>
+  <em>v2.0 — i18n, emoji &amp; symbol pickers, zoom, redesigned settings</em>
 </p>
 
 <p align="center">
@@ -22,8 +23,13 @@
 
 LinVClipBoard runs a background daemon (`clipd`) that captures every text and image you copy. You can search, pin, and paste from history using:
 
-- **Overlay UI** &mdash; Press `Super+.` to open. Glass-morphism dark theme, keyboard-driven.
+- **Overlay UI** &mdash; Press `Super+.` to open. Glassmorphism dark/light theme, keyboard-driven.
 - **CLI** &mdash; `clipctl list`, `clipctl search "query"`, `clipctl paste <id>`
+- **Emoji Picker** &mdash; Built-in searchable emoji grid (~300 emojis, 9 categories)
+- **Symbol Picker** &mdash; Math, arrows, currency, Greek, and more
+- **i18n** &mdash; English and Portuguese, easily extensible
+- **Zoom** &mdash; Scale the UI from 50% to 200% (slider or Ctrl+/−/0)
+- **Window Positioning** &mdash; "Fixed" (center) or "Mouse" (follows cursor)
 
 Items are stored in a local SQLite database with FTS5 full-text search. Images are saved as PNG blobs. Everything stays under 50 MB RAM.
 
@@ -103,6 +109,14 @@ make install
 
 Press **Super+.** (Win+Period) to toggle the overlay. Use arrow keys to navigate, Enter to paste, Escape to dismiss.
 
+The overlay has three tabs:
+- **Clipboard** &mdash; History with type filters (All / Text / Images / Files / Pinned)
+- **Emojis** &mdash; Searchable emoji grid with categories and recently used
+- **Symbols** &mdash; Math, arrows, currency, Greek letters, etc.
+
+Keyboard shortcuts:
+- `Ctrl++` / `Ctrl+-` / `Ctrl+0` &mdash; Zoom in / out / reset
+
 ### CLI
 
 ```bash
@@ -146,6 +160,9 @@ incognito = false
 theme = "auto"                  # auto | dark | light
 window_width = 420
 window_height = 520
+language = "en"                 # en | pt (add your own!)
+zoom = 100                      # 50–200
+window_position = "mouse"       # mouse | fixed
 ```
 
 ## Uninstall
@@ -158,6 +175,13 @@ sudo dpkg -r linvclipboard
 # Remove user data (optional)
 rm -rf ~/.config/linvclip ~/.local/share/linvclip
 ```
+
+## Adding a New Language
+
+1. Copy `crates/linvclip-ui/src/i18n/en.json` to `<code>.json` (e.g. `fr.json`)
+2. Translate all values (keep the keys unchanged)
+3. Import the file in `crates/linvclip-ui/src/i18n/index.jsx` and add it to the `TRANSLATIONS` map
+4. The new language will appear automatically in Settings
 
 ## License
 
