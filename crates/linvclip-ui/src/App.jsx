@@ -2,13 +2,22 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
-import ClipboardList from "./components/ClipboardList";
+import { useTranslation } from "./i18n/index.jsx";
+import AppHeader from "./components/AppHeader";
+import TabBar from "./components/TabBar";
 import SearchBar from "./components/SearchBar";
-import StatusBar from "./components/StatusBar";
+import ClipboardList from "./components/ClipboardList";
+import EmojiPicker from "./components/EmojiPicker";
+import SymbolPicker from "./components/SymbolPicker";
+import FilterPills from "./components/FilterPills";
+import Footer from "./components/Footer";
 import SettingsPanel from "./components/SettingsPanel";
 import ConfirmDialog from "./components/ConfirmDialog";
 
 function App() {
+    const { t } = useTranslation();
+    const [activeTab, setActiveTab] = useState("clipboard");
+    const [filterType, setFilterType] = useState("all");
     const [items, setItems] = useState([]);
     const [total, setTotal] = useState(0);
     const [searchQuery, setSearchQuery] = useState("");
@@ -251,38 +260,72 @@ function App() {
         return () => document.removeEventListener("keydown", handleKeyDown, true);
     }, []); // Empty deps — uses refs for state
 
-    return (
-        <div className="app" role="application" aria-label="LinVClipBoard">
-            <div className="app-container">
-                <header role="banner">
-                    <SearchBar value={searchQuery} onChange={setSearchQuery} />
-                </header>
+    // Clear search when switching tabs
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+        setSearchQuery("");
+        if (tab !== "clipboard") setFilterType("all");
+    };
 
-                <main role="main" aria-label="Clipboard history">
-                    <ClipboardList
-                        items={items}
-                        selectedIndex={selectedIndex}
-                        onPaste={handlePaste}
-                        onPin={handlePin}
-                        onDelete={handleDelete}
-                        onLoadMore={handleLoadMore}
-                        loading={loading}
-                        hasMore={items.length < total}
-                    />
+    // Client-side filtering for clipboard items
+    const filteredItems = items.filter((item) => {
+        if (filterType === "all") return true;
+        if (filterType === "pinned") return item.pinned;
+        if (filterType === "text") return item.content_type === "text";
+        if (filterType === "image") return item.content_type === "image";
+        if (filterType === "files") return item.content_type === "files";
+        return true;
+    });
+
+    // Determine search placeholder based on active tab
+    const searchPlaceholder =
+        activeTab === "emojis"
+            ? t("search.placeholder_emojis")
+            : activeTab === "symbols"
+            ? t("search.placeholder_symbols")
+            : t("search.placeholder_clipboard");
+
+    return (
+        <div className="app" role="application" aria-label={t("app.title")}>
+            <div className="app-container">
+                <AppHeader
+                    onOpenSettings={() => setShowSettings(true)}
+                    onClearAll={requestClearAll}
+                />
+
+                <TabBar activeTab={activeTab} onTabChange={handleTabChange} />
+
+                <SearchBar
+                    value={searchQuery}
+                    onChange={setSearchQuery}
+                    placeholder={searchPlaceholder}
+                />
+
+                <main role="main" aria-label={t("tabs." + activeTab)}>
+                    {activeTab === "clipboard" && (
+                        <>
+                            <FilterPills activeFilter={filterType} onFilterChange={setFilterType} />
+                            <ClipboardList
+                                items={filteredItems}
+                                selectedIndex={selectedIndex}
+                                onPaste={handlePaste}
+                                onPin={handlePin}
+                                onDelete={handleDelete}
+                                onLoadMore={handleLoadMore}
+                                loading={loading}
+                                hasMore={items.length < total}
+                            />
+                        </>
+                    )}
+                    {activeTab === "emojis" && (
+                        <EmojiPicker searchQuery={searchQuery} onToast={showToast} />
+                    )}
+                    {activeTab === "symbols" && (
+                        <SymbolPicker searchQuery={searchQuery} onToast={showToast} />
+                    )}
                 </main>
 
-                <footer role="contentinfo">
-                    <StatusBar
-                        total={total}
-                        status={status}
-                        onClearAll={requestClearAll}
-                        onOpenSettings={() => setShowSettings(true)}
-                        theme={theme}
-                        onThemeToggle={() =>
-                            setTheme((t) => (t === "dark" ? "light" : "dark"))
-                        }
-                    />
-                </footer>
+                <Footer />
             </div>
 
             {toast && <div className="copy-toast" role="alert">{toast}</div>}
@@ -293,7 +336,7 @@ function App() {
 
             {showConfirm && (
                 <ConfirmDialog
-                    message="Delete all non-pinned clipboard items? This cannot be undone."
+                    message={t("confirm.clear_all")}
                     onConfirm={handleConfirmClear}
                     onCancel={() => setShowConfirm(false)}
                 />

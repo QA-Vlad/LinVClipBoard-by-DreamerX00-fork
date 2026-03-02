@@ -40,10 +40,31 @@ pub struct UiConfig {
     /// Global shortcut to toggle the overlay (e.g. "Super+.").
     #[serde(default = "default_shortcut")]
     pub shortcut: String,
+    /// UI language code: "en", "pt", etc.
+    #[serde(default = "default_language")]
+    pub language: String,
+    /// Zoom level as a percentage (50–200). Default 100.
+    #[serde(default = "default_zoom")]
+    pub zoom: u32,
+    /// Window positioning mode: "fixed" or "mouse".
+    #[serde(default = "default_window_position")]
+    pub window_position: String,
 }
 
 fn default_shortcut() -> String {
     "Super+.".to_string()
+}
+
+fn default_language() -> String {
+    "en".to_string()
+}
+
+fn default_zoom() -> u32 {
+    100
+}
+
+fn default_window_position() -> String {
+    "mouse".to_string()
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -76,6 +97,9 @@ impl Default for AppConfig {
                 window_width: 420,
                 window_height: 520,
                 shortcut: "Super+.".to_string(),
+                language: "en".to_string(),
+                zoom: 100,
+                window_position: "mouse".to_string(),
             },
             storage: StorageConfig {
                 max_items: 10_000,

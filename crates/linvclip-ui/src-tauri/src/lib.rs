@@ -62,6 +62,16 @@ async fn paste_item(id: String) -> Result<String, String> {
     }
 }
 
+/// Write arbitrary text (emoji/symbol) directly to the system clipboard.
+#[tauri::command]
+async fn paste_raw_text(text: String) -> Result<String, String> {
+    let mut clipboard = arboard::Clipboard::new().map_err(|e| format!("Clipboard error: {}", e))?;
+    clipboard
+        .set_text(&text)
+        .map_err(|e| format!("Failed to set clipboard: {}", e))?;
+    Ok("ok".to_string())
+}
+
 /// Toggle pin on an item.
 #[tauri::command]
 async fn pin_item(id: String) -> Result<ClipboardItem, String> {
@@ -288,6 +298,7 @@ pub fn run() {
             get_items,
             search_items,
             paste_item,
+            paste_raw_text,
             pin_item,
             delete_item,
             get_status,

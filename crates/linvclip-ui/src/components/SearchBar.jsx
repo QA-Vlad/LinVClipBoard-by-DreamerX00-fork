@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 
-function SearchBar({ value, onChange }) {
+function SearchBar({ value, onChange, placeholder }) {
     const inputRef = useRef(null);
 
     // Auto-focus on mount
@@ -11,18 +11,18 @@ function SearchBar({ value, onChange }) {
     }, []);
 
     return (
-        <div className="search-bar" role="search" aria-label="Search clipboard">
+        <div className="search-bar" role="search" aria-label="Search">
             <span className="search-icon" aria-hidden="true">🔍</span>
             <input
                 ref={inputRef}
                 type="text"
                 className="search-input"
-                placeholder="Search clipboard history..."
+                placeholder={placeholder || "Search..."}
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 autoComplete="off"
                 spellCheck="false"
-                aria-label="Search clipboard history"
+                aria-label={placeholder || "Search"}
                 role="searchbox"
             />
             {value && (

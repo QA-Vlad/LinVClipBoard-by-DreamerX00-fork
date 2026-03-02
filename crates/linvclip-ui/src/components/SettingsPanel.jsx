@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { useTranslation } from "../i18n/index.jsx";
 
 function SettingsPanel({ onClose }) {
+    const { t, lang, setLang, availableLanguages } = useTranslation();
     const [config, setConfig] = useState(null);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
@@ -14,9 +16,23 @@ function SettingsPanel({ onClose }) {
         try {
             const cfg = await invoke("get_config");
             setConfig(cfg);
+            // Sync i18n context with the persisted language from backend config
+            if (cfg.ui?.language && cfg.ui.language !== lang) {
+                setLang(cfg.ui.language);
+            }
         } catch (err) {
-            setError("Failed to load settings: " + err);
+            setError(t("settings.title") + ": " + err);
         }
+    };
+
+    const handleLanguageChange = (newLang) => {
+        // Update i18n context immediately for live preview
+        setLang(newLang);
+        // Update config state so it gets persisted on save
+        setConfig((prev) => ({
+            ...prev,
+            ui: { ...prev.ui, language: newLang },
+        }));
     };
 
     const saveConfig = async () => {
@@ -26,7 +42,7 @@ function SettingsPanel({ onClose }) {
             await invoke("save_config", { config });
             onClose();
         } catch (err) {
-            setError("Save failed: " + err);
+            setError(t("settings.title") + ": " + err);
         } finally {
             setSaving(false);
         }
@@ -34,17 +50,17 @@ function SettingsPanel({ onClose }) {
 
     if (!config) {
         return (
-            <div className="settings-panel" role="dialog" aria-label="Settings" aria-modal="true">
+            <div className="settings-panel" role="dialog" aria-label={t("settings.title")} aria-modal="true">
                 <div className="settings-loading">{error || "Loading…"}</div>
             </div>
         );
     }
 
     return (
-        <div className="settings-panel" role="dialog" aria-label="Settings" aria-modal="true">
+        <div className="settings-panel" role="dialog" aria-label={t("settings.title")} aria-modal="true">
             <div className="settings-header">
-                <h2 id="settings-title">⚙️ Settings</h2>
-                <button className="settings-close" onClick={onClose} aria-label="Close settings">
+                <h2 id="settings-title">⚙️ {t("settings.title")}</h2>
+                <button className="settings-close" onClick={onClose} aria-label={t("settings.title")}>
                     ✕
                 </button>
             </div>
@@ -53,8 +69,26 @@ function SettingsPanel({ onClose }) {
                 {error && <div className="settings-error" role="alert">{error}</div>}
 
                 <fieldset className="settings-group">
-                    <legend>Daemon</legend>
-                    <label htmlFor="poll-interval">Poll interval (ms)</label>
+                    <legend>🌐 {t("settings.language")}</legend>
+                    <div className="language-toggle" role="radiogroup" aria-label={t("settings.language")}>
+                        {availableLanguages.map((code) => (
+                            <button
+                                key={code}
+                                type="button"
+                                role="radio"
+                                aria-checked={lang === code}
+                                className={`lang-btn${lang === code ? " lang-btn-active" : ""}`}
+                                onClick={() => handleLanguageChange(code)}
+                            >
+                                {code === "pt" ? "Português" : "English"}
+                            </button>
+                        ))}
+                    </div>
+                </fieldset>
+
+                <fieldset className="settings-group">
+                    <legend>{t("settings.daemon")}</legend>
+                    <label htmlFor="poll-interval">{t("settings.poll_interval")}</label>
                     <input
                         id="poll-interval"
                         type="number"
@@ -69,7 +103,7 @@ function SettingsPanel({ onClose }) {
                             })
                         }
                     />
-                    <label htmlFor="log-level">Log level</label>
+                    <label htmlFor="log-level">{t("settings.log_level")}</label>
                     <select
                         id="log-level"
                         value={config.daemon?.log_level ?? "info"}
@@ -89,8 +123,8 @@ function SettingsPanel({ onClose }) {
                 </fieldset>
 
                 <fieldset className="settings-group">
-                    <legend>Storage</legend>
-                    <label htmlFor="max-items">Max items</label>
+                    <legend>{t("settings.storage")}</legend>
+                    <label htmlFor="max-items">{t("settings.max_items")}</label>
                     <input
                         id="max-items"
                         type="number"
@@ -104,7 +138,7 @@ function SettingsPanel({ onClose }) {
                             })
                         }
                     />
-                    <label htmlFor="expiry-days">Expiry (days)</label>
+                    <label htmlFor="expiry-days">{t("settings.expiry_days")}</label>
                     <input
                         id="expiry-days"
                         type="number"
@@ -118,7 +152,7 @@ function SettingsPanel({ onClose }) {
                             })
                         }
                     />
-                    <label htmlFor="max-size">Max item size (MB)</label>
+                    <label htmlFor="max-size">{t("settings.max_size")}</label>
                     <input
                         id="max-size"
                         type="number"
@@ -138,8 +172,8 @@ function SettingsPanel({ onClose }) {
                 </fieldset>
 
                 <fieldset className="settings-group">
-                    <legend>UI</legend>
-                    <label htmlFor="theme-select">Theme</label>
+                    <legend>{t("settings.theme")}</legend>
+                    <label htmlFor="theme-select">{t("settings.theme")}</label>
                     <select
                         id="theme-select"
                         value={config.ui?.theme ?? "dark"}
@@ -147,11 +181,11 @@ function SettingsPanel({ onClose }) {
                             setConfig({ ...config, ui: { ...config.ui, theme: e.target.value } })
                         }
                     >
-                        <option value="auto">Auto (follow OS)</option>
-                        <option value="dark">Dark</option>
-                        <option value="light">Light</option>
+                        <option value="auto">{t("settings.theme_auto")}</option>
+                        <option value="dark">{t("settings.theme_dark")}</option>
+                        <option value="light">{t("settings.theme_light")}</option>
                     </select>
-                    <label htmlFor="shortcut-input">Global shortcut</label>
+                    <label htmlFor="shortcut-input">{t("settings.keyboard_shortcuts")}</label>
                     <input
                         id="shortcut-input"
                         type="text"
@@ -163,7 +197,7 @@ function SettingsPanel({ onClose }) {
                 </fieldset>
 
                 <fieldset className="settings-group">
-                    <legend>Security</legend>
+                    <legend>{t("settings.security")}</legend>
                     <label className="checkbox-label">
                         <input
                             type="checkbox"
@@ -175,9 +209,9 @@ function SettingsPanel({ onClose }) {
                                 })
                             }
                         />
-                        Incognito mode (pause capture)
+                        {t("settings.incognito")}
                     </label>
-                    <label htmlFor="blacklist">Blacklisted apps (comma-separated)</label>
+                    <label htmlFor="blacklist">{t("settings.blacklisted_apps")}</label>
                     <input
                         id="blacklist"
                         type="text"
@@ -200,10 +234,10 @@ function SettingsPanel({ onClose }) {
 
             <div className="settings-footer">
                 <button className="settings-cancel" onClick={onClose}>
-                    Cancel
+                    {t("confirm.cancel")}
                 </button>
                 <button className="settings-save" onClick={saveConfig} disabled={saving}>
-                    {saving ? "Saving…" : "💾 Save"}
+                    {saving ? "…" : "💾 Save"}
                 </button>
             </div>
         </div>

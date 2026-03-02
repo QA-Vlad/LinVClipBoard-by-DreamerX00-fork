@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
+import { useTranslation } from "../i18n/index.jsx";
 
 function ConfirmDialog({ message, onConfirm, onCancel }) {
+    const { t } = useTranslation();
     const cancelRef = useRef(null);
 
     // Auto-focus the Cancel button so accidental Enter won't confirm
@@ -34,10 +36,10 @@ function ConfirmDialog({ message, onConfirm, onCancel }) {
                 </p>
                 <div className="confirm-actions">
                     <button ref={cancelRef} className="confirm-cancel" onClick={onCancel}>
-                        Cancel
+                        {t("confirm.cancel")}
                     </button>
                     <button className="confirm-ok" onClick={onConfirm}>
-                        Confirm
+                        {t("confirm.confirm")}
                     </button>
                 </div>
             </div>

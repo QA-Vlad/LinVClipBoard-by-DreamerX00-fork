@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { useTranslation } from "../i18n/index.jsx";
 
 /** Small hook to lazily load image thumbnails (#38). */
 function useImagePreview(item) {
@@ -27,6 +28,7 @@ function ClipboardList({
     loading,
     hasMore,
 }) {
+    const { t } = useTranslation();
     const listRef = useRef(null);
     const selectedRef = useRef(null);
 
@@ -51,17 +53,10 @@ function ClipboardList({
 
     const formatTime = (dateStr) => {
         const date = new Date(dateStr);
-        const now = new Date();
-        const diffMs = now - date;
-        const diffSec = Math.floor(diffMs / 1000);
-        const diffMin = Math.floor(diffSec / 60);
-        const diffHour = Math.floor(diffMin / 60);
-        const diffDay = Math.floor(diffHour / 24);
-
-        if (diffSec < 60) return "just now";
-        if (diffMin < 60) return `${diffMin}m`;
-        if (diffHour < 24) return `${diffHour}h`;
-        return `${diffDay}d`;
+        const hh = String(date.getHours()).padStart(2, "0");
+        const mm = String(date.getMinutes()).padStart(2, "0");
+        const ss = String(date.getSeconds()).padStart(2, "0");
+        return `${hh}:${mm}:${ss}`;
     };
 
     const getTypeIcon = (contentType) => {
@@ -90,12 +85,19 @@ function ClipboardList({
         return clean;
     };
 
+    /** Heuristic: content looks like code if it has braces, semicolons, arrows, etc. */
+    const looksLikeCode = (text) => {
+        if (!text) return false;
+        const codePatterns = /[{};=>]|function |const |let |var |import |def |class |<\/?\w+>/;
+        return codePatterns.test(text);
+    };
+
     if (items.length === 0 && !loading) {
         return (
-            <div className="empty-state" role="status" aria-label="No clipboard items">
+            <div className="empty-state" role="status" aria-label={t("clipboard.empty_title")}>
                 <span className="empty-icon">📋</span>
-                <p className="empty-title">No clipboard items yet</p>
-                <p className="empty-sub">Copy something to get started!</p>
+                <p className="empty-title">{t("clipboard.empty_title")}</p>
+                <p className="empty-sub">{t("clipboard.empty_sub")}</p>
             </div>
         );
     }
@@ -121,6 +123,8 @@ function ClipboardList({
                     getTypeIcon={getTypeIcon}
                     formatPreview={formatPreview}
                     formatTime={formatTime}
+                    looksLikeCode={looksLikeCode}
+                    t={t}
                 />
             ))}
 
@@ -145,6 +149,8 @@ function ClipItem({
     getTypeIcon,
     formatPreview,
     formatTime,
+    looksLikeCode,
+    t,
 }) {
     const imgSrc = useImagePreview(item);
     const tags = (() => {
@@ -154,6 +160,8 @@ function ClipItem({
             return [];
         }
     })();
+
+    const isCode = looksLikeCode(item.preview_text);
 
     return (
         <div
@@ -166,61 +174,68 @@ function ClipItem({
             aria-selected={index === selectedIndex}
             aria-label={`${getTypeIcon(item.content_type)} ${formatPreview(item.preview_text, 40)}`}
         >
-            <div className="clip-item-header">
-                <span className="clip-type-icon">{getTypeIcon(item.content_type)}</span>
-                {item.pinned && <span className="pin-badge">📌</span>}
-                {tags.length > 0 && (
-                    <span className="tag-badges">
-                        {tags.map((t) => (
-                            <span key={t} className="tag-badge">{t}</span>
-                        ))}
-                    </span>
-                )}
-                <span className="clip-time">{formatTime(item.created_at)}</span>
-            </div>
+            <span className="drag-handle" aria-hidden="true">⠿</span>
 
-            <div className="clip-content">
-                {item.content_type === "image" ? (
-                    <div className="clip-image-preview">
-                        {imgSrc ? (
-                            <img
-                                src={imgSrc}
-                                alt="Clipboard image"
-                                className="clip-thumbnail"
-                                loading="lazy"
-                            />
-                        ) : (
-                            <span className="image-dims">{item.preview_text}</span>
-                        )}
-                    </div>
-                ) : (
-                    <p className="clip-text">{formatPreview(item.preview_text)}</p>
-                )}
-            </div>
+            <div className="clip-item-body">
+                <div className="clip-item-header">
+                    <span className="clip-type-icon">{getTypeIcon(item.content_type)}</span>
+                    {item.pinned && <span className="pin-badge">📌</span>}
+                    {tags.length > 0 && (
+                        <span className="tag-badges">
+                            {tags.map((tg) => (
+                                <span key={tg} className="tag-badge">{tg}</span>
+                            ))}
+                        </span>
+                    )}
+                    <span className="clip-time">{formatTime(item.created_at)}</span>
+                </div>
 
-            <div className="clip-actions">
-                <button
-                    className="action-btn pin-btn"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        onPin(item.id);
-                    }}
-                    title={item.pinned ? "Unpin" : "Pin"}
-                    aria-label={item.pinned ? "Unpin item" : "Pin item"}
-                >
-                    {item.pinned ? "📌" : "📍"}
-                </button>
-                <button
-                    className="action-btn delete-btn"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        onDelete(item.id);
-                    }}
-                    title="Delete"
-                    aria-label="Delete item"
-                >
-                    🗑️
-                </button>
+                <div className="clip-content">
+                    {item.content_type === "image" ? (
+                        <div className="clip-image-preview">
+                            {imgSrc ? (
+                                <img
+                                    src={imgSrc}
+                                    alt={t("clipboard.image_preview")}
+                                    className="clip-thumbnail"
+                                    loading="lazy"
+                                />
+                            ) : (
+                                <span className="image-dims">{item.preview_text}</span>
+                            )}
+                            <span className="clip-type-label">clipboard-image.png</span>
+                        </div>
+                    ) : (
+                        <p className={`clip-text${isCode ? " clip-text-code" : ""}`}>
+                            {formatPreview(item.preview_text)}
+                        </p>
+                    )}
+                </div>
+
+                <div className="clip-actions">
+                    <button
+                        className="action-btn pin-btn"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onPin(item.id);
+                        }}
+                        title={item.pinned ? t("clipboard.unpin") : t("clipboard.pin")}
+                        aria-label={item.pinned ? t("clipboard.unpin") : t("clipboard.pin")}
+                    >
+                        {item.pinned ? "📌" : "📍"}
+                    </button>
+                    <button
+                        className="action-btn delete-btn"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onDelete(item.id);
+                        }}
+                        title={t("clipboard.delete")}
+                        aria-label={t("clipboard.delete")}
+                    >
+                        🗑️
+                    </button>
+                </div>
             </div>
         </div>
     );

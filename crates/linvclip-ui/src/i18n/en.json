@@ -1,0 +1,99 @@
+{
+  "app": {
+    "title": "LinVClipBoard",
+    "footer": "Crafted by akash-singh"
+  },
+  "tabs": {
+    "clipboard": "Clipboard",
+    "emojis": "Emojis",
+    "symbols": "Symbols"
+  },
+  "search": {
+    "placeholder_clipboard": "Search clipboard history...",
+    "placeholder_emojis": "Search emojis...",
+    "placeholder_symbols": "Search symbols..."
+  },
+  "filters": {
+    "all": "All",
+    "text": "Text",
+    "images": "Images",
+    "files": "Files",
+    "pinned": "Pinned"
+  },
+  "clipboard": {
+    "empty_title": "No clipboard items yet",
+    "empty_sub": "Copy something to get started!",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "delete": "Delete",
+    "copied": "Copied!",
+    "copy_failed": "Failed",
+    "cleared": "Cleared!",
+    "image_preview": "Clipboard image"
+  },
+  "emoji": {
+    "common": "Common",
+    "smileys": "Smileys & People",
+    "animals": "Animals & Nature",
+    "food": "Food & Drink",
+    "travel": "Travel & Places",
+    "activities": "Activities",
+    "objects": "Objects",
+    "symbols": "Symbols",
+    "flags": "Flags",
+    "recent": "Recently Used",
+    "no_results": "No emojis found"
+  },
+  "symbol": {
+    "math": "Math",
+    "arrows": "Arrows",
+    "currency": "Currency",
+    "greek": "Greek",
+    "superscript": "Superscript & Subscript",
+    "punctuation": "Punctuation",
+    "box_drawing": "Box Drawing",
+    "recent": "Recently Used",
+    "no_results": "No symbols found"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "window_position": "Window Position",
+    "position_fixed": "Fixed",
+    "position_mouse": "Mouse",
+    "size_zoom": "Size (Zoom)",
+    "keyboard_shortcuts": "Keyboard Shortcuts",
+    "shortcut_instructions": "To open the app with a key (e.g. Super+V), create a shortcut in your Linux system:",
+    "shortcut_step1": "Go to Settings > Keyboard > Shortcuts",
+    "shortcut_step2": "Add a custom shortcut",
+    "shortcut_step3": "Name: Clipboard",
+    "close_to_save": "Close to save and apply.",
+    "advanced": "Advanced",
+    "daemon": "Daemon",
+    "poll_interval": "Poll interval (ms)",
+    "log_level": "Log level",
+    "storage": "Storage",
+    "max_items": "Max items",
+    "expiry_days": "Expiry (days)",
+    "max_size": "Max item size (MB)",
+    "security": "Security",
+    "incognito": "Incognito mode (pause capture)",
+    "blacklisted_apps": "Blacklisted apps (comma-separated)",
+    "theme": "Theme",
+    "theme_auto": "Auto (follow OS)",
+    "theme_dark": "Dark",
+    "theme_light": "Light"
+  },
+  "confirm": {
+    "clear_all": "Delete all non-pinned clipboard items? This cannot be undone.",
+    "confirm": "Delete",
+    "cancel": "Cancel"
+  },
+  "status": {
+    "items": "Items",
+    "size": "Size",
+    "nav_hint": "navigate",
+    "paste_hint": "paste",
+    "close_hint": "close"
+  }
+}

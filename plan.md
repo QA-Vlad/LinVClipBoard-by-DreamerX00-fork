@@ -71,70 +71,70 @@ crates/linvclip-ui/src/
 ## Phase 1 — Internationalization (i18n) Foundation
 > All user-visible strings go through `t()`. Two languages: English + Portuguese.
 
-- [ ] **1.1** Create `src/i18n/en.json` — all English strings (header, tabs, search placeholder, settings labels, filter pills, footer, empty states, toasts)
-- [ ] **1.2** Create `src/i18n/pt.json` — Portuguese translation
-- [ ] **1.3** Create `src/i18n/index.js` — React context provider + `useTranslation()` hook + `<I18nProvider>` wrapper
-- [ ] **1.4** Wrap `<App>` in `<I18nProvider>` inside `main.jsx`
-- [ ] **1.5** Add `language` field to `UiConfig` in `shared/src/config.rs` with `#[serde(default)]` defaulting to `"en"`
-- [ ] **1.6** Update `SettingsPanel` to persist language choice to backend config
+- [x] **1.1** Create `src/i18n/en.json` — all English strings (header, tabs, search placeholder, settings labels, filter pills, footer, empty states, toasts)
+- [x] **1.2** Create `src/i18n/pt.json` — Portuguese translation
+- [x] **1.3** Create `src/i18n/index.js` — React context provider + `useTranslation()` hook + `<I18nProvider>` wrapper
+- [x] **1.4** Wrap `<App>` in `<I18nProvider>` inside `main.jsx`
+- [x] **1.5** Add `language` field to `UiConfig` in `shared/src/config.rs` with `#[serde(default)]` defaulting to `"en"`
+- [x] **1.6** Update `SettingsPanel` to persist language choice to backend config
 
 ---
 
 ## Phase 2 — App Shell Redesign (Header + Tabs + Footer)
 > Replace flat layout with header → tab bar → content → footer.
 
-- [ ] **2.1** Create `AppHeader.jsx` — app icon + title "LinVClipBoard", settings gear button (⚙️), clear-all trash button (🗑️) with confirmation
-- [ ] **2.2** Create `TabBar.jsx` — three tabs: `📋 Clipboard`, `😀 Emojis`, `Σ Symbols` with active state indicator underline; all labels run through `t()`
-- [ ] **2.3** Create `Footer.jsx` — "Crafted by akash-singh" or "powered by akash-singh" with the current language; replaces old StatusBar
-- [ ] **2.4** Rewrite `App.jsx`:
+- [x] **2.1** Create `AppHeader.jsx` — app icon + title "LinVClipBoard", settings gear button (⚙️), clear-all trash button (🗑️) with confirmation
+- [x] **2.2** Create `TabBar.jsx` — three tabs: `📋 Clipboard`, `😀 Emojis`, `Σ Symbols` with active state indicator underline; all labels run through `t()`
+- [x] **2.3** Create `Footer.jsx` — "Crafted by akash-singh" or "powered by akash-singh" with the current language; replaces old StatusBar
+- [x] **2.4** Rewrite `App.jsx`:
   - Add `activeTab` state (`"clipboard" | "emojis" | "symbols"`)
   - Render: `AppHeader` → `TabBar` → conditionally `SearchBar` → tab content → `Footer`
   - Pass settings/clear handlers to header
   - Remove old StatusBar import/usage
-- [ ] **2.5** Add all supporting CSS: `.app-header`, `.tab-bar`, `.tab-btn`, `.tab-active-indicator`, `.footer`
-- [ ] **2.6** Remove old `StatusBar.jsx` or keep as dead code (prefer remove)
+- [x] **2.5** Add all supporting CSS: `.app-header`, `.tab-bar`, `.tab-btn`, `.tab-active-indicator`, `.footer`
+- [x] **2.6** Remove old `StatusBar.jsx` or keep as dead code (prefer remove)
 
 ---
 
 ## Phase 3 — Filter Pills (Clipboard Tab)
 > Type-based filtering: All / Text / Images / Files / Pinned
 
-- [ ] **3.1** Create `FilterPills.jsx` — horizontal pill row; active pill highlighted in accent color; emits `onFilterChange(filter)`
-- [ ] **3.2** Add `filterType` state in `App.jsx`: `"all" | "text" | "image" | "files" | "pinned"`
-- [ ] **3.3** Client-side filtering: filter `items` array before passing to `ClipboardList`
+- [x] **3.1** Create `FilterPills.jsx` — horizontal pill row; active pill highlighted in accent color; emits `onFilterChange(filter)`
+- [x] **3.2** Add `filterType` state in `App.jsx`: `"all" | "text" | "image" | "files" | "pinned"`
+- [x] **3.3** Client-side filtering: filter `items` array before passing to `ClipboardList`
 - [ ] **3.4** (Optional) Backend support: add `IpcRequest::ListFiltered { content_type, offset, limit }` for server-side filtering
-- [ ] **3.5** CSS: `.filter-pills`, `.pill`, `.pill.active` with smooth transitions
-- [ ] **3.6** Show filter pills only when `activeTab === "clipboard"`
+- [x] **3.5** CSS: `.filter-pills`, `.pill`, `.pill.active` with smooth transitions
+- [x] **3.6** Show filter pills only when `activeTab === "clipboard"`
 
 ---
 
 ## Phase 4 — Clipboard List Enhancement
 > Better item cards matching the reference UI.
 
-- [ ] **4.1** Add drag-handle dots (⠿) on the left side of each item for visual grip
-- [ ] **4.2** Show full `HH:MM:SS` timestamp instead of relative "5m ago"
-- [ ] **4.3** Improve image preview: show actual thumbnail inline (already have `get_image_base64`)
-- [ ] **4.4** Show content type label below preview (e.g., "clipboard-image.png" for images)
-- [ ] **4.5** Better text truncation: monospace font for code, normal for text
-- [ ] **4.6** Update item card CSS for tighter layout matching reference screenshots
-- [ ] **4.7** Run all static strings through `t()` (empty state, etc.)
+- [x] **4.1** Add drag-handle dots (⠿) on the left side of each item for visual grip
+- [x] **4.2** Show full `HH:MM:SS` timestamp instead of relative "5m ago"
+- [x] **4.3** Improve image preview: show actual thumbnail inline (already have `get_image_base64`)
+- [x] **4.4** Show content type label below preview (e.g., "clipboard-image.png" for images)
+- [x] **4.5** Better text truncation: monospace font for code, normal for text
+- [x] **4.6** Update item card CSS for tighter layout matching reference screenshots
+- [x] **4.7** Run all static strings through `t()` (empty state, etc.)
 
 ---
 
 ## Phase 5 — Emoji Picker Tab
 > Searchable emoji grid with categories.
 
-- [ ] **5.1** Create `src/data/emojis.json` — curated emoji dataset organized by category: Common, Smileys, People, Animals, Food, Travel, Activities, Objects, Symbols, Flags (use Unicode 15.0)
-- [ ] **5.2** Create `EmojiPicker.jsx`:
+- [x] **5.1** Create `src/data/emojis.json` — curated emoji dataset organized by category: Common, Smileys, People, Animals, Food, Travel, Activities, Objects, Symbols, Flags (use Unicode 15.0)
+- [x] **5.2** Create `EmojiPicker.jsx`:
   - Search/filter emojis by name/keyword
   - Category headers ("COMMON", "SMILEYS & PEOPLE", etc.)
   - Grid layout (8-10 columns)
   - Click → copy to system clipboard via `invoke("paste_raw_text", { text: emoji })`
   - Show toast on copy
   - Recently-used section at top (persisted in localStorage)
-- [ ] **5.3** Add Tauri command `paste_raw_text` in `lib.rs` — writes arbitrary text to clipboard (for emoji/symbol insertion)
-- [ ] **5.4** CSS: `.emoji-grid`, `.emoji-cell`, `.emoji-category-header`, hover/active states
-- [ ] **5.5** SearchBar integration: when on Emojis tab, search filters emojis by name
+- [x] **5.3** Add Tauri command `paste_raw_text` in `lib.rs` — writes arbitrary text to clipboard (for emoji/symbol insertion)
+- [x] **5.4** CSS: `.emoji-grid`, `.emoji-cell`, `.emoji-category-header`, hover/active states
+- [x] **5.5** SearchBar integration: when on Emojis tab, search filters emojis by name
 - [ ] **5.6** Skin tone selector (optional stretch goal)
 
 ---
@@ -142,11 +142,11 @@ crates/linvclip-ui/src/
 ## Phase 6 — Symbol Picker Tab
 > Math, arrows, currency, and special characters.
 
-- [ ] **6.1** Create `src/data/symbols.json` — categorized: Math (±, ÷, ∞, √, π, ∑), Arrows (→, ←, ↑, ↓, ⇒), Currency ($, €, £, ¥, ₹, ₿), Greek (α, β, γ), Superscript/Subscript, Punctuation, Box Drawing
-- [ ] **6.2** Create `SymbolPicker.jsx` — same grid pattern as EmojiPicker, category headers, search, click-to-copy
-- [ ] **6.3** CSS: `.symbol-grid`, `.symbol-cell` (slightly wider cells for multi-char symbols)
-- [ ] **6.4** SearchBar integration: filter by symbol name ("infinity" → ∞)
-- [ ] **6.5** Recently-used section (localStorage)
+- [x] **6.1** Create `src/data/symbols.json` — categorized: Math (±, ÷, ∞, √, π, ∑), Arrows (→, ←, ↑, ↓, ⇒), Currency ($, €, £, ¥, ₹, ₿), Greek (α, β, γ), Superscript/Subscript, Punctuation, Box Drawing
+- [x] **6.2** Create `SymbolPicker.jsx` — same grid pattern as EmojiPicker, category headers, search, click-to-copy
+- [x] **6.3** CSS: `.symbol-grid`, `.symbol-cell` (slightly wider cells for multi-char symbols)
+- [x] **6.4** SearchBar integration: filter by symbol name ("infinity" → ∞)
+- [x] **6.5** Recently-used section (localStorage)
 
 ---
 
