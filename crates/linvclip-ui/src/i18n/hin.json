@@ -33,8 +33,8 @@
     "image_preview": "क्लिपबोर्ड छवि"
   },
   "emoji": {
-    "common": "सामान्य",
-    "smileys": "स्माइली और लोग",
+    "smileys_emotion": "स्माइली और भावनाएँ",
+    "people_body": "लोग और शरीर",
     "animals": "जानवर और प्रकृति",
     "food": "भोजन और पेय",
     "travel": "यात्रा और स्थान",
@@ -53,6 +53,7 @@
     "superscript": "सुपरस्क्रिप्ट और सबस्क्रिप्ट",
     "punctuation": "विराम चिह्न",
     "box_drawing": "बॉक्स ड्रॉइंग",
+    "ascii_emoticons": "ASCII इमोटिकॉन्स",
     "recent": "हाल ही में उपयोग किया गया",
     "no_results": "कोई प्रतीक नहीं मिला"
   },

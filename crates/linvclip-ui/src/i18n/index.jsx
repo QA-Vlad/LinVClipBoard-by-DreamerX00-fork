@@ -1,8 +1,10 @@
 import { createContext, useContext, useState, useCallback, useEffect } from "react";
 import en from "./en.json";
 import pt from "./pt.json";
+import ja from "./japnese.json";
+import hi from "./hin.json";
 
-const locales = { en, pt };
+const locales = { en, pt, ja, hi };
 const I18nContext = createContext(null);
 
 /**
@@ -15,7 +17,7 @@ function resolve(obj, path) {
 /**
  * I18nProvider — wrap your app to provide translations.
  *
- * @param {string} defaultLang — initial language code ("en" | "pt")
+ * @param {string} defaultLang — initial language code ("en" | "pt" | "ja" | "hi    ")
  */
 export function I18nProvider({ defaultLang = "en", children }) {
     const [lang, setLang] = useState(() => {

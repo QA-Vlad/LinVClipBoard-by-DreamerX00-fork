@@ -33,8 +33,8 @@
     "image_preview": "クリップボード画像"
   },
   "emoji": {
-    "common": "よく使う",
-    "smileys": "スマイル＆人物",
+    "smileys_emotion": "スマイル＆感情",
+    "people_body": "人物＆体",
     "animals": "動物＆自然",
     "food": "食べ物＆飲み物",
     "travel": "旅行＆場所",
@@ -53,6 +53,7 @@
     "superscript": "上付き・下付き",
     "punctuation": "句読点",
     "box_drawing": "罫線",
+    "ascii_emoticons": "ASCII顔文字",
     "recent": "最近使用",
     "no_results": "記号が見つかりません"
   },

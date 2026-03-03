@@ -11,6 +11,7 @@ const CATEGORY_KEYS = {
     "Superscript & Subscript": "symbol.superscript",
     "Punctuation": "symbol.punctuation",
     "Box Drawing": "symbol.box_drawing",
+    "ASCII Emoticons": "symbol.ascii_emoticons",
 };
 
 const RECENT_KEY = "linvclip_recent_symbols";
@@ -118,11 +119,11 @@ function SymbolPicker({ searchQuery, onToast }) {
                     <h3 className="picker-category-header">
                         {t(CATEGORY_KEYS[category] || category)}
                     </h3>
-                    <div className="symbol-grid">
+                    <div className={`symbol-grid${category === "ASCII Emoticons" ? " ascii-grid" : ""}`}>
                         {symbols.map((item, i) => (
                             <button
                                 key={i}
-                                className="symbol-cell"
+                                className={`symbol-cell${item.symbol.length > 2 ? " ascii-cell" : ""}`}
                                 onClick={() => handleClick(item.symbol)}
                                 title={item.name}
                                 aria-label={item.name}

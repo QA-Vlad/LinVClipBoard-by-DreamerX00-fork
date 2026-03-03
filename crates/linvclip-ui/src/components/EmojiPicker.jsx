@@ -5,8 +5,8 @@ import emojiData from "../data/emojis.json";
 
 /** Map the i18n keys to the JSON category names */
 const CATEGORY_KEYS = {
-    "Common": "emoji.common",
-    "Smileys & People": "emoji.smileys",
+    "Smileys & Emotion": "emoji.smileys_emotion",
+    "People & Body": "emoji.people_body",
     "Animals & Nature": "emoji.animals",
     "Food & Drink": "emoji.food",
     "Travel & Places": "emoji.travel",

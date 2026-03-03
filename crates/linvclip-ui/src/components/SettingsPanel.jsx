@@ -110,20 +110,18 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
                     {/* ── 🌐 Language ── */}
                     <div className="settings-section">
                         <div className="settings-section-label">🌐 {t("settings.language")}</div>
-                        <div className="toggle-group" role="radiogroup" aria-label={t("settings.language")}>
+                        <select
+                            className="language-select"
+                            value={lang}
+                            onChange={(e) => handleLanguageChange(e.target.value)}
+                            aria-label={t("settings.language")}
+                        >
                             {availableLanguages.map((code) => (
-                                <button
-                                    key={code}
-                                    type="button"
-                                    role="radio"
-                                    aria-checked={lang === code}
-                                    className={`toggle-btn${lang === code ? " toggle-btn-active" : ""}`}
-                                    onClick={() => handleLanguageChange(code)}
-                                >
-                                    {code === "pt" ? "Português" : "English"}
-                                </button>
+                                <option key={code} value={code}>
+                                    {{ en: "English", pt: "Português", ja: "日本語", hi: "हिन्दी" }[code] || code}
+                                </option>
                             ))}
-                        </div>
+                        </select>
                     </div>
 
                     {/* ── 🎨 Theme ── */}

@@ -33,8 +33,8 @@
     "image_preview": "Clipboard image"
   },
   "emoji": {
-    "common": "Common",
-    "smileys": "Smileys & People",
+    "smileys_emotion": "Smileys & Emotion",
+    "people_body": "People & Body",
     "animals": "Animals & Nature",
     "food": "Food & Drink",
     "travel": "Travel & Places",
@@ -53,6 +53,7 @@
     "superscript": "Superscript & Subscript",
     "punctuation": "Punctuation",
     "box_drawing": "Box Drawing",
+    "ascii_emoticons": "ASCII Emoticons",
     "recent": "Recently Used",
     "no_results": "No symbols found"
   },
