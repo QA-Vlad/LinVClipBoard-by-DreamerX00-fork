@@ -7,10 +7,8 @@ for user_run in /run/user/[0-9]*; do
     uid=$(basename "$user_run")
     [ "$uid" -ge 1000 ] 2>/dev/null || continue
     username=$(id -nu "$uid" 2>/dev/null) || continue
-    export XDG_RUNTIME_DIR="$user_run"
-    export DBUS_SESSION_BUS_ADDRESS="unix:path=$user_run/bus"
-    su - "$username" -c "systemctl --user stop clipd.service" 2>/dev/null || true
-    su - "$username" -c "systemctl --user disable clipd.service" 2>/dev/null || true
+    su "$username" -c "XDG_RUNTIME_DIR=$user_run DBUS_SESSION_BUS_ADDRESS=unix:path=$user_run/bus systemctl --user stop clipd.service" 2>/dev/null || true
+    su "$username" -c "XDG_RUNTIME_DIR=$user_run DBUS_SESSION_BUS_ADDRESS=unix:path=$user_run/bus systemctl --user disable clipd.service" 2>/dev/null || true
 done
 pkill -x clipd 2>/dev/null || true
 pkill -x linvclip-ui 2>/dev/null || true

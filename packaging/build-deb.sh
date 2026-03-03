@@ -120,11 +120,32 @@ enable_clipd() {
     uid=$(id -u "$USER" 2>/dev/null) || return 0
     XDG_RUNTIME_DIR="/run/user/${uid}"
     [ -d "$XDG_RUNTIME_DIR" ] || return 0
-    export XDG_RUNTIME_DIR
-    export DBUS_SESSION_BUS_ADDRESS="unix:path=${XDG_RUNTIME_DIR}/bus"
-    su - "$USER" -c "systemctl --user daemon-reload" 2>/dev/null || true
-    su - "$USER" -c "systemctl --user enable clipd.service" 2>/dev/null || true
-    su - "$USER" -c "systemctl --user restart clipd.service" 2>/dev/null || true
+    DBUS_SESSION_BUS_ADDRESS="unix:path=${XDG_RUNTIME_DIR}/bus"
+
+    # Helper: run a command as the target user with the correct
+    # XDG_RUNTIME_DIR and DBUS_SESSION_BUS_ADDRESS so that
+    # "systemctl --user" finds the right user manager instance.
+    run_as() {
+        su "$USER" -c "XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR} DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS} $*"
+    }
+
+    run_as systemctl --user daemon-reload 2>/dev/null || true
+    run_as systemctl --user enable clipd.service 2>/dev/null || true
+
+    # Import DISPLAY / WAYLAND_DISPLAY into the user manager so
+    # ConditionEnvironment checks pass.  Grab them from the user's
+    # running session via their environment file if possible.
+    for var in DISPLAY WAYLAND_DISPLAY; do
+        val=""
+        # Try to read from an active user process (e.g. their session leader)
+        for pid in $(find /proc -maxdepth 2 -name environ -user "$USER" 2>/dev/null | head -20 | cut -d/ -f3); do
+            val=$(tr '\0' '\n' < "/proc/$pid/environ" 2>/dev/null | grep "^${var}=" | head -1 | cut -d= -f2-)
+            [ -n "$val" ] && break
+        done
+        [ -n "$val" ] && run_as systemctl --user set-environment "${var}=${val}" 2>/dev/null || true
+    done
+
+    run_as systemctl --user restart clipd.service 2>/dev/null || true
 }
 
 if [ -n "$SUDO_USER" ] && [ "$SUDO_USER" != "root" ]; then
@@ -164,10 +185,8 @@ for user_run in /run/user/[0-9]*; do
     # Skip root (uid 0) and system users (<1000)
     [ "$uid" -ge 1000 ] 2>/dev/null || continue
     username=$(id -nu "$uid" 2>/dev/null) || continue
-    export XDG_RUNTIME_DIR="$user_run"
-    export DBUS_SESSION_BUS_ADDRESS="unix:path=$user_run/bus"
-    su - "$username" -c "systemctl --user stop clipd.service" 2>/dev/null || true
-    su - "$username" -c "systemctl --user disable clipd.service" 2>/dev/null || true
+    su "$username" -c "XDG_RUNTIME_DIR=$user_run DBUS_SESSION_BUS_ADDRESS=unix:path=$user_run/bus systemctl --user stop clipd.service" 2>/dev/null || true
+    su "$username" -c "XDG_RUNTIME_DIR=$user_run DBUS_SESSION_BUS_ADDRESS=unix:path=$user_run/bus systemctl --user disable clipd.service" 2>/dev/null || true
 done
 
 # Fallback: kill any remaining processes
