@@ -65,10 +65,15 @@ Priority: optional
 Architecture: ${ARCH}
 Installed-Size: ${INSTALLED_SIZE}
 Maintainer: LinVClipBoard Contributors
+Recommends: wtype | xdotool
+Suggests: ydotool
 Description: Clipboard history manager for Linux
  A Win+V style clipboard manager that captures text and images,
  with full-text search, pinning, and a beautiful overlay UI.
  Includes clipd (daemon), clipctl (CLI), and linvclip-ui (GUI).
+ .
+ For emoji/symbol insertion into text fields (like the Windows
+ emoji panel), install wtype (Wayland) or xdotool (X11).
 Homepage: https://github.com/akash-singh8/LinVClipBoard
 EOF
 

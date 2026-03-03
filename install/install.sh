@@ -87,5 +87,19 @@ echo ""
 echo "📝 To check daemon status: systemctl --user status clipd"
 echo "📝 To view logs: journalctl --user -u clipd -f"
 echo ""
+
+# Check for typing tools needed for emoji/symbol insertion
+if ! command -v wtype >/dev/null 2>&1 && ! command -v xdotool >/dev/null 2>&1 && ! command -v ydotool >/dev/null 2>&1; then
+    echo "💡 Optional: For emoji/symbol insertion into text fields (like the"
+    echo "   Windows emoji panel), install a typing tool:"
+    if [ "${XDG_SESSION_TYPE:-}" = "wayland" ]; then
+        echo "     sudo apt install wtype    # Wayland (recommended)"
+    else
+        echo "     sudo apt install xdotool  # X11 (recommended)"
+    fi
+    echo "   Without it, emojis will be copied to clipboard instead."
+    echo ""
+fi
+
 echo "Make sure $INSTALL_DIR is in your PATH. Add this to ~/.bashrc if needed:"
 echo "   export PATH=\"\$HOME/.local/bin:\$PATH\""

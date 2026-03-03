@@ -1,6 +1,6 @@
 # Maintainer: LinVClipBoard Contributors
 pkgname=linvclipboard
-pkgver=1.1.0
+pkgver=1.3.0
 pkgrel=1
 pkgdesc="Win+V style clipboard manager for Linux — daemon, CLI, and overlay UI"
 arch=('x86_64' 'aarch64')
@@ -13,6 +13,11 @@ depends=(
     'webkit2gtk-4.1'
     'libappindicator-gtk3'
     'librsvg'
+)
+optdepends=(
+    'wtype: type emojis/symbols into focused app on Wayland'
+    'xdotool: type emojis/symbols into focused app on X11'
+    'ydotool: type emojis/symbols into focused app (X11 & Wayland)'
 )
 makedepends=(
     'rust'

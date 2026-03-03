@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:           linvclipboard
-Version:        1.1.0
+Version:        1.3.0
 Release:        1%{?dist}
 Summary:        Clipboard history manager for Linux (Win+V equivalent)
 License:        MIT
@@ -22,6 +22,9 @@ BuildRequires:  nodejs >= 18
 Requires:       sqlite-libs
 Requires:       libxcb
 Requires:       wayland
+Recommends:     wtype
+Suggests:       xdotool
+Suggests:       ydotool
 
 %description
 LinVClipBoard is a Win+V style clipboard manager for Linux.
