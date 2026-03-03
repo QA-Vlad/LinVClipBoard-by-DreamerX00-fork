@@ -1,0 +1,100 @@
+{
+  "app": {
+    "title": "LinVClipBoard",
+    "footer": "akash-singh द्वारा निर्मित"
+  },
+  "tabs": {
+    "clipboard": "क्लिपबोर्ड",
+    "emojis": "इमोजी",
+    "symbols": "प्रतीक"
+  },
+  "search": {
+    "placeholder_clipboard": "क्लिपबोर्ड इतिहास खोजें...",
+    "placeholder_emojis": "इमोजी खोजें...",
+    "placeholder_symbols": "प्रतीक खोजें..."
+  },
+  "filters": {
+    "all": "सभी",
+    "text": "टेक्स्ट",
+    "images": "छवियाँ",
+    "files": "फाइलें",
+    "pinned": "पिन किए गए"
+  },
+  "clipboard": {
+    "empty_title": "अभी तक कोई क्लिपबोर्ड आइटम नहीं",
+    "empty_sub": "शुरू करने के लिए कुछ कॉपी करें!",
+    "pin": "पिन करें",
+    "unpin": "अनपिन करें",
+    "delete": "हटाएँ",
+    "copied": "कॉपी किया गया!",
+    "inserted": "डाला गया!",
+    "copy_failed": "असफल",
+    "cleared": "साफ किया गया!",
+    "image_preview": "क्लिपबोर्ड छवि"
+  },
+  "emoji": {
+    "common": "सामान्य",
+    "smileys": "स्माइली और लोग",
+    "animals": "जानवर और प्रकृति",
+    "food": "भोजन और पेय",
+    "travel": "यात्रा और स्थान",
+    "activities": "गतिविधियाँ",
+    "objects": "वस्तुएँ",
+    "symbols": "प्रतीक",
+    "flags": "झंडे",
+    "recent": "हाल ही में उपयोग किया गया",
+    "no_results": "कोई इमोजी नहीं मिला"
+  },
+  "symbol": {
+    "math": "गणित",
+    "arrows": "तीर",
+    "currency": "मुद्रा",
+    "greek": "ग्रीक अक्षर",
+    "superscript": "सुपरस्क्रिप्ट और सबस्क्रिप्ट",
+    "punctuation": "विराम चिह्न",
+    "box_drawing": "बॉक्स ड्रॉइंग",
+    "recent": "हाल ही में उपयोग किया गया",
+    "no_results": "कोई प्रतीक नहीं मिला"
+  },
+  "settings": {
+    "title": "सेटिंग्स",
+    "language": "भाषा",
+    "window_position": "विंडो स्थिति",
+    "position_fixed": "स्थिर",
+    "position_mouse": "माउस के पास",
+    "size_zoom": "आकार (ज़ूम)",
+    "keyboard_shortcuts": "कीबोर्ड शॉर्टकट",
+    "shortcut_instructions": "कुंजी (जैसे Super+V) से ऐप खोलने के लिए, अपने Linux सिस्टम में शॉर्टकट बनाएं:",
+    "shortcut_step1": "सेटिंग्स > कीबोर्ड > शॉर्टकट पर जाएँ",
+    "shortcut_step2": "कस्टम शॉर्टकट जोड़ें",
+    "shortcut_step3": "नाम: Clipboard",
+    "close_to_save": "सहेजने और लागू करने के लिए बंद करें।",
+    "advanced": "उन्नत",
+    "daemon": "डेमन",
+    "poll_interval": "पोल अंतराल (ms)",
+    "log_level": "लॉग स्तर",
+    "storage": "स्टोरेज",
+    "max_items": "अधिकतम आइटम",
+    "expiry_days": "समाप्ति (दिन)",
+    "max_size": "अधिकतम आइटम आकार (MB)",
+    "security": "सुरक्षा",
+    "incognito": "इन्कॉग्निटो मोड (कैप्चर रोकें)",
+    "blacklisted_apps": "ब्लैकलिस्टेड ऐप्स (कॉमा से अलग)",
+    "theme": "थीम",
+    "theme_auto": "ऑटो (OS के अनुसार)",
+    "theme_dark": "डार्क",
+    "theme_light": "लाइट"
+  },
+  "confirm": {
+    "clear_all": "सभी गैर-पिन किए गए क्लिपबोर्ड आइटम हटाएँ? इसे वापस नहीं किया जा सकता।",
+    "confirm": "हटाएँ",
+    "cancel": "रद्द करें"
+  },
+  "status": {
+    "items": "आइटम",
+    "size": "आकार",
+    "nav_hint": "नेविगेट",
+    "paste_hint": "पेस्ट",
+    "close_hint": "बंद करें"
+  }
+}

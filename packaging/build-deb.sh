@@ -113,14 +113,37 @@ if [ -n "$SUDO_USER" ] && [ "$SUDO_USER" != "root" ]; then
     free_shortcut "$SUDO_USER" "$SUDO_HOME"
 fi
 
+# Enable and start clipd for all logged-in desktop users.
+# dpkg runs as root, so we must target each real user's session.
+enable_clipd() {
+    USER="$1"
+    uid=$(id -u "$USER" 2>/dev/null) || return 0
+    XDG_RUNTIME_DIR="/run/user/${uid}"
+    [ -d "$XDG_RUNTIME_DIR" ] || return 0
+    export XDG_RUNTIME_DIR
+    export DBUS_SESSION_BUS_ADDRESS="unix:path=${XDG_RUNTIME_DIR}/bus"
+    su - "$USER" -c "systemctl --user daemon-reload" 2>/dev/null || true
+    su - "$USER" -c "systemctl --user enable clipd.service" 2>/dev/null || true
+    su - "$USER" -c "systemctl --user restart clipd.service" 2>/dev/null || true
+}
+
+if [ -n "$SUDO_USER" ] && [ "$SUDO_USER" != "root" ]; then
+    enable_clipd "$SUDO_USER"
+else
+    # Fallback: iterate all logged-in desktop users
+    for user_run in /run/user/[0-9]*; do
+        uid=$(basename "$user_run")
+        [ "$uid" -ge 1000 ] 2>/dev/null || continue
+        username=$(id -nu "$uid" 2>/dev/null) || continue
+        enable_clipd "$username"
+    done
+fi
+
 echo ""
 echo "LinVClipBoard installed successfully!"
+echo "The clipboard daemon (clipd) has been enabled and started."
 echo ""
-echo "To start the clipboard daemon, run:"
-echo "  systemctl --user daemon-reload"
-echo "  systemctl --user enable --now clipd.service"
-echo ""
-echo "Then press Super+. (Win+Period) to open the overlay,"
+echo "Press Super+. (Win+Period) to open the overlay,"
 echo "or use 'clipctl' from the terminal."
 echo ""
 POSTINST

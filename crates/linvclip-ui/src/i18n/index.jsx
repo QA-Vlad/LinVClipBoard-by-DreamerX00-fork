@@ -33,9 +33,16 @@ export function I18nProvider({ defaultLang = "en", children }) {
 
     /** Translate a key path. Returns the key itself if not found. */
     const t = useCallback(
-        (key) => resolve(locales[lang] || locales.en, key),
-        [lang],
-    );
+    (key) => {
+        const current = resolve(locales[lang], key);
+        if (current !== key) return current;
+
+        // fallback to English
+        const fallback = resolve(locales.en, key);
+        return fallback !== key ? fallback : key;
+    },
+    [lang]
+);
 
     /** List of available language codes. */
     const availableLanguages = Object.keys(locales);

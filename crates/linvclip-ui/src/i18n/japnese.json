@@ -1,0 +1,100 @@
+{
+  "app": {
+    "title": "LinVClipBoard",
+    "footer": "akash-singh によって作成"
+  },
+  "tabs": {
+    "clipboard": "クリップボード",
+    "emojis": "絵文字",
+    "symbols": "記号"
+  },
+  "search": {
+    "placeholder_clipboard": "クリップボード履歴を検索...",
+    "placeholder_emojis": "絵文字を検索...",
+    "placeholder_symbols": "記号を検索..."
+  },
+  "filters": {
+    "all": "すべて",
+    "text": "テキスト",
+    "images": "画像",
+    "files": "ファイル",
+    "pinned": "固定済み"
+  },
+  "clipboard": {
+    "empty_title": "クリップボード項目がありません",
+    "empty_sub": "何かコピーして開始してください！",
+    "pin": "固定",
+    "unpin": "固定解除",
+    "delete": "削除",
+    "copied": "コピーしました！",
+    "inserted": "挿入しました！",
+    "copy_failed": "失敗しました",
+    "cleared": "削除しました！",
+    "image_preview": "クリップボード画像"
+  },
+  "emoji": {
+    "common": "よく使う",
+    "smileys": "スマイル＆人物",
+    "animals": "動物＆自然",
+    "food": "食べ物＆飲み物",
+    "travel": "旅行＆場所",
+    "activities": "アクティビティ",
+    "objects": "オブジェクト",
+    "symbols": "記号",
+    "flags": "国旗",
+    "recent": "最近使用",
+    "no_results": "絵文字が見つかりません"
+  },
+  "symbol": {
+    "math": "数学",
+    "arrows": "矢印",
+    "currency": "通貨",
+    "greek": "ギリシャ文字",
+    "superscript": "上付き・下付き",
+    "punctuation": "句読点",
+    "box_drawing": "罫線",
+    "recent": "最近使用",
+    "no_results": "記号が見つかりません"
+  },
+  "settings": {
+    "title": "設定",
+    "language": "言語",
+    "window_position": "ウィンドウ位置",
+    "position_fixed": "固定",
+    "position_mouse": "マウス位置",
+    "size_zoom": "サイズ（ズーム）",
+    "keyboard_shortcuts": "キーボードショートカット",
+    "shortcut_instructions": "キー（例：Super+V）でアプリを開くには、Linux システムでショートカットを作成してください：",
+    "shortcut_step1": "設定 > キーボード > ショートカット へ移動",
+    "shortcut_step2": "カスタムショートカットを追加",
+    "shortcut_step3": "名前：Clipboard",
+    "close_to_save": "閉じて保存・適用します。",
+    "advanced": "詳細設定",
+    "daemon": "デーモン",
+    "poll_interval": "ポーリング間隔（ms）",
+    "log_level": "ログレベル",
+    "storage": "ストレージ",
+    "max_items": "最大項目数",
+    "expiry_days": "有効期限（日）",
+    "max_size": "最大項目サイズ（MB）",
+    "security": "セキュリティ",
+    "incognito": "シークレットモード（キャプチャ一時停止）",
+    "blacklisted_apps": "除外アプリ（カンマ区切り）",
+    "theme": "テーマ",
+    "theme_auto": "自動（OSに従う）",
+    "theme_dark": "ダーク",
+    "theme_light": "ライト"
+  },
+  "confirm": {
+    "clear_all": "固定されていないクリップボード項目をすべて削除しますか？元に戻せません。",
+    "confirm": "削除",
+    "cancel": "キャンセル"
+  },
+  "status": {
+    "items": "項目",
+    "size": "サイズ",
+    "nav_hint": "移動",
+    "paste_hint": "貼り付け",
+    "close_hint": "閉じる"
+  }
+}
