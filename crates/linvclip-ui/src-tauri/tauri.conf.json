@@ -1,6 +1,6 @@
 {
     "productName": "LinVClipBoard",
-    "version": "4.0.2",
+    "version": "1.4.4",
     "identifier": "com.linvclipboard.app",
     "build": {
         "frontendDist": "../dist",
