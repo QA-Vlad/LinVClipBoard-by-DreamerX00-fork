@@ -1,17 +1,19 @@
 {
   "app": {
     "title": "LinVClipBoard",
-    "footer": "akash-singh द्वारा निर्मित"
+    "footer": "DreamerX द्वारा निर्मित"
   },
   "tabs": {
     "clipboard": "क्लिपबोर्ड",
     "emojis": "इमोजी",
-    "symbols": "प्रतीक"
+    "symbols": "प्रतीक",
+    "gifs": "GIF"
   },
   "search": {
     "placeholder_clipboard": "क्लिपबोर्ड इतिहास खोजें...",
     "placeholder_emojis": "इमोजी खोजें...",
-    "placeholder_symbols": "प्रतीक खोजें..."
+    "placeholder_symbols": "प्रतीक खोजें...",
+    "placeholder_gifs": "Search KLIPY"
   },
   "filters": {
     "all": "सभी",
@@ -83,7 +85,15 @@
     "theme": "थीम",
     "theme_auto": "ऑटो (OS के अनुसार)",
     "theme_dark": "डार्क",
-    "theme_light": "लाइट"
+    "theme_light": "लाइट",
+    "tenor_api_key": "KLIPY API कुंजी",
+    "tenor_api_key_hint": "partner.klipy.com पर मुफ्त कुंजी प्राप्त करें",
+    "updates": "अपडेट",
+    "check_updates": "अपडेट की जाँच करें",
+    "checking": "जाँच हो रही है…",
+    "update_available": "संस्करण {v} उपलब्ध है!",
+    "up_to_date": "आप अद्यतित हैं।",
+    "download": "डाउनलोड"
   },
   "confirm": {
     "clear_all": "सभी गैर-पिन किए गए क्लिपबोर्ड आइटम हटाएँ? इसे वापस नहीं किया जा सकता।",
@@ -96,5 +106,12 @@
     "nav_hint": "नेविगेट",
     "paste_hint": "पेस्ट",
     "close_hint": "बंद करें"
+  },
+  "gif": {
+    "no_results": "कोई GIF नहीं मिला",
+    "copied_url": "GIF URL कॉपी किया गया!",
+    "copy_hint": "GIF URL कॉपी करने के लिए क्लिक करें",
+    "api_key_required": "KLIPY API कुंजी आवश्यक",
+    "api_key_hint": "सेटिंग्स → उन्नत → GIF में अपनी मुफ्त KLIPY API कुंजी जोड़ें।"
   }
 }

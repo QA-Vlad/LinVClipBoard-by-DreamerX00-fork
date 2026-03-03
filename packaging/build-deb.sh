@@ -28,6 +28,7 @@ done
 mkdir -p "${PKG_DIR}/DEBIAN"
 mkdir -p "${PKG_DIR}/usr/bin"
 mkdir -p "${PKG_DIR}/usr/lib/systemd/user"
+mkdir -p "${PKG_DIR}/usr/lib/linvclipboard"
 mkdir -p "${PKG_DIR}/usr/share/applications"
 mkdir -p "${PKG_DIR}/usr/share/icons/hicolor/128x128/apps"
 mkdir -p "${PKG_DIR}/usr/share/doc/${PKG_NAME}"
@@ -40,6 +41,12 @@ install -Dm755 "${RELEASE_DIR}/linvclip-ui"  "${PKG_DIR}/usr/bin/linvclip-ui"
 # Copy assets
 install -Dm644 "${PROJECT_DIR}/install/clipd.service" \
     "${PKG_DIR}/usr/lib/systemd/user/clipd.service"
+install -Dm644 "${PROJECT_DIR}/install/linvclip-update-check.service" \
+    "${PKG_DIR}/usr/lib/systemd/user/linvclip-update-check.service"
+install -Dm644 "${PROJECT_DIR}/install/linvclip-update-check.timer" \
+    "${PKG_DIR}/usr/lib/systemd/user/linvclip-update-check.timer"
+install -Dm755 "${PROJECT_DIR}/install/linvclip-update-check.sh" \
+    "${PKG_DIR}/usr/lib/linvclipboard/update-check.sh"
 install -Dm644 "${PROJECT_DIR}/install/linvclipboard.desktop" \
     "${PKG_DIR}/usr/share/applications/linvclipboard.desktop"
 install -Dm644 "${PROJECT_DIR}/crates/linvclip-ui/src-tauri/icons/icon.png" \
@@ -74,7 +81,7 @@ Description: Clipboard history manager for Linux
  .
  For emoji/symbol insertion into text fields (like the Windows
  emoji panel), install wtype (Wayland) or xdotool (X11).
-Homepage: https://github.com/akash-singh8/LinVClipBoard
+Homepage: https://github.com/DreamerX00/LinVClipBoard
 EOF
 
 # DEBIAN/postinst
@@ -131,6 +138,8 @@ enable_clipd() {
 
     run_as systemctl --user daemon-reload 2>/dev/null || true
     run_as systemctl --user enable clipd.service 2>/dev/null || true
+    run_as systemctl --user enable linvclip-update-check.timer 2>/dev/null || true
+    run_as systemctl --user start linvclip-update-check.timer 2>/dev/null || true
 
     # Import DISPLAY / WAYLAND_DISPLAY into the user manager so
     # ConditionEnvironment checks pass.  Grab them from the user's
@@ -187,6 +196,8 @@ for user_run in /run/user/[0-9]*; do
     username=$(id -nu "$uid" 2>/dev/null) || continue
     su "$username" -c "XDG_RUNTIME_DIR=$user_run DBUS_SESSION_BUS_ADDRESS=unix:path=$user_run/bus systemctl --user stop clipd.service" 2>/dev/null || true
     su "$username" -c "XDG_RUNTIME_DIR=$user_run DBUS_SESSION_BUS_ADDRESS=unix:path=$user_run/bus systemctl --user disable clipd.service" 2>/dev/null || true
+    su "$username" -c "XDG_RUNTIME_DIR=$user_run DBUS_SESSION_BUS_ADDRESS=unix:path=$user_run/bus systemctl --user stop linvclip-update-check.timer" 2>/dev/null || true
+    su "$username" -c "XDG_RUNTIME_DIR=$user_run DBUS_SESSION_BUS_ADDRESS=unix:path=$user_run/bus systemctl --user disable linvclip-update-check.timer" 2>/dev/null || true
 done
 
 # Fallback: kill any remaining processes

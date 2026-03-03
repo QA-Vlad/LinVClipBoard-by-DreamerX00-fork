@@ -1,17 +1,19 @@
 {
   "app": {
     "title": "LinVClipBoard",
-    "footer": "Crafted by akash-singh"
+    "footer": "Crafted by DreamerX"
   },
   "tabs": {
     "clipboard": "Clipboard",
     "emojis": "Emojis",
-    "symbols": "Symbols"
+    "symbols": "Symbols",
+    "gifs": "GIFs"
   },
   "search": {
     "placeholder_clipboard": "Search clipboard history...",
     "placeholder_emojis": "Search emojis...",
-    "placeholder_symbols": "Search symbols..."
+    "placeholder_symbols": "Search symbols...",
+    "placeholder_gifs": "Search KLIPY"
   },
   "filters": {
     "all": "All",
@@ -83,7 +85,15 @@
     "theme": "Theme",
     "theme_auto": "Auto (follow OS)",
     "theme_dark": "Dark",
-    "theme_light": "Light"
+    "theme_light": "Light",
+    "tenor_api_key": "KLIPY API Key",
+    "tenor_api_key_hint": "Get a free key at partner.klipy.com",
+    "updates": "Updates",
+    "check_updates": "Check for Updates",
+    "checking": "Checking…",
+    "update_available": "Version {v} is available!",
+    "up_to_date": "You're up to date.",
+    "download": "Download"
   },
   "confirm": {
     "clear_all": "Delete all non-pinned clipboard items? This cannot be undone.",
@@ -96,5 +106,12 @@
     "nav_hint": "navigate",
     "paste_hint": "paste",
     "close_hint": "close"
+  },
+  "gif": {
+    "no_results": "No GIFs found",
+    "copied_url": "GIF URL copied!",
+    "copy_hint": "Click to copy GIF URL",
+    "api_key_required": "KLIPY API Key Required",
+    "api_key_hint": "Add your free KLIPY API key in Settings → Advanced → GIF to enable GIF search."
   }
 }

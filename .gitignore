@@ -23,3 +23,6 @@ Thumbs.db
 *.db
 *.db-journal
 blobs/
+
+# Embedded API keys (never commit)
+klipy.key

@@ -5,7 +5,7 @@ Version:        1.3.0
 Release:        1%{?dist}
 Summary:        Clipboard history manager for Linux (Win+V equivalent)
 License:        MIT
-URL:            https://github.com/akash-singh8/LinVClipBoard
+URL:            https://github.com/DreamerX00/LinVClipBoard
 Source0:        %{name}-%{version}.tar.gz
 
 BuildRequires:  cargo >= 1.75

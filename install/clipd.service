@@ -1,6 +1,6 @@
 [Unit]
 Description=LinVClipBoard Clipboard Daemon
-Documentation=https://github.com/akash-singh8/LinVClipBoard
+Documentation=https://github.com/DreamerX00/LinVClipBoard
 After=graphical-session.target
 ConditionEnvironment=WAYLAND_DISPLAY
 ConditionEnvironment=|DISPLAY

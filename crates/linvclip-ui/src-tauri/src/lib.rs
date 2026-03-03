@@ -7,6 +7,9 @@ use tauri::Emitter;
 use tauri::Manager;
 use tauri_plugin_global_shortcut::GlobalShortcutExt;
 
+// Obfuscated KLIPY API key generated at build time (XOR-scrambled).
+include!(concat!(env!("OUT_DIR"), "/klipy_key.rs"));
+
 #[derive(Serialize, Deserialize)]
 pub struct ItemsResult {
     pub items: Vec<ClipboardItem>,
@@ -18,6 +21,39 @@ pub struct StatusResult {
     pub uptime_secs: u64,
     pub total_items: u64,
     pub db_size_bytes: u64,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct GifItem {
+    pub id: String,
+    pub slug: String,
+    pub title: String,
+    pub preview_url: String,
+    pub gif_url: String,
+    pub width: u32,
+    pub height: u32,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct GifResult {
+    pub items: Vec<GifItem>,
+    pub page: u32,
+    pub has_next: bool,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct GifCategory {
+    pub category: String,
+    pub query: String,
+    pub preview_url: String,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct UpdateInfo {
+    pub has_update: bool,
+    pub current_version: String,
+    pub latest_version: String,
+    pub release_url: String,
 }
 
 /// Get clipboard items from the daemon.
@@ -252,6 +288,246 @@ async fn get_image_base64(path: String) -> Result<String, String> {
     Ok(format!("data:image/png;base64,{}", encoded))
 }
 
+/// Check GitHub releases for a newer version.
+#[tauri::command]
+async fn check_for_updates() -> Result<UpdateInfo, String> {
+    let current = env!("CARGO_PKG_VERSION");
+
+    let client = reqwest::Client::builder()
+        .user_agent("LinVClipBoard")
+        .build()
+        .map_err(|e| format!("HTTP client error: {}", e))?;
+
+    let resp = client
+        .get("https://api.github.com/repos/DreamerX00/LinVClipBoard/releases/latest")
+        .send()
+        .await
+        .map_err(|e| format!("Network error: {}", e))?;
+
+    if !resp.status().is_success() {
+        return Err(format!("GitHub API error: {}", resp.status()));
+    }
+
+    let body: serde_json::Value = resp
+        .json()
+        .await
+        .map_err(|e| format!("Parse error: {}", e))?;
+
+    let tag = body["tag_name"]
+        .as_str()
+        .ok_or("No tag_name in response")?;
+    let latest = tag.trim_start_matches('v');
+    let html_url = body["html_url"].as_str().unwrap_or(
+        "https://github.com/DreamerX00/LinVClipBoard/releases",
+    );
+
+    // Simple semver comparison: split by '.' and compare numerically
+    let parse_ver = |s: &str| -> Vec<u32> {
+        s.split('.').filter_map(|p| p.parse().ok()).collect()
+    };
+    let cur_parts = parse_ver(current);
+    let lat_parts = parse_ver(latest);
+    let has_update = lat_parts > cur_parts;
+
+    Ok(UpdateInfo {
+        has_update,
+        current_version: current.to_string(),
+        latest_version: latest.to_string(),
+        release_url: html_url.to_string(),
+    })
+}
+
+/// Decode the embedded KLIPY app key (XOR-descrambled at runtime).
+fn get_gif_api_key() -> Result<String, String> {
+    if KLIPY_KEY_BYTES.is_empty() {
+        return Err("gif_api_key_missing".to_string());
+    }
+    let decoded: String = KLIPY_KEY_BYTES
+        .iter()
+        .enumerate()
+        .map(|(i, &b)| (b ^ KLIPY_KEY_XOR_PAD[i % KLIPY_KEY_XOR_PAD.len()]) as char)
+        .collect();
+    Ok(decoded)
+}
+
+/// Helper: parse a KLIPY v1 GIF object from JSON.
+fn parse_gif_item(r: &serde_json::Value) -> Option<GifItem> {
+    let id = r["id"].as_i64().or_else(|| r["id"].as_u64().map(|v| v as i64))?;
+    let slug = r["slug"].as_str().unwrap_or("").to_string();
+    let title = r["title"].as_str().unwrap_or("").to_string();
+
+    // Prefer sm.webp (fast, small) → sm.gif → xs.gif for preview
+    // Use hd.gif for the URL users copy
+    let file = &r["file"];
+    let preview_url = file["sm"]["webp"]["url"]
+        .as_str()
+        .or_else(|| file["sm"]["gif"]["url"].as_str())
+        .or_else(|| file["xs"]["gif"]["url"].as_str())?
+        .to_string();
+    let gif_url = file["hd"]["gif"]["url"]
+        .as_str()
+        .or_else(|| file["md"]["gif"]["url"].as_str())
+        .unwrap_or(preview_url.as_str())
+        .to_string();
+    let width = file["sm"]["webp"]["width"]
+        .as_u64()
+        .or_else(|| file["sm"]["gif"]["width"].as_u64())
+        .unwrap_or(220) as u32;
+    let height = file["sm"]["webp"]["height"]
+        .as_u64()
+        .or_else(|| file["sm"]["gif"]["height"].as_u64())
+        .unwrap_or(220) as u32;
+
+    Some(GifItem {
+        id: id.to_string(),
+        slug,
+        title,
+        preview_url,
+        gif_url,
+        width,
+        height,
+    })
+}
+
+/// Fetch GIFs from the KLIPY v1 API.
+///
+/// If `query` is empty, fetches trending GIFs.
+#[tauri::command]
+async fn fetch_gifs(query: String, page: u32, per_page: u32) -> Result<GifResult, String> {
+    let app_key = get_gif_api_key()?;
+
+    let client = reqwest::Client::new();
+    let (url, is_search) = if query.trim().is_empty() {
+        (
+            format!("https://api.klipy.com/api/v1/{}/gifs/trending", app_key),
+            false,
+        )
+    } else {
+        (
+            format!("https://api.klipy.com/api/v1/{}/gifs/search", app_key),
+            true,
+        )
+    };
+
+    let mut params: Vec<(&str, String)> = vec![
+        ("page", page.to_string()),
+        ("per_page", per_page.to_string()),
+        ("customer_id", "linvclipboard_user".to_string()),
+        ("content_filter", "medium".to_string()),
+        ("format_filter", "gif,webp,jpg".to_string()),
+    ];
+    if is_search {
+        params.push(("q", query));
+    }
+
+    let resp = client
+        .get(&url)
+        .query(&params)
+        .send()
+        .await
+        .map_err(|e| format!("HTTP request failed: {}", e))?;
+
+    if !resp.status().is_success() {
+        return Err(format!("API error: {}", resp.status()));
+    }
+
+    let body: serde_json::Value = resp
+        .json()
+        .await
+        .map_err(|e| format!("Failed to parse response: {}", e))?;
+
+    if body["result"].as_bool() != Some(true) {
+        return Err("API returned error".to_string());
+    }
+
+    let data = &body["data"];
+    let has_next = data["has_next"].as_bool().unwrap_or(false);
+    let current_page = data["current_page"].as_u64().unwrap_or(page as u64) as u32;
+    let results = data["data"].as_array().ok_or("No data array in response")?;
+
+    let items: Vec<GifItem> = results.iter().filter_map(parse_gif_item).collect();
+
+    Ok(GifResult {
+        items,
+        page: current_page,
+        has_next,
+    })
+}
+
+/// Fetch GIF categories from the KLIPY v1 API.
+#[tauri::command]
+async fn fetch_gif_categories() -> Result<Vec<GifCategory>, String> {
+    let app_key = get_gif_api_key()?;
+
+    let client = reqwest::Client::new();
+    let url = format!("https://api.klipy.com/api/v1/{}/gifs/categories", app_key);
+
+    let resp = client
+        .get(&url)
+        .send()
+        .await
+        .map_err(|e| format!("HTTP request failed: {}", e))?;
+
+    if !resp.status().is_success() {
+        return Err(format!("API error: {}", resp.status()));
+    }
+
+    let body: serde_json::Value = resp
+        .json()
+        .await
+        .map_err(|e| format!("Failed to parse response: {}", e))?;
+
+    if body["result"].as_bool() != Some(true) {
+        return Err("API returned error".to_string());
+    }
+
+    let cats = body["data"]["categories"]
+        .as_array()
+        .ok_or("No categories in response")?;
+
+    let categories: Vec<GifCategory> = cats
+        .iter()
+        .filter_map(|c| {
+            let category = c["category"].as_str()?.to_string();
+            let query = c["query"].as_str()?.to_string();
+            let preview_url = c["preview_url"].as_str()?.to_string();
+            Some(GifCategory {
+                category,
+                query,
+                preview_url,
+            })
+        })
+        .collect();
+
+    Ok(categories)
+}
+
+/// Register a GIF share event with KLIPY v1 API (POST).
+#[tauri::command]
+async fn register_gif_share(slug: String, query: String) -> Result<String, String> {
+    let app_key = get_gif_api_key()?;
+
+    let client = reqwest::Client::new();
+    let url = format!("https://api.klipy.com/api/v1/{}/gifs/share/{}", app_key, slug);
+
+    let mut body_map = serde_json::Map::new();
+    body_map.insert(
+        "customer_id".to_string(),
+        serde_json::Value::String("linvclipboard_user".to_string()),
+    );
+    if !query.is_empty() {
+        body_map.insert("q".to_string(), serde_json::Value::String(query));
+    }
+
+    let _ = client
+        .post(&url)
+        .json(&serde_json::Value::Object(body_map))
+        .send()
+        .await;
+
+    Ok("ok".to_string())
+}
+
 /// Add a tag to an item.
 #[tauri::command]
 async fn add_tag(id: String, tag: String) -> Result<ClipboardItem, String> {
@@ -407,6 +683,10 @@ pub fn run() {
             get_image_base64,
             add_tag,
             remove_tag,
+            fetch_gifs,
+            fetch_gif_categories,
+            register_gif_share,
+            check_for_updates,
         ])
         .setup(|app| {
             let window = app.get_webview_window("main").unwrap();

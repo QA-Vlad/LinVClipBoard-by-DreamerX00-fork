@@ -1,6 +1,6 @@
 {
     "productName": "LinVClipBoard",
-    "version": "1.4.4",
+    "version": "1.5.0",
     "identifier": "com.linvclipboard.app",
     "build": {
         "frontendDist": "../dist",
@@ -28,7 +28,7 @@
             }
         ],
         "security": {
-            "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' asset: https://asset.localhost data:; script-src 'self'; font-src 'self' data:"
+            "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' asset: https://asset.localhost https://static.klipy.com data:; connect-src 'self' https://api.klipy.com https://api.github.com; script-src 'self'; font-src 'self' data:"
         }
     },
     "plugins": {}

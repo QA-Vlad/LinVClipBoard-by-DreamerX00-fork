@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { open } from "@tauri-apps/plugin-shell";
 import { useTranslation } from "../i18n/index.jsx";
 
 function SettingsPanel({ onClose, zoom, onZoomChange }) {
@@ -9,6 +10,7 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
     const [advancedOpen, setAdvancedOpen] = useState(false);
     const configRef = useRef(null);
     const dirtyRef = useRef(false);
+    const [updateStatus, setUpdateStatus] = useState(null); // null | 'checking' | {has_update, ...} | {error}
 
     useEffect(() => {
         loadConfig();
@@ -82,6 +84,24 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
         document.documentElement.setAttribute("data-theme", newTheme === "auto" ? "dark" : newTheme);
         localStorage.setItem("theme", newTheme);
     };
+
+    const handleCheckUpdate = useCallback(async () => {
+        setUpdateStatus("checking");
+        try {
+            const info = await invoke("check_for_updates");
+            setUpdateStatus(info);
+        } catch (err) {
+            setUpdateStatus({ error: String(err) });
+        }
+    }, []);
+
+    const handleOpenRelease = useCallback(async (url) => {
+        try {
+            await open(url);
+        } catch (_) {
+            window.open(url, "_blank");
+        }
+    }, []);
 
     if (!config) {
         return (
@@ -349,6 +369,38 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
                     </div>
 
                     <div className="settings-save-hint">{t("settings.close_to_save")}</div>
+
+                    {/* ── 🔄 Check for Updates ── */}
+                    <div className="settings-section settings-update-section">
+                        <div className="settings-section-label">🔄 {t("settings.updates")}</div>
+                        <div className="settings-update-row">
+                            <span className="settings-version">v{updateStatus?.current_version || "1.4.4"}</span>
+                            <button
+                                className="settings-update-btn"
+                                onClick={handleCheckUpdate}
+                                disabled={updateStatus === "checking"}
+                            >
+                                {updateStatus === "checking" ? t("settings.checking") : t("settings.check_updates")}
+                            </button>
+                        </div>
+                        {updateStatus && updateStatus !== "checking" && !updateStatus.error && (
+                            <div className={`settings-update-result ${updateStatus.has_update ? "has-update" : "up-to-date"}`}>
+                                {updateStatus.has_update ? (
+                                    <>
+                                        <span>✨ {t("settings.update_available").replace("{v}", updateStatus.latest_version)}</span>
+                                        <button className="settings-update-link" onClick={() => handleOpenRelease(updateStatus.release_url)}>
+                                            {t("settings.download")}
+                                        </button>
+                                    </>
+                                ) : (
+                                    <span>✅ {t("settings.up_to_date")}</span>
+                                )}
+                            </div>
+                        )}
+                        {updateStatus?.error && (
+                            <div className="settings-update-result update-error">⚠️ {updateStatus.error}</div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

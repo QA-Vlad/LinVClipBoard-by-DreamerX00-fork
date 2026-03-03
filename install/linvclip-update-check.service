@@ -1,0 +1,8 @@
+[Unit]
+Description=LinVClipBoard weekly update check
+Documentation=https://github.com/DreamerX00/LinVClipBoard
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/linvclipboard/update-check.sh
+Environment=DISPLAY=:0

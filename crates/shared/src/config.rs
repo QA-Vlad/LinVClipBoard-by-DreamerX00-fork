@@ -49,6 +49,9 @@ pub struct UiConfig {
     /// Window positioning mode: "fixed" or "mouse".
     #[serde(default = "default_window_position")]
     pub window_position: String,
+    /// Tenor API key for GIF search. Empty = GIF tab shows setup prompt.
+    #[serde(default)]
+    pub tenor_api_key: String,
 }
 
 fn default_shortcut() -> String {
@@ -100,6 +103,7 @@ impl Default for AppConfig {
                 language: "en".to_string(),
                 zoom: 100,
                 window_position: "mouse".to_string(),
+                tenor_api_key: String::new(),
             },
             storage: StorageConfig {
                 max_items: 10_000,

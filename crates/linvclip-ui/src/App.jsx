@@ -10,6 +10,7 @@ import SearchBar from "./components/SearchBar";
 import ClipboardList from "./components/ClipboardList";
 import EmojiPicker from "./components/EmojiPicker";
 import SymbolPicker from "./components/SymbolPicker";
+import GifPicker from "./components/GifPicker";
 import FilterPills from "./components/FilterPills";
 import Footer from "./components/Footer";
 import SettingsPanel from "./components/SettingsPanel";
@@ -299,6 +300,8 @@ function App() {
             ? t("search.placeholder_emojis")
             : activeTab === "symbols"
             ? t("search.placeholder_symbols")
+            : activeTab === "gifs"
+            ? t("search.placeholder_gifs")
             : t("search.placeholder_clipboard");
 
     return (
@@ -338,6 +341,9 @@ function App() {
                     )}
                     {activeTab === "symbols" && (
                         <SymbolPicker searchQuery={searchQuery} onToast={showToast} />
+                    )}
+                    {activeTab === "gifs" && (
+                        <GifPicker searchQuery={searchQuery} onToast={showToast} />
                     )}
                 </main>
 

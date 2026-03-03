@@ -14,7 +14,7 @@
   <a href="#installation">Install</a> &middot;
   <a href="#usage">Usage</a> &middot;
   <a href="#configuration">Config</a> &middot;
-  <a href="https://github.com/akash-singh8/LinVClipBoard/releases">Releases</a>
+  <a href="https://github.com/DreamerX00/LinVClipBoard/releases">Releases</a>
 </p>
 
 ---
@@ -59,7 +59,7 @@ Items are stored in a local SQLite database with FTS5 full-text search. Images a
 
 ### From .deb package (recommended)
 
-Download `linvclipboard_1.0.1-1_amd64.deb` from [Releases](https://github.com/akash-singh8/LinVClipBoard/releases):
+Download `linvclipboard_1.0.1-1_amd64.deb` from [Releases](https://github.com/DreamerX00/LinVClipBoard/releases):
 
 ```bash
 sudo dpkg -i linvclipboard_1.0.1-1_amd64.deb

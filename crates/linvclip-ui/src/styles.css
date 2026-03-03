@@ -837,6 +837,193 @@ kbd {
     min-height: 34px;
 }
 
+/* ---- GIF Grid ---- */
+.gif-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
+    padding: 6px 4px;
+}
+
+.gif-cell {
+    position: relative;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+    aspect-ratio: 1 / 1;
+}
+
+.gif-cell:hover {
+    transform: scale(1.04);
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
+    z-index: 1;
+}
+
+.gif-cell:active {
+    transform: scale(0.96);
+}
+
+/* Shimmer skeleton shown while image loads */
+.gif-shimmer {
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    background: linear-gradient(
+        110deg,
+        var(--bg-secondary) 30%,
+        var(--surface, #2a2a40) 50%,
+        var(--bg-secondary) 70%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.gif-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px;
+}
+
+.gif-img--loading {
+    opacity: 0;
+    position: absolute;
+    inset: 0;
+}
+
+.gif-img--loaded {
+    opacity: 1;
+}
+
+.gif-sentinel {
+    height: 1px;
+}
+
+.gif-loading {
+    display: flex;
+    justify-content: center;
+    padding: 16px;
+}
+
+.gif-spinner {
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    display: inline-block;
+}
+
+.gif-error {
+    text-align: center;
+    padding: 12px;
+    color: var(--danger);
+    font-size: 0.82rem;
+}
+
+.gif-powered-by {
+    text-align: center;
+    font-size: 0.7rem;
+    color: var(--muted);
+    padding: 8px 0 12px;
+    opacity: 0.6;
+}
+
+/* ── GIF Category Tiles ── */
+.gif-categories-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    padding: 6px;
+}
+
+.gif-category-tile {
+    position: relative;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    background: transparent;
+    aspect-ratio: 4 / 3;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.gif-category-tile:hover {
+    transform: scale(1.04);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.gif-category-tile:active {
+    transform: scale(0.96);
+}
+
+.gif-category-tile .gif-shimmer {
+    border-radius: 10px;
+}
+
+.gif-category-tile .gif-img {
+    border-radius: 10px;
+}
+
+.gif-category-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 8px 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+    text-align: center;
+    text-transform: capitalize;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* ── GIF Results Header (back button + category name) ── */
+.gif-results-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+.gif-back-btn {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background 0.15s;
+}
+
+.gif-back-btn:hover {
+    background: var(--hover);
+}
+
+.gif-results-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--fg);
+    text-transform: capitalize;
+}
+
 /* ---- Language Dropdown ---- */
 .language-select {
     width: 100%;
@@ -1367,6 +1554,97 @@ kbd {
     color: var(--text-tertiary);
     padding: 8px 0 4px;
     font-style: italic;
+}
+
+/* ── Update section ── */
+.settings-update-section {
+    border-top: 1px solid var(--border);
+    margin-top: 4px;
+    padding-top: 10px;
+}
+
+.settings-update-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.settings-version {
+    font-size: 0.82rem;
+    color: var(--text-tertiary);
+    font-weight: 600;
+    font-family: monospace;
+}
+
+.settings-update-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 5px 14px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transition-fast), opacity var(--transition-fast);
+}
+
+.settings-update-btn:hover {
+    background: var(--accent-hover);
+}
+
+.settings-update-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.settings-update-result {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 0.78rem;
+}
+
+.settings-update-result.up-to-date {
+    background: rgba(52, 211, 153, 0.12);
+    color: var(--success);
+}
+
+.settings-update-result.has-update {
+    background: rgba(251, 191, 36, 0.12);
+    color: var(--warning);
+}
+
+.settings-update-result.update-error {
+    background: rgba(248, 113, 113, 0.12);
+    color: var(--danger);
+    font-size: 0.72rem;
+}
+
+.settings-update-link {
+    background: none;
+    border: 1px solid currentColor;
+    border-radius: var(--radius-sm);
+    padding: 2px 10px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: inherit;
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.settings-update-link:hover {
+    background: rgba(251, 191, 36, 0.2);
+}
+
+.settings-hint {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 4px;
+    line-height: 1.4;
 }
 
 .settings-loading {

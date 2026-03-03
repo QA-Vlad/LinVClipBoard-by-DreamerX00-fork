@@ -1,17 +1,19 @@
 {
   "app": {
     "title": "LinVClipBoard",
-    "footer": "Desenvolvido por akash-singh"
+    "footer": "Desenvolvido por DreamerX"
   },
   "tabs": {
     "clipboard": "Clipboard",
     "emojis": "Emojis",
-    "symbols": "Símbolos"
+    "symbols": "Símbolos",
+    "gifs": "GIFs"
   },
   "search": {
     "placeholder_clipboard": "Pesquisar histórico...",
     "placeholder_emojis": "Pesquisar emojis...",
-    "placeholder_symbols": "Pesquisar símbolos..."
+    "placeholder_symbols": "Pesquisar símbolos...",
+    "placeholder_gifs": "Search KLIPY"
   },
   "filters": {
     "all": "Tudo",
@@ -83,7 +85,15 @@
     "theme": "Tema",
     "theme_auto": "Automático (seguir SO)",
     "theme_dark": "Escuro",
-    "theme_light": "Claro"
+    "theme_light": "Claro",
+    "tenor_api_key": "Chave API do KLIPY",
+    "tenor_api_key_hint": "Obtenha uma chave gratuita em partner.klipy.com",
+    "updates": "Atualizações",
+    "check_updates": "Verificar Atualizações",
+    "checking": "Verificando…",
+    "update_available": "Versão {v} disponível!",
+    "up_to_date": "Você está atualizado.",
+    "download": "Baixar"
   },
   "confirm": {
     "clear_all": "Excluir todos os itens não fixados? Esta ação não pode ser desfeita.",
@@ -96,5 +106,12 @@
     "nav_hint": "navegar",
     "paste_hint": "colar",
     "close_hint": "fechar"
+  },
+  "gif": {
+    "no_results": "Nenhum GIF encontrado",
+    "copied_url": "URL do GIF copiada!",
+    "copy_hint": "Clique para copiar URL do GIF",
+    "api_key_required": "Chave API do KLIPY Necessária",
+    "api_key_hint": "Adicione sua chave API gratuita do KLIPY em Configurações → Avançado → GIF."
   }
 }
