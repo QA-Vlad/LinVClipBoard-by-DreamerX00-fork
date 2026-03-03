@@ -3,6 +3,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { useTranslation } from "../i18n/index.jsx";
 import symbolData from "../data/symbols.json";
 
+/** i18n keys for the original symbol categories; kaomoji categories use their name directly */
 const CATEGORY_KEYS = {
     "Math": "symbol.math",
     "Arrows": "symbol.arrows",
@@ -11,8 +12,10 @@ const CATEGORY_KEYS = {
     "Superscript & Subscript": "symbol.superscript",
     "Punctuation": "symbol.punctuation",
     "Box Drawing": "symbol.box_drawing",
-    "ASCII Emoticons": "symbol.ascii_emoticons",
 };
+
+/** Categories where items are multi-char kaomoji (need wider cells) */
+const isKaomojiCategory = (cat) => !(cat in CATEGORY_KEYS);
 
 const RECENT_KEY = "linvclip_recent_symbols";
 const MAX_RECENT = 24;
@@ -58,7 +61,11 @@ function SymbolPicker({ searchQuery, onToast }) {
         const results = [];
         for (const [category, symbols] of Object.entries(symbolData)) {
             for (const item of symbols) {
-                if (item.name.includes(query) || item.symbol.includes(query)) {
+                if (
+                    item.name.includes(query) ||
+                    item.symbol.toLowerCase().includes(query) ||
+                    category.toLowerCase().includes(query)
+                ) {
                     results.push(item);
                 }
             }
@@ -76,11 +83,11 @@ function SymbolPicker({ searchQuery, onToast }) {
         }
         return (
             <div className="picker-scroll">
-                <div className="symbol-grid">
+                <div className="ascii-grid">
                     {filteredData.map((item, i) => (
                         <button
                             key={i}
-                            className="symbol-cell"
+                            className={`symbol-cell${item.symbol.length > 2 ? " ascii-cell" : ""}`}
                             onClick={() => handleClick(item.symbol)}
                             title={item.name}
                             aria-label={item.name}
@@ -98,11 +105,11 @@ function SymbolPicker({ searchQuery, onToast }) {
             {recent.length > 0 && (
                 <>
                     <h3 className="picker-category-header">{t("symbol.recent")}</h3>
-                    <div className="symbol-grid">
+                    <div className="ascii-grid">
                         {recent.map((sym, i) => (
                             <button
                                 key={"r" + i}
-                                className="symbol-cell"
+                                className={`symbol-cell${sym.length > 2 ? " ascii-cell" : ""}`}
                                 onClick={() => handleClick(sym)}
                                 title={sym}
                                 aria-label={sym}
@@ -114,26 +121,29 @@ function SymbolPicker({ searchQuery, onToast }) {
                 </>
             )}
 
-            {Object.entries(symbolData).map(([category, symbols]) => (
-                <div key={category}>
-                    <h3 className="picker-category-header">
-                        {t(CATEGORY_KEYS[category] || category)}
-                    </h3>
-                    <div className={`symbol-grid${category === "ASCII Emoticons" ? " ascii-grid" : ""}`}>
-                        {symbols.map((item, i) => (
-                            <button
-                                key={i}
-                                className={`symbol-cell${item.symbol.length > 2 ? " ascii-cell" : ""}`}
-                                onClick={() => handleClick(item.symbol)}
-                                title={item.name}
-                                aria-label={item.name}
-                            >
-                                {item.symbol}
-                            </button>
-                        ))}
+            {Object.entries(symbolData).map(([category, symbols]) => {
+                const kaomoji = isKaomojiCategory(category);
+                return (
+                    <div key={category}>
+                        <h3 className="picker-category-header">
+                            {CATEGORY_KEYS[category] ? t(CATEGORY_KEYS[category]) : category}
+                        </h3>
+                        <div className={kaomoji ? "ascii-grid" : "symbol-grid"}>
+                            {symbols.map((item, i) => (
+                                <button
+                                    key={i}
+                                    className={`symbol-cell${kaomoji ? " ascii-cell" : ""}`}
+                                    onClick={() => handleClick(item.symbol)}
+                                    title={item.name}
+                                    aria-label={item.name}
+                                >
+                                    {item.symbol}
+                                </button>
+                            ))}
+                        </div>
                     </div>
-                </div>
-            ))}
+                );
+            })}
         </div>
     );
 }

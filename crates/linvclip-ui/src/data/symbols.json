@@ -1,299 +1,8504 @@
 {
   "Math": [
-    {"symbol": "±", "name": "plus minus"},
-    {"symbol": "÷", "name": "division"},
-    {"symbol": "×", "name": "multiplication"},
-    {"symbol": "∞", "name": "infinity"},
-    {"symbol": "√", "name": "square root"},
-    {"symbol": "∛", "name": "cube root"},
-    {"symbol": "π", "name": "pi"},
-    {"symbol": "∑", "name": "summation"},
-    {"symbol": "∏", "name": "product"},
-    {"symbol": "∫", "name": "integral"},
-    {"symbol": "∂", "name": "partial derivative"},
-    {"symbol": "∇", "name": "nabla gradient"},
-    {"symbol": "≈", "name": "approximately equal"},
-    {"symbol": "≠", "name": "not equal"},
-    {"symbol": "≤", "name": "less than or equal"},
-    {"symbol": "≥", "name": "greater than or equal"},
-    {"symbol": "∈", "name": "element of"},
-    {"symbol": "∉", "name": "not element of"},
-    {"symbol": "⊂", "name": "subset"},
-    {"symbol": "⊃", "name": "superset"},
-    {"symbol": "∪", "name": "union"},
-    {"symbol": "∩", "name": "intersection"},
-    {"symbol": "∅", "name": "empty set"},
-    {"symbol": "∀", "name": "for all"},
-    {"symbol": "∃", "name": "there exists"},
-    {"symbol": "∴", "name": "therefore"},
-    {"symbol": "∵", "name": "because"},
-    {"symbol": "⊕", "name": "xor circle plus"},
-    {"symbol": "⊗", "name": "circle times"},
-    {"symbol": "∝", "name": "proportional to"},
-    {"symbol": "⌊", "name": "left floor"},
-    {"symbol": "⌋", "name": "right floor"},
-    {"symbol": "⌈", "name": "left ceiling"},
-    {"symbol": "⌉", "name": "right ceiling"},
-    {"symbol": "‰", "name": "per mille"},
-    {"symbol": "°", "name": "degree"},
-    {"symbol": "∠", "name": "angle"},
-    {"symbol": "⊥", "name": "perpendicular"},
-    {"symbol": "∥", "name": "parallel"},
-    {"symbol": "≡", "name": "identical to"},
-    {"symbol": "≢", "name": "not identical to"},
-    {"symbol": "⊆", "name": "subset or equal"},
-    {"symbol": "⊇", "name": "superset or equal"},
-    {"symbol": "∧", "name": "logical and"},
-    {"symbol": "∨", "name": "logical or"},
-    {"symbol": "¬", "name": "not negation"},
-    {"symbol": "⟨", "name": "left angle bracket"},
-    {"symbol": "⟩", "name": "right angle bracket"}
+    {
+      "symbol": "±",
+      "name": "plus minus"
+    },
+    {
+      "symbol": "÷",
+      "name": "division"
+    },
+    {
+      "symbol": "×",
+      "name": "multiplication"
+    },
+    {
+      "symbol": "∞",
+      "name": "infinity"
+    },
+    {
+      "symbol": "√",
+      "name": "square root"
+    },
+    {
+      "symbol": "∛",
+      "name": "cube root"
+    },
+    {
+      "symbol": "π",
+      "name": "pi"
+    },
+    {
+      "symbol": "∑",
+      "name": "summation"
+    },
+    {
+      "symbol": "∏",
+      "name": "product"
+    },
+    {
+      "symbol": "∫",
+      "name": "integral"
+    },
+    {
+      "symbol": "∂",
+      "name": "partial derivative"
+    },
+    {
+      "symbol": "∇",
+      "name": "nabla gradient"
+    },
+    {
+      "symbol": "≈",
+      "name": "approximately equal"
+    },
+    {
+      "symbol": "≠",
+      "name": "not equal"
+    },
+    {
+      "symbol": "≤",
+      "name": "less than or equal"
+    },
+    {
+      "symbol": "≥",
+      "name": "greater than or equal"
+    },
+    {
+      "symbol": "∈",
+      "name": "element of"
+    },
+    {
+      "symbol": "∉",
+      "name": "not element of"
+    },
+    {
+      "symbol": "⊂",
+      "name": "subset"
+    },
+    {
+      "symbol": "⊃",
+      "name": "superset"
+    },
+    {
+      "symbol": "∪",
+      "name": "union"
+    },
+    {
+      "symbol": "∩",
+      "name": "intersection"
+    },
+    {
+      "symbol": "∅",
+      "name": "empty set"
+    },
+    {
+      "symbol": "∀",
+      "name": "for all"
+    },
+    {
+      "symbol": "∃",
+      "name": "there exists"
+    },
+    {
+      "symbol": "∴",
+      "name": "therefore"
+    },
+    {
+      "symbol": "∵",
+      "name": "because"
+    },
+    {
+      "symbol": "⊕",
+      "name": "xor circle plus"
+    },
+    {
+      "symbol": "⊗",
+      "name": "circle times"
+    },
+    {
+      "symbol": "∝",
+      "name": "proportional to"
+    },
+    {
+      "symbol": "⌊",
+      "name": "left floor"
+    },
+    {
+      "symbol": "⌋",
+      "name": "right floor"
+    },
+    {
+      "symbol": "⌈",
+      "name": "left ceiling"
+    },
+    {
+      "symbol": "⌉",
+      "name": "right ceiling"
+    },
+    {
+      "symbol": "‰",
+      "name": "per mille"
+    },
+    {
+      "symbol": "°",
+      "name": "degree"
+    },
+    {
+      "symbol": "∠",
+      "name": "angle"
+    },
+    {
+      "symbol": "⊥",
+      "name": "perpendicular"
+    },
+    {
+      "symbol": "∥",
+      "name": "parallel"
+    },
+    {
+      "symbol": "≡",
+      "name": "identical to"
+    },
+    {
+      "symbol": "≢",
+      "name": "not identical to"
+    },
+    {
+      "symbol": "⊆",
+      "name": "subset or equal"
+    },
+    {
+      "symbol": "⊇",
+      "name": "superset or equal"
+    },
+    {
+      "symbol": "∧",
+      "name": "logical and"
+    },
+    {
+      "symbol": "∨",
+      "name": "logical or"
+    },
+    {
+      "symbol": "¬",
+      "name": "not negation"
+    },
+    {
+      "symbol": "⟨",
+      "name": "left angle bracket"
+    },
+    {
+      "symbol": "⟩",
+      "name": "right angle bracket"
+    }
   ],
   "Arrows": [
-    {"symbol": "→", "name": "right arrow"},
-    {"symbol": "←", "name": "left arrow"},
-    {"symbol": "↑", "name": "up arrow"},
-    {"symbol": "↓", "name": "down arrow"},
-    {"symbol": "↔", "name": "left right arrow"},
-    {"symbol": "↕", "name": "up down arrow"},
-    {"symbol": "⇒", "name": "double right arrow implies"},
-    {"symbol": "⇐", "name": "double left arrow"},
-    {"symbol": "⇑", "name": "double up arrow"},
-    {"symbol": "⇓", "name": "double down arrow"},
-    {"symbol": "⇔", "name": "double left right arrow iff"},
-    {"symbol": "↗", "name": "upper right arrow"},
-    {"symbol": "↘", "name": "lower right arrow"},
-    {"symbol": "↙", "name": "lower left arrow"},
-    {"symbol": "↖", "name": "upper left arrow"},
-    {"symbol": "⟵", "name": "long left arrow"},
-    {"symbol": "⟶", "name": "long right arrow"},
-    {"symbol": "⟷", "name": "long left right arrow"},
-    {"symbol": "↦", "name": "maps to"},
-    {"symbol": "↩", "name": "left hook arrow"},
-    {"symbol": "↪", "name": "right hook arrow"},
-    {"symbol": "⤴", "name": "right arrow curving up"},
-    {"symbol": "⤵", "name": "right arrow curving down"},
-    {"symbol": "➜", "name": "heavy right arrow"},
-    {"symbol": "➔", "name": "right arrow heavy"},
-    {"symbol": "➤", "name": "right arrow pointer"},
-    {"symbol": "➡", "name": "right arrow blue"},
-    {"symbol": "⬅", "name": "left arrow blue"},
-    {"symbol": "⬆", "name": "up arrow blue"},
-    {"symbol": "⬇", "name": "down arrow blue"},
-    {"symbol": "↰", "name": "up left arrow"},
-    {"symbol": "↱", "name": "up right arrow"},
-    {"symbol": "↴", "name": "right arrow down"},
-    {"symbol": "↵", "name": "return arrow"},
-    {"symbol": "⇋", "name": "leftward harpoon over rightward"},
-    {"symbol": "⇌", "name": "rightward harpoon over leftward"}
+    {
+      "symbol": "→",
+      "name": "right arrow"
+    },
+    {
+      "symbol": "←",
+      "name": "left arrow"
+    },
+    {
+      "symbol": "↑",
+      "name": "up arrow"
+    },
+    {
+      "symbol": "↓",
+      "name": "down arrow"
+    },
+    {
+      "symbol": "↔",
+      "name": "left right arrow"
+    },
+    {
+      "symbol": "↕",
+      "name": "up down arrow"
+    },
+    {
+      "symbol": "⇒",
+      "name": "double right arrow implies"
+    },
+    {
+      "symbol": "⇐",
+      "name": "double left arrow"
+    },
+    {
+      "symbol": "⇑",
+      "name": "double up arrow"
+    },
+    {
+      "symbol": "⇓",
+      "name": "double down arrow"
+    },
+    {
+      "symbol": "⇔",
+      "name": "double left right arrow iff"
+    },
+    {
+      "symbol": "↗",
+      "name": "upper right arrow"
+    },
+    {
+      "symbol": "↘",
+      "name": "lower right arrow"
+    },
+    {
+      "symbol": "↙",
+      "name": "lower left arrow"
+    },
+    {
+      "symbol": "↖",
+      "name": "upper left arrow"
+    },
+    {
+      "symbol": "⟵",
+      "name": "long left arrow"
+    },
+    {
+      "symbol": "⟶",
+      "name": "long right arrow"
+    },
+    {
+      "symbol": "⟷",
+      "name": "long left right arrow"
+    },
+    {
+      "symbol": "↦",
+      "name": "maps to"
+    },
+    {
+      "symbol": "↩",
+      "name": "left hook arrow"
+    },
+    {
+      "symbol": "↪",
+      "name": "right hook arrow"
+    },
+    {
+      "symbol": "⤴",
+      "name": "right arrow curving up"
+    },
+    {
+      "symbol": "⤵",
+      "name": "right arrow curving down"
+    },
+    {
+      "symbol": "➜",
+      "name": "heavy right arrow"
+    },
+    {
+      "symbol": "➔",
+      "name": "right arrow heavy"
+    },
+    {
+      "symbol": "➤",
+      "name": "right arrow pointer"
+    },
+    {
+      "symbol": "➡",
+      "name": "right arrow blue"
+    },
+    {
+      "symbol": "⬅",
+      "name": "left arrow blue"
+    },
+    {
+      "symbol": "⬆",
+      "name": "up arrow blue"
+    },
+    {
+      "symbol": "⬇",
+      "name": "down arrow blue"
+    },
+    {
+      "symbol": "↰",
+      "name": "up left arrow"
+    },
+    {
+      "symbol": "↱",
+      "name": "up right arrow"
+    },
+    {
+      "symbol": "↴",
+      "name": "right arrow down"
+    },
+    {
+      "symbol": "↵",
+      "name": "return arrow"
+    },
+    {
+      "symbol": "⇋",
+      "name": "leftward harpoon over rightward"
+    },
+    {
+      "symbol": "⇌",
+      "name": "rightward harpoon over leftward"
+    }
   ],
   "Currency": [
-    {"symbol": "$", "name": "dollar"},
-    {"symbol": "€", "name": "euro"},
-    {"symbol": "£", "name": "pound"},
-    {"symbol": "¥", "name": "yen yuan"},
-    {"symbol": "₹", "name": "indian rupee"},
-    {"symbol": "₿", "name": "bitcoin"},
-    {"symbol": "₩", "name": "won"},
-    {"symbol": "₽", "name": "ruble"},
-    {"symbol": "₺", "name": "turkish lira"},
-    {"symbol": "₨", "name": "rupee"},
-    {"symbol": "₱", "name": "peso"},
-    {"symbol": "¢", "name": "cent"},
-    {"symbol": "₡", "name": "colon"},
-    {"symbol": "₴", "name": "hryvnia"},
-    {"symbol": "₫", "name": "dong"},
-    {"symbol": "฿", "name": "baht"},
-    {"symbol": "₮", "name": "tugrik"},
-    {"symbol": "₦", "name": "naira"},
-    {"symbol": "₵", "name": "cedi"},
-    {"symbol": "₲", "name": "guarani"},
-    {"symbol": "₪", "name": "new sheqel"},
-    {"symbol": "Ξ", "name": "ethereum"}
+    {
+      "symbol": "$",
+      "name": "dollar"
+    },
+    {
+      "symbol": "€",
+      "name": "euro"
+    },
+    {
+      "symbol": "£",
+      "name": "pound"
+    },
+    {
+      "symbol": "¥",
+      "name": "yen yuan"
+    },
+    {
+      "symbol": "₹",
+      "name": "indian rupee"
+    },
+    {
+      "symbol": "₿",
+      "name": "bitcoin"
+    },
+    {
+      "symbol": "₩",
+      "name": "won"
+    },
+    {
+      "symbol": "₽",
+      "name": "ruble"
+    },
+    {
+      "symbol": "₺",
+      "name": "turkish lira"
+    },
+    {
+      "symbol": "₨",
+      "name": "rupee"
+    },
+    {
+      "symbol": "₱",
+      "name": "peso"
+    },
+    {
+      "symbol": "¢",
+      "name": "cent"
+    },
+    {
+      "symbol": "₡",
+      "name": "colon"
+    },
+    {
+      "symbol": "₴",
+      "name": "hryvnia"
+    },
+    {
+      "symbol": "₫",
+      "name": "dong"
+    },
+    {
+      "symbol": "฿",
+      "name": "baht"
+    },
+    {
+      "symbol": "₮",
+      "name": "tugrik"
+    },
+    {
+      "symbol": "₦",
+      "name": "naira"
+    },
+    {
+      "symbol": "₵",
+      "name": "cedi"
+    },
+    {
+      "symbol": "₲",
+      "name": "guarani"
+    },
+    {
+      "symbol": "₪",
+      "name": "new sheqel"
+    },
+    {
+      "symbol": "Ξ",
+      "name": "ethereum"
+    }
   ],
   "Greek": [
-    {"symbol": "α", "name": "alpha"},
-    {"symbol": "β", "name": "beta"},
-    {"symbol": "γ", "name": "gamma"},
-    {"symbol": "δ", "name": "delta"},
-    {"symbol": "ε", "name": "epsilon"},
-    {"symbol": "ζ", "name": "zeta"},
-    {"symbol": "η", "name": "eta"},
-    {"symbol": "θ", "name": "theta"},
-    {"symbol": "ι", "name": "iota"},
-    {"symbol": "κ", "name": "kappa"},
-    {"symbol": "λ", "name": "lambda"},
-    {"symbol": "μ", "name": "mu"},
-    {"symbol": "ν", "name": "nu"},
-    {"symbol": "ξ", "name": "xi"},
-    {"symbol": "ο", "name": "omicron"},
-    {"symbol": "ρ", "name": "rho"},
-    {"symbol": "σ", "name": "sigma"},
-    {"symbol": "τ", "name": "tau"},
-    {"symbol": "υ", "name": "upsilon"},
-    {"symbol": "φ", "name": "phi"},
-    {"symbol": "χ", "name": "chi"},
-    {"symbol": "ψ", "name": "psi"},
-    {"symbol": "ω", "name": "omega"},
-    {"symbol": "Α", "name": "capital alpha"},
-    {"symbol": "Β", "name": "capital beta"},
-    {"symbol": "Γ", "name": "capital gamma"},
-    {"symbol": "Δ", "name": "capital delta"},
-    {"symbol": "Θ", "name": "capital theta"},
-    {"symbol": "Λ", "name": "capital lambda"},
-    {"symbol": "Σ", "name": "capital sigma"},
-    {"symbol": "Φ", "name": "capital phi"},
-    {"symbol": "Ψ", "name": "capital psi"},
-    {"symbol": "Ω", "name": "capital omega"}
+    {
+      "symbol": "α",
+      "name": "alpha"
+    },
+    {
+      "symbol": "β",
+      "name": "beta"
+    },
+    {
+      "symbol": "γ",
+      "name": "gamma"
+    },
+    {
+      "symbol": "δ",
+      "name": "delta"
+    },
+    {
+      "symbol": "ε",
+      "name": "epsilon"
+    },
+    {
+      "symbol": "ζ",
+      "name": "zeta"
+    },
+    {
+      "symbol": "η",
+      "name": "eta"
+    },
+    {
+      "symbol": "θ",
+      "name": "theta"
+    },
+    {
+      "symbol": "ι",
+      "name": "iota"
+    },
+    {
+      "symbol": "κ",
+      "name": "kappa"
+    },
+    {
+      "symbol": "λ",
+      "name": "lambda"
+    },
+    {
+      "symbol": "μ",
+      "name": "mu"
+    },
+    {
+      "symbol": "ν",
+      "name": "nu"
+    },
+    {
+      "symbol": "ξ",
+      "name": "xi"
+    },
+    {
+      "symbol": "ο",
+      "name": "omicron"
+    },
+    {
+      "symbol": "ρ",
+      "name": "rho"
+    },
+    {
+      "symbol": "σ",
+      "name": "sigma"
+    },
+    {
+      "symbol": "τ",
+      "name": "tau"
+    },
+    {
+      "symbol": "υ",
+      "name": "upsilon"
+    },
+    {
+      "symbol": "φ",
+      "name": "phi"
+    },
+    {
+      "symbol": "χ",
+      "name": "chi"
+    },
+    {
+      "symbol": "ψ",
+      "name": "psi"
+    },
+    {
+      "symbol": "ω",
+      "name": "omega"
+    },
+    {
+      "symbol": "Α",
+      "name": "capital alpha"
+    },
+    {
+      "symbol": "Β",
+      "name": "capital beta"
+    },
+    {
+      "symbol": "Γ",
+      "name": "capital gamma"
+    },
+    {
+      "symbol": "Δ",
+      "name": "capital delta"
+    },
+    {
+      "symbol": "Θ",
+      "name": "capital theta"
+    },
+    {
+      "symbol": "Λ",
+      "name": "capital lambda"
+    },
+    {
+      "symbol": "Σ",
+      "name": "capital sigma"
+    },
+    {
+      "symbol": "Φ",
+      "name": "capital phi"
+    },
+    {
+      "symbol": "Ψ",
+      "name": "capital psi"
+    },
+    {
+      "symbol": "Ω",
+      "name": "capital omega"
+    }
   ],
   "Superscript & Subscript": [
-    {"symbol": "⁰", "name": "superscript zero"},
-    {"symbol": "¹", "name": "superscript one"},
-    {"symbol": "²", "name": "superscript two"},
-    {"symbol": "³", "name": "superscript three"},
-    {"symbol": "⁴", "name": "superscript four"},
-    {"symbol": "⁵", "name": "superscript five"},
-    {"symbol": "⁶", "name": "superscript six"},
-    {"symbol": "⁷", "name": "superscript seven"},
-    {"symbol": "⁸", "name": "superscript eight"},
-    {"symbol": "⁹", "name": "superscript nine"},
-    {"symbol": "₀", "name": "subscript zero"},
-    {"symbol": "₁", "name": "subscript one"},
-    {"symbol": "₂", "name": "subscript two"},
-    {"symbol": "₃", "name": "subscript three"},
-    {"symbol": "₄", "name": "subscript four"},
-    {"symbol": "₅", "name": "subscript five"},
-    {"symbol": "₆", "name": "subscript six"},
-    {"symbol": "₇", "name": "subscript seven"},
-    {"symbol": "₈", "name": "subscript eight"},
-    {"symbol": "₉", "name": "subscript nine"},
-    {"symbol": "ⁿ", "name": "superscript n"},
-    {"symbol": "ⁱ", "name": "superscript i"},
-    {"symbol": "ᵃ", "name": "superscript a"},
-    {"symbol": "ᵇ", "name": "superscript b"},
-    {"symbol": "ᵐ", "name": "superscript m"},
-    {"symbol": "ˣ", "name": "superscript x"}
+    {
+      "symbol": "⁰",
+      "name": "superscript zero"
+    },
+    {
+      "symbol": "¹",
+      "name": "superscript one"
+    },
+    {
+      "symbol": "²",
+      "name": "superscript two"
+    },
+    {
+      "symbol": "³",
+      "name": "superscript three"
+    },
+    {
+      "symbol": "⁴",
+      "name": "superscript four"
+    },
+    {
+      "symbol": "⁵",
+      "name": "superscript five"
+    },
+    {
+      "symbol": "⁶",
+      "name": "superscript six"
+    },
+    {
+      "symbol": "⁷",
+      "name": "superscript seven"
+    },
+    {
+      "symbol": "⁸",
+      "name": "superscript eight"
+    },
+    {
+      "symbol": "⁹",
+      "name": "superscript nine"
+    },
+    {
+      "symbol": "₀",
+      "name": "subscript zero"
+    },
+    {
+      "symbol": "₁",
+      "name": "subscript one"
+    },
+    {
+      "symbol": "₂",
+      "name": "subscript two"
+    },
+    {
+      "symbol": "₃",
+      "name": "subscript three"
+    },
+    {
+      "symbol": "₄",
+      "name": "subscript four"
+    },
+    {
+      "symbol": "₅",
+      "name": "subscript five"
+    },
+    {
+      "symbol": "₆",
+      "name": "subscript six"
+    },
+    {
+      "symbol": "₇",
+      "name": "subscript seven"
+    },
+    {
+      "symbol": "₈",
+      "name": "subscript eight"
+    },
+    {
+      "symbol": "₉",
+      "name": "subscript nine"
+    },
+    {
+      "symbol": "ⁿ",
+      "name": "superscript n"
+    },
+    {
+      "symbol": "ⁱ",
+      "name": "superscript i"
+    },
+    {
+      "symbol": "ᵃ",
+      "name": "superscript a"
+    },
+    {
+      "symbol": "ᵇ",
+      "name": "superscript b"
+    },
+    {
+      "symbol": "ᵐ",
+      "name": "superscript m"
+    },
+    {
+      "symbol": "ˣ",
+      "name": "superscript x"
+    }
   ],
   "Punctuation": [
-    {"symbol": "—", "name": "em dash"},
-    {"symbol": "–", "name": "en dash"},
-    {"symbol": "…", "name": "ellipsis"},
-    {"symbol": "·", "name": "middle dot"},
-    {"symbol": "•", "name": "bullet"},
-    {"symbol": "‣", "name": "triangular bullet"},
-    {"symbol": "†", "name": "dagger"},
-    {"symbol": "‡", "name": "double dagger"},
-    {"symbol": "§", "name": "section sign"},
-    {"symbol": "¶", "name": "pilcrow paragraph"},
-    {"symbol": "©", "name": "copyright"},
-    {"symbol": "®", "name": "registered"},
-    {"symbol": "™", "name": "trademark"},
-    {"symbol": "«", "name": "left guillemet"},
-    {"symbol": "»", "name": "right guillemet"},
-    {"symbol": "'", "name": "left single quote"},
-    {"symbol": "'", "name": "right single quote"},
-    {"symbol": "\u201c", "name": "left double quote"},
-    {"symbol": "\u201d", "name": "right double quote"},
-    {"symbol": "¿", "name": "inverted question mark"},
-    {"symbol": "¡", "name": "inverted exclamation mark"},
-    {"symbol": "‽", "name": "interrobang"},
-    {"symbol": "⁂", "name": "asterism"},
-    {"symbol": "※", "name": "reference mark"},
-    {"symbol": "⁀", "name": "character tie"},
-    {"symbol": "‖", "name": "double vertical line"}
+    {
+      "symbol": "—",
+      "name": "em dash"
+    },
+    {
+      "symbol": "–",
+      "name": "en dash"
+    },
+    {
+      "symbol": "…",
+      "name": "ellipsis"
+    },
+    {
+      "symbol": "·",
+      "name": "middle dot"
+    },
+    {
+      "symbol": "•",
+      "name": "bullet"
+    },
+    {
+      "symbol": "‣",
+      "name": "triangular bullet"
+    },
+    {
+      "symbol": "†",
+      "name": "dagger"
+    },
+    {
+      "symbol": "‡",
+      "name": "double dagger"
+    },
+    {
+      "symbol": "§",
+      "name": "section sign"
+    },
+    {
+      "symbol": "¶",
+      "name": "pilcrow paragraph"
+    },
+    {
+      "symbol": "©",
+      "name": "copyright"
+    },
+    {
+      "symbol": "®",
+      "name": "registered"
+    },
+    {
+      "symbol": "™",
+      "name": "trademark"
+    },
+    {
+      "symbol": "«",
+      "name": "left guillemet"
+    },
+    {
+      "symbol": "»",
+      "name": "right guillemet"
+    },
+    {
+      "symbol": "'",
+      "name": "left single quote"
+    },
+    {
+      "symbol": "'",
+      "name": "right single quote"
+    },
+    {
+      "symbol": "“",
+      "name": "left double quote"
+    },
+    {
+      "symbol": "”",
+      "name": "right double quote"
+    },
+    {
+      "symbol": "¿",
+      "name": "inverted question mark"
+    },
+    {
+      "symbol": "¡",
+      "name": "inverted exclamation mark"
+    },
+    {
+      "symbol": "‽",
+      "name": "interrobang"
+    },
+    {
+      "symbol": "⁂",
+      "name": "asterism"
+    },
+    {
+      "symbol": "※",
+      "name": "reference mark"
+    },
+    {
+      "symbol": "⁀",
+      "name": "character tie"
+    },
+    {
+      "symbol": "‖",
+      "name": "double vertical line"
+    }
   ],
   "Box Drawing": [
-    {"symbol": "─", "name": "horizontal line"},
-    {"symbol": "│", "name": "vertical line"},
-    {"symbol": "┌", "name": "top left corner"},
-    {"symbol": "┐", "name": "top right corner"},
-    {"symbol": "└", "name": "bottom left corner"},
-    {"symbol": "┘", "name": "bottom right corner"},
-    {"symbol": "├", "name": "left tee"},
-    {"symbol": "┤", "name": "right tee"},
-    {"symbol": "┬", "name": "top tee"},
-    {"symbol": "┴", "name": "bottom tee"},
-    {"symbol": "┼", "name": "cross"},
-    {"symbol": "═", "name": "double horizontal"},
-    {"symbol": "║", "name": "double vertical"},
-    {"symbol": "╔", "name": "double top left"},
-    {"symbol": "╗", "name": "double top right"},
-    {"symbol": "╚", "name": "double bottom left"},
-    {"symbol": "╝", "name": "double bottom right"},
-    {"symbol": "╠", "name": "double left tee"},
-    {"symbol": "╣", "name": "double right tee"},
-    {"symbol": "╦", "name": "double top tee"},
-    {"symbol": "╩", "name": "double bottom tee"},
-    {"symbol": "╬", "name": "double cross"},
-    {"symbol": "█", "name": "full block"},
-    {"symbol": "▓", "name": "dark shade"},
-    {"symbol": "▒", "name": "medium shade"},
-    {"symbol": "░", "name": "light shade"},
-    {"symbol": "▪", "name": "black small square"},
-    {"symbol": "▫", "name": "white small square"},
-    {"symbol": "◆", "name": "black diamond"},
-    {"symbol": "◇", "name": "white diamond"},
-    {"symbol": "●", "name": "black circle"},
-    {"symbol": "○", "name": "white circle"},
-    {"symbol": "■", "name": "black square"},
-    {"symbol": "□", "name": "white square"},
-    {"symbol": "▲", "name": "black up triangle"},
-    {"symbol": "△", "name": "white up triangle"},
-    {"symbol": "▼", "name": "black down triangle"},
-    {"symbol": "▽", "name": "white down triangle"},
-    {"symbol": "◀", "name": "left triangle"},
-    {"symbol": "▶", "name": "right triangle"}
+    {
+      "symbol": "─",
+      "name": "horizontal line"
+    },
+    {
+      "symbol": "│",
+      "name": "vertical line"
+    },
+    {
+      "symbol": "┌",
+      "name": "top left corner"
+    },
+    {
+      "symbol": "┐",
+      "name": "top right corner"
+    },
+    {
+      "symbol": "└",
+      "name": "bottom left corner"
+    },
+    {
+      "symbol": "┘",
+      "name": "bottom right corner"
+    },
+    {
+      "symbol": "├",
+      "name": "left tee"
+    },
+    {
+      "symbol": "┤",
+      "name": "right tee"
+    },
+    {
+      "symbol": "┬",
+      "name": "top tee"
+    },
+    {
+      "symbol": "┴",
+      "name": "bottom tee"
+    },
+    {
+      "symbol": "┼",
+      "name": "cross"
+    },
+    {
+      "symbol": "═",
+      "name": "double horizontal"
+    },
+    {
+      "symbol": "║",
+      "name": "double vertical"
+    },
+    {
+      "symbol": "╔",
+      "name": "double top left"
+    },
+    {
+      "symbol": "╗",
+      "name": "double top right"
+    },
+    {
+      "symbol": "╚",
+      "name": "double bottom left"
+    },
+    {
+      "symbol": "╝",
+      "name": "double bottom right"
+    },
+    {
+      "symbol": "╠",
+      "name": "double left tee"
+    },
+    {
+      "symbol": "╣",
+      "name": "double right tee"
+    },
+    {
+      "symbol": "╦",
+      "name": "double top tee"
+    },
+    {
+      "symbol": "╩",
+      "name": "double bottom tee"
+    },
+    {
+      "symbol": "╬",
+      "name": "double cross"
+    },
+    {
+      "symbol": "█",
+      "name": "full block"
+    },
+    {
+      "symbol": "▓",
+      "name": "dark shade"
+    },
+    {
+      "symbol": "▒",
+      "name": "medium shade"
+    },
+    {
+      "symbol": "░",
+      "name": "light shade"
+    },
+    {
+      "symbol": "▪",
+      "name": "black small square"
+    },
+    {
+      "symbol": "▫",
+      "name": "white small square"
+    },
+    {
+      "symbol": "◆",
+      "name": "black diamond"
+    },
+    {
+      "symbol": "◇",
+      "name": "white diamond"
+    },
+    {
+      "symbol": "●",
+      "name": "black circle"
+    },
+    {
+      "symbol": "○",
+      "name": "white circle"
+    },
+    {
+      "symbol": "■",
+      "name": "black square"
+    },
+    {
+      "symbol": "□",
+      "name": "white square"
+    },
+    {
+      "symbol": "▲",
+      "name": "black up triangle"
+    },
+    {
+      "symbol": "△",
+      "name": "white up triangle"
+    },
+    {
+      "symbol": "▼",
+      "name": "black down triangle"
+    },
+    {
+      "symbol": "▽",
+      "name": "white down triangle"
+    },
+    {
+      "symbol": "◀",
+      "name": "left triangle"
+    },
+    {
+      "symbol": "▶",
+      "name": "right triangle"
+    }
   ],
-  "ASCII Emoticons": [
-    {"symbol": "(O_O)", "name": "surprised stare"},
-    {"symbol": "((O_O))", "name": "shocked stare"},
-    {"symbol": "(╥_╥)", "name": "crying sad"},
-    {"symbol": "(ᵔᵕᵔ)", "name": "happy cute smile"},
-    {"symbol": "ಠ_ಠ", "name": "disapproval look"},
-    {"symbol": "ಠ╭╮ಠ", "name": "disapproval sad"},
-    {"symbol": "(⌐■_■)", "name": "cool sunglasses deal with it"},
-    {"symbol": "(╯°□°)╯︵ ┻━┻", "name": "table flip angry rage"},
-    {"symbol": "┬─┬ノ( º _ ºノ)", "name": "table unflip calm"},
-    {"symbol": "¯\\_(ツ)_/¯", "name": "shrug whatever idk"},
-    {"symbol": "(ง'̀-'́)ง", "name": "fight boxing fists up"},
-    {"symbol": "ʕ•ᴥ•ʔ", "name": "bear cute animal"},
-    {"symbol": "(づ｡◕‿‿◕｡)づ", "name": "hug love cute"},
-    {"symbol": "(｡◕‿◕｡)", "name": "happy cute eyes"},
-    {"symbol": "( ͡° ͜ʖ ͡°)", "name": "lenny face smirk"},
-    {"symbol": "ᕙ(⇀‸↼‶)ᕗ", "name": "flexing strong muscles"},
-    {"symbol": "(☞ﾟヮﾟ)☞", "name": "pointing finger guns"},
-    {"symbol": "☜(ﾟヮﾟ☜)", "name": "finger guns left"},
-    {"symbol": "( ˘ω˘ )", "name": "sleepy content relaxed"},
-    {"symbol": "✧٩(ˊωˋ*)و✧", "name": "excited celebration sparkle"},
-    {"symbol": "(ノಠ益ಠ)ノ彡┻━┻", "name": "angry table flip rage"},
-    {"symbol": "ヽ(>∀<☆)ノ", "name": "excited happy celebrate"},
-    {"symbol": "(☉_☉)", "name": "shocked wide eyes stare"},
-    {"symbol": "(¬_¬)", "name": "side eye suspicious"},
-    {"symbol": "ᕕ( ᐛ )ᕗ", "name": "happy walk jaunty"},
-    {"symbol": "(⊙_⊙)", "name": "surprise disbelief wide eyes"},
-    {"symbol": "( •_•)>⌐■-■", "name": "putting on sunglasses cool"},
-    {"symbol": "♪(´ε` )", "name": "singing whistling music"},
-    {"symbol": "( ˇ෴ˇ )", "name": "curly mustache gentleman"},
-    {"symbol": "٩(◕‿◕｡)۶", "name": "cheerful happy celebrate"},
-    {"symbol": "(✿◠‿◠)", "name": "flower girl friendly pretty"},
-    {"symbol": "ᗒᗣᗕ", "name": "crying yelling scream"},
-    {"symbol": "◉_◉", "name": "big eyes staring surprised"},
-    {"symbol": "(◕ᴗ◕✿)", "name": "cute happy flower girl"},
-    {"symbol": "ʘ‿ʘ", "name": "innocent wide eyes"},
-    {"symbol": "(ᵕ̣̣̣̣̣̣ᵔᵕ̣̣̣̣̣̣)", "name": "sad whimper tears"},
-    {"symbol": "( ˶ˆ꒳ˆ˵ )", "name": "cute blushing happy"},
-    {"symbol": "(*≧ω≦)", "name": "excited squeal happy"},
-    {"symbol": "(─‿‿─)", "name": "content peaceful smile"},
-    {"symbol": "ミ●﹏☉ミ", "name": "confused cat confused"},
-    {"symbol": "(=^・ω・^=)", "name": "cat face cute animal"},
-    {"symbol": "⊂(◉‿◉)つ", "name": "hug open arms love"},
-    {"symbol": "凸( •̀_•́ )凸", "name": "middle finger angry rude"},
-    {"symbol": "✌(◕‿-)✌", "name": "peace sign wink"},
-    {"symbol": "♥‿♥", "name": "love eyes heart"},
-    {"symbol": "(ᗒᗩᗕ)", "name": "crying scared"},
-    {"symbol": "☆*:.｡.o(≧▽≦)o.｡.:*☆", "name": "excited sparkle celebrate"},
-    {"symbol": "( ° ͜ʖ °)", "name": "lenny face neutral"},
-    {"symbol": "(┛ಠ_ಠ)┛彡┻━┻", "name": "table flip disappointed"},
-    {"symbol": "ε=ε=ε=┌(;*´Д`)ﾉ", "name": "running away scared panic"}
+  "Positive - Joy": [
+    {
+      "symbol": "( $ _ $ )",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "( *^-^)ρ(^0^* )",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "( *︾▽︾)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "( ´ ω )",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "( ´ ▽ )",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "( ´ ▿ )",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "( ˙▿˙ )",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "( ˙꒳˙ )",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "( •̀ ω •́ )y",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "( •̀ ω •́ )✧",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "( ‾́ ◡ ‾́ )",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "( ◕▿◕ )",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(((o(*°▽°*)o)))",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(((o(*ﾟ▽ﾟ*)o)))",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(* ^ ω ^)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(*^_^*)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(*^‿^*)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(*^▽^*)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(*°▽°*)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(*´▽)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(*≧ω≦*)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(*꒦ິ꒳꒦ີ)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(.❛ ᴗ ❛.)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(/≧▽≦)/",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(/▽＼)｡o○♡",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(^///^)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(^_-)db(-_^)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(^人^)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(b ᵔ▽ᵔ)b",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(o^▽^o)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(o_ _)ﾉ彡☆",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(o´∀o)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(o´▽o)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(o˘◡˘o)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(o゜▽゜)o☆",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(o･ω･o)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(oﾟvﾟ)ノ",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(p≧w≦q)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(¬‿¬ )",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(¯▿¯)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(¯︶¯)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(´ ∀ *)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(´• ω •)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(´▽`ʃ♡ƪ)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(´｡• ω •｡)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(´｡• ᵕ •｡)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(´･ᴗ･ )",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(๑˃ᴗ˂)ﻭ",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(๑˘︶˘๑)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(ᵔ◡ᵔ)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(„• ֊ •„)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(„• ᴗ •„)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(‾◡◝)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(⁀ᗢ⁀)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(*´ω｀*)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(. ❛ ᴗ ❛.)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "( ´◡‿ゝ◡`)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "( ╹▽╹ )",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "( ꈍᴗꈍ)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(ʘᴗʘ✿)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(θ‿θ)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(•‿•)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(≧▽≦)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(◍•ᴗ•◍)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(◔‿◔)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(◕ᴗ◕✿)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(◠‿◕)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(◠‿・)—☆",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(◡ ω ◡)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(☆▽☆)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(✯ᴗ✯)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(✷‿✷)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(✿^‿^)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(・∀・)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(ㆁωㆁ)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(人*´∀｀)｡*ﾟ+",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(人 •͈ᴗ•͈)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(｡•̀ᴗ-)✧",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(ﾉ◕ヮ◕)ﾉ*.✧",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(≧ω≦)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(≧∀≦)ゞ",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(≧∇≦)ﾉ",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(≧◡≦)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(⌒ω⌒)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(⌒‿⌒)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(⌒▽⌒)☆",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(─‿‿─)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(╯✧▽✧)╯",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(●ˇ∀ˇ●)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(◕‿◕)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(☆ω☆)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(☆▽☆)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(♡°▽°♡)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(♥ω♥)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(♥ω♥*)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(✧ω✧)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(✯◡✯)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(✿◡‿◡)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(❁´◡`❁)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(〃＾▽＾〃)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(〃￣︶￣)人(￣︶￣〃)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(っ´ωc)♡",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(っ˘ω˘ς )",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(＠＾◡＾)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(＾▽＾)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(～￣▽￣)～",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(｡♥‿♥｡)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(ﾉ´ヮ)ﾉ*: ･ﾟ",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(ﾉ◕ヮ◕)ﾉ:･ﾟ✧",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(￢‿￢ )",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(￣y▽￣)╭ Ohohoho.....",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(￣ω￣)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(￣▽￣)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "(￣▽￣)b",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "*^____^*",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "--<-<-<@",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "<(￣︶￣)>",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "<(￣︶￣)>",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "O(∩_∩)O",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "[]~(￣▽￣)~*",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "\\(^ヮ^)/",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "\\(★ω★)/",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "\\^o^/",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "^_________^",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "`(*>﹏<*)′",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "o( ❛ᴗ❛ )o",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "o((>ω< ))o",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "o(*^▽^*)┛",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "o(*^＠^*)o",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "o(*≧▽≦)ツ┏━┓",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "o(*￣▽￣*)o",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "o(*￣▽￣*)ブ",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "o(*￣︶￣*)o",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "o(>ω<)o",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "o(≧▽≦)o",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "q(≧▽≦q)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "~~~///(^v^)\\\\\\~~~",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "°˖✧◝(⁰▿⁰)◜✧˖°",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "ƪ(˘⌣˘)ʃ",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "ʘ‿ʘ",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "φ(*￣0￣)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "φ(゜▽゜*)♪",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "ψ(｀∇´)ψ",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "٩(◕‿◕)۶",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "٩(◕‿◕｡)۶",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "٩(｡•́‿•̀｡)۶",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "ಡ ͜ ʖ ಡ",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "∑d(°∀°d)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "╰(*°▽°*)╯",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "╰(*´︶)╯",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "╰(▔∀▔)╯",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "◉‿◉",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "○( ＾皿＾)っ Hehehe…",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "☆ ～(\\'▽^人)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "☆*: .｡. o(≧▽≦)o .｡.:*☆",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "☆*:.｡.o(≧▽≦)o.｡.:*☆",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "♡〜٩( ˃́▿˂̀ )۶〜♡",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "♪(^∇^*)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "♪(´▽｀)",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "✧◝(⁰▿⁰)◜✧",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "。.:☆*:･'(*⌒―⌒*)))",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "ヽ(*⌒▽⌒*)ﾉ",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "ヽ(>∀<☆)ノ",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "ヽ(o^ ^o)ﾉ",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "ヽ(o＾▽＾o)ノ",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "ヽ(・ω・)ﾉ",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "ヽ(・∀・)ﾉ",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "ヾ(≧ ▽ ≦)ゝ",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "ヾ(≧▽≦*)o",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "ヾ(＠⌒ー⌒＠)ノ",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "ㄟ(≧◇≦)ㄏ",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "（*＾-＾*）",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "（＾3＾)/~☆",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "（￣︶￣）↗",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "＼(((￣(￣(￣▽￣)￣)￣)))／",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "＼(٥⁀▽⁀ )／",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "＼(≧▽≦)／",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "＼(＾▽＾)／",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "＼(￣▽￣)／",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "｀;:゛;｀;･(°ε° )",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "｡◕‿◕｡",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "｡ﾟ( ﾟ^∀^ﾟ)ﾟ｡",
+      "name": "joy positive"
+    },
+    {
+      "symbol": "｡ﾟ(TヮT)ﾟ｡",
+      "name": "joy positive"
+    }
+  ],
+  "Positive - Love": [
+    {
+      "symbol": "( ´ ∀ )ノ～ ♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "( ´ ▽ ).｡ｏ♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "( ˘⌣˘)♡(˘⌣˘ )",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(*^^*)♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(*¯ ³¯*)♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(*˘︶˘*).｡.:*♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(*♡∀♡)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(/^-^(^ ^*)/ ♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(/▽＼*)｡o○♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(°◡°♡)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(´ ε )♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(´ ω ♡)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(´,,•ω•,,)♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(´• ω •) ♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(´♡‿♡)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(´꒳`)♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(´｡• ω •｡) ♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(´｡• ᵕ •｡) ♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(˘∀˘)/(μ‿μ) ❤",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(ღ˘⌣˘ღ)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(*˘︶˘*).｡*♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(*＾3＾)/～♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(/^-^(^ ^*)/",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(~￣³￣)~",
+      "name": "love positive"
+    },
+    {
+      "symbol": "( ˘ ³˘)♥",
+      "name": "love positive"
+    },
+    {
+      "symbol": "( ˶ ❛ ꁞ ❛ ˶ )",
+      "name": "love positive"
+    },
+    {
+      "symbol": "( ◜‿◝ )♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(´ε｀ )",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(´∩｡• ᵕ •｡∩`)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(ʃƪ＾3＾）",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(๑˙❥˙๑)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(๑♡⌓♡๑)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(•ө•)♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(◍•ᴗ•◍)✧*。",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(◍•ᴗ•◍)❤",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(●’3)♡(ε`●)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(●♡∀♡)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(◕દ◕)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(♡ω♡ ) ~♪",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(✿ ♡‿♡)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(〃ﾟ3ﾟ〃)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(っ˘з(˘⌣˘ )",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(灬º‿º灬)♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(｡♡‿♡｡)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(｡・//ε//・｡)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(｡･ω･｡)ﾉ♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(≧◡≦) ♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(⌒▽⌒)♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(─‿‿─)♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(◕‿◕)♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(♡-_-♡)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(♡°▽°♡)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(♡˙︶˙♡)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(♡μ_μ)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(❤ω❤)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(っ˘з(˘⌣˘ ) ♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(｡・//ε//・｡)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(ﾉ´ з )ノ",
+      "name": "love positive"
+    },
+    {
+      "symbol": "(￣ε￣＠)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "Σ>―(〃°ω°〃)♡→",
+      "name": "love positive"
+    },
+    {
+      "symbol": "σ(≧ε≦σ) ♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "٩(♡ε♡)۶",
+      "name": "love positive"
+    },
+    {
+      "symbol": "ෆ╹ .̮ ╹ෆ",
+      "name": "love positive"
+    },
+    {
+      "symbol": "╰(*´︶*)╯♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "☆⌒ヽ(*\\'､^*)chu",
+      "name": "love positive"
+    },
+    {
+      "symbol": "♡ (˘▽˘>ԅ( ˘⌣˘)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "♡ (⇀ 3 ↼)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "♡ (￣З￣)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "♡ ～(^▽^人)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "♡( ◡‿◡ )",
+      "name": "love positive"
+    },
+    {
+      "symbol": "♡(>ᴗ•)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "♡(｡- ω -)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "♡(> ਊ <)♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "♡(ӦｖӦ｡)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "♡˖꒰ᵕ༚ᵕ⑅꒱",
+      "name": "love positive"
+    },
+    {
+      "symbol": "♡＼(￣▽￣)／♡",
+      "name": "love positive"
+    },
+    {
+      "symbol": "♥╣[-_-]╠♥",
+      "name": "love positive"
+    },
+    {
+      "symbol": "❤ (ɔˆз(ˆ⌣ˆc)",
+      "name": "love positive"
+    },
+    {
+      "symbol": "ヽ(♡‿♡)ノ",
+      "name": "love positive"
+    },
+    {
+      "symbol": "꒰⑅ᵕ༚ᵕ꒱˖♡",
+      "name": "love positive"
+    }
+  ],
+  "Positive - Embarrassment": [
+    {
+      "symbol": "(⌒_⌒;)",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "(o^ ^o)",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "(/ω＼)",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "(/。＼)",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "(/＼)",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "(*ﾉωﾉ)",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "(o--o)",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "(μ_μ)",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "( ◡‿◡ )",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "(ᵔ.ᵔ)",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "(ﾉ∀`)",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "(//▽//)",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "(//ω//)",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "(ノ°▽°)",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "(^.^)",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "(ﾉ▽ﾉ)",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "(￣▽￣)ゞ",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "(⁄ ⁄•⁄ω⁄•⁄ ⁄)",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "(/▽＼*)",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "(⁄ ⁄>⁄ ▽ ⁄<⁄ ⁄)",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "(„ಡωಡ„)",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "(ง ื▿ ื)ว",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "( 〃▽〃)",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "(/▿＼)",
+      "name": "embarrassment positive"
+    },
+    {
+      "symbol": "(///￣ ￣///)",
+      "name": "embarrassment positive"
+    }
+  ],
+  "Positive - Sympathy": [
+    {
+      "symbol": "(ノ_<。)ヾ(´ ▽ )",
+      "name": "sympathy positive"
+    },
+    {
+      "symbol": "｡･ﾟ･(ﾉД)ヽ(￣ω￣ )",
+      "name": "sympathy positive"
+    },
+    {
+      "symbol": "ρ(- ω -、)ヾ(￣ω￣; )",
+      "name": "sympathy positive"
+    },
+    {
+      "symbol": "ヽ(￣ω￣(。。 )ゝ",
+      "name": "sympathy positive"
+    },
+    {
+      "symbol": "(*´ I )ﾉﾟ(ﾉД｀ﾟ)ﾟ｡",
+      "name": "sympathy positive"
+    },
+    {
+      "symbol": "ヽ(~_~(・_・ )ゝ",
+      "name": "sympathy positive"
+    },
+    {
+      "symbol": "(ﾉ_；)ヾ(´ ∀ )",
+      "name": "sympathy positive"
+    },
+    {
+      "symbol": "(; ω ; )ヾ(´∀* )",
+      "name": "sympathy positive"
+    },
+    {
+      "symbol": "(*´ー)ﾉ(ノд)",
+      "name": "sympathy positive"
+    },
+    {
+      "symbol": "(´-ω-( _ _ )",
+      "name": "sympathy positive"
+    },
+    {
+      "symbol": "(っ´ω)ﾉ(╥ω╥)",
+      "name": "sympathy positive"
+    },
+    {
+      "symbol": "(ｏ・・)ノ”(ノ<、)",
+      "name": "sympathy positive"
+    }
+  ],
+  "Positive - Cute": [
+    {
+      "symbol": "( ¯(∞)¯ )",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "( ͡~ ͜ʖ ͡°)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "( ͡°( ͡° ͜ʖ( ͡° ͜ʖ ͡°)ʖ ͡°) ͡°)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "( ఠൠఠ )ﾉ",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "( ‵▽′)ψ",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "( ⓛ ω ⓛ *)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "( ◍•㉦•◍ )",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "( ﹁ ﹁ ) ~→",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(*/ω＼*)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(*≧︶≦))(￣▽￣* )ゞ",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(*✧×✧*)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(. ❛ ᴗ ❛.)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(/ω＼*)……… (/ω•＼*)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(/▽＼)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(:≡",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(:◎)≡",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(>'-'<)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(^._.^)ﾉ",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(^◕.◕^)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(o|o)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(o′┏▽┓｀o)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(°°)～",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(ʘᴥʘ)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(ಥ _ ಥ)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(ง •_•)ง",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(‧‧)nnn",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(⓿_⓿)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(○｀ 3′○)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(●'◡'●)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(★ ω ★)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(★‿★)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(✿◕‿◕✿)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(❤️ ω ❤️)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(❤️´艸｀❤️)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(　o=^•ェ•)o　┏━┓",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(。・ω・。)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(っ´Ι`)っ",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(～o￣3￣)～",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(ﾉ*ФωФ)ﾉ",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(￣(工)￣)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "(￣y▽,￣)╭",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "*(੭*ˊᵕˋ)੭*ଘ",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "--\\(˙<>˙)/--",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "/ᐠ｡ꞈ｡ᐟ\\",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "<。)#)))≦",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "=￣ω￣=",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "U•ェ•*U",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "\\(0^◇^0)/",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "^(*￣(oo)￣)^",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "m( =∩王∩= )m",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "o(*////▽////*)q",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "o(=•ェ•=)m",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "o(〃＾▽＾〃)o",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "~(=^‥^)ノ",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "~(￣▽￣)~*",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "~o( =∩ω∩= )m",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "§(*￣▽￣*)§",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "¯\\_( ͡° ͜ʖ ͡°)_/¯",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "¯\\_(ツ)_/¯",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "ˋ( ° ▽、° )",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "ο(=•ω＜=)ρ⌒☆",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "ψ(._. )>",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "ϵ( ‘Θ’ )϶",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "ԅ(¯﹃¯ԅ)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "ฅʕ•̫͡•ʔฅ",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "ผ(•̀_•́ผ)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "༼ つ ◕_◕ ༽つ",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "ლ(╹◡╹ლ)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "ᓚᘏᗢ",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "≡[。。]≡",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "┏ (゜ω゜)=👉",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "╰(￣ω￣ｏ)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "◑﹏◐",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "✍️(◔◡◔)",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "ヽ(￣ω￣(￣ω￣〃)ゝ",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "（〃｀ 3′〃）",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "（￣。。￣）",
+      "name": "cute positive"
+    },
+    {
+      "symbol": "．<{=．．．．",
+      "name": "cute positive"
+    }
+  ],
+  "Negative - Dissatisfaction": [
+    {
+      "symbol": "(--_--)",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(ᗒᗣᗕ)՞",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(ب_ب)",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(ಠ_ಠ)>⌐■-■",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(ಠ_ಠ)━☆ﾟ.*･｡ﾟ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(⌐■-■)",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(ノಠ益ಠ)ノ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(눈‸눈)",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(⇀‸↼‶)",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(〃＞＿＜;〃)",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(」°ロ°)」",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(」＞＜)」",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(눈_눈)",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(︶︹︺)",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(＃＞＜)",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(＃￣0￣)",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(＃￣ω￣)",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(；⌣̀_⌣́)",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(；￣Д￣)",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(＞﹏＜)",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(＞ｍ＜)",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(＾＾＃)",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(￢_￢;)",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(￣ ￣|||)",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(￣□￣」)",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(￣ヘ￣)",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "(￣︿￣)",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "<(￣ ﹌ ￣)>",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "[̲̅$̲̅(̲̅ ͡ಠ_ಠ)̲̅$̲̅]",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "o(>< )o",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "¯\\_ಠ_ಠ_/¯",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ʕಠ_ಠʔ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "Σ(ಠ_ಠ)",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ಠಿ_ಠ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ಠಿ_ಠಿ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ಠಿヮಠ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ಠ,_｣ಠ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ಠ_ʖಠ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ಠ_ಠ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ಠ ͜ʖ ಠ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ಠ ل͟ ಠ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ಠ ೧ ಠ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ಠωಠ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ಠಗಠ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ಠᴥಠ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ಠ‿ಠ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ಠ∀ಠ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ಠ◡ಠ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ಠ益ಠ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ಠ︵ಠ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ಠ﹏ಠ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ತ_ʖತ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ತ_ತ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ರ_ರ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ರ╭╮ರ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "☆ｏ(＞＜；)○",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "ヾ( ￣O￣)ツ",
+      "name": "dissatisfaction negative"
+    },
+    {
+      "symbol": "凸(￣ヘ￣)",
+      "name": "dissatisfaction negative"
+    }
+  ],
+  "Negative - Anger": [
+    {
+      "symbol": "( ˘︹˘ )",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "( ε´ )",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "( ω ´ )",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "((╬◣﹏◢))",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(* ￣︿￣)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(///￣皿￣)○～",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(>ლ)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(¬_¬\")",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(°ㅂ°╬)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(σ｀д′)σ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(҂ з´ )",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(҂ ﾛ ´)凸",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(҂⌣̀_⌣́)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(ಠ_ಠ)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(‡▼益▼)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(′д｀σ)σ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(≖､≖╬)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(⊙x⊙;)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(╬ Ò﹏Ó)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(╬▔皿▔)╯",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(╬益´)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(╯°□°）╯︵ ┻━┻",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(╯‵□′)╯︵┻━┻",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(╯▔皿▔)╯",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(►__◄)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(〃＞目＜)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(ノ°益°)ノ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(ノ｀Д)ノ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(ヘ･_･)ヘ┳━┳",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(・ω´・)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(ー´)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(ㆆ_ㆆ)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(凸ಠ益ಠ)凸",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(皿´＃)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(＃Д´)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(；¬д¬)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(；一_一)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(ｏ ‵-′)ノ”(ノ﹏<。)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(～￣(OO)￣)ブ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(ﾉಥ益ಥ)ﾉ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(ﾒ ﾛ ´)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(ﾟДﾟ*)ﾉ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(￢︿̫̿￢☆)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(￣ε(#￣)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(￣ε(#￣)☆╰╮o(￣皿￣///)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "(￣﹏￣；)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "<( ‵□′)>───Ｃε(┬﹏┬)3",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "<( ‵□′)───C＜─___-)||",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "<( ￣^￣)(θ(θ☆( >_<",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "___*( ￣皿￣)/#____",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "o(≧口≦)o",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "o(一︿一+)o",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "Σ(▼□▼メ)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "ε=( o｀ω′)ノ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "ψ( ∇ ´ )ψ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "ψ(▼へ▼メ)～→",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "щ(゜ロ゜щ)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "٩(ఠ益ఠ)۶",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "٩(╬ʘ益ʘ╬)۶",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "୧((#Φ益Φ#))୨",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "ಠ_ಠ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "ಠ_ರೃ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "ಠಿ_ಠ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "ಠ╭╮ಠ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "ಠ▃ಠ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "ಠ﹏ಠ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "ᕦ(ò_óˇ)ᕤ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "←~(Ψ▼ｰ▼)∈",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "↑_(ΦwΦ)Ψ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "┌( ಠ_ಠ)┘",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "┌∩┐(◣_◢)┌∩┐",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "┗|｀O′|┛",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "┳━┳ ノ( ゜-゜ノ)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "┻━┻ ︵ ＼( °□° )／ ︵ ┻━┻",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "┻━┻ ︵ヽ(`Д´)ﾉ︵ ┻━┻",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "╚(•⌂•)╝",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "╰(艹皿艹 )",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "╰（‵□′）╯",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "○|￣|_ =3",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "ヽ(`Д´)ﾉ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "ヽ(д´*)ノ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "ヽ(‵﹏´)ノ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "ヽ(⌒´メ)ノ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "ヽ(゜▽゜　)－C<(/;◇;)/~",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "ヽ(｀⌒´メ)ノ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "ヽ（≧□≦）ノ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "ヾ(≧へ≦)〃",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "ヾ(ヘ´)ﾉﾞ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "凸( ﾛ ´ )凸",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "凸(△´＃)",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "눈_눈",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "（︶^︶）",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "（｀Δ´）！",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "＼＼٩(๑`^´๑)۶／／",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "｀(;□;)ゞ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "～(　TロT)σ",
+      "name": "anger negative"
+    },
+    {
+      "symbol": "￣へ￣",
+      "name": "anger negative"
+    }
+  ],
+  "Negative - Sadness": [
+    {
+      "symbol": "( *^-^)ρ(*╯^╰)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "( ; ω ; )",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "( ╥ω╥ )",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "( ﾟ，_ゝ｀)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(#_<-)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(#｀-_ゝ-)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(--)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(-ω-、)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(;´༎ຶД༎ຶ`)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(><)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(T_T)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(´-ω-)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(´。＿。｀)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(˘･_･˘)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(μ_μ)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(ಡ‸ಡ)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(ಥ﹏ಥ)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(′д｀ )…彡…彡",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(-̩̩̩-̩̩̩-̩̩̩-̩̩̩-̩̩̩___-̩̩̩-̩̩̩-̩̩̩-̩̩̩-̩̩̩)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "( ≧Д≦)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "( ⚈̥̥̥̥̥́⌢⚈̥̥̥̥̥̀)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "( ꈨຶ ˙̫̮ ꈨຶ )",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "( ；∀；)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "( ･ั﹏･ั)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(´;︵;`)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(´ . .̫ . `)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(´°̥̥̥̥̥̥̥̥ω°̥̥̥̥̥̥̥̥｀)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(´；ω；｀)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(๑´•.̫ • `๑)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(༎ຶ ෴ ༎ຶ)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(ᗒᗩᗕ)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(╥﹏╥)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(╯︵╰,)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(〒﹏〒)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(っ˘̩╭╮˘̩)っ",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(个_个)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(｡ŏ﹏ŏ)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(｡•́︿•̀｡)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(｡ﾉω＼｡)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(･ัω･ั)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(≧﹏ ≦)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(┬┬﹏┬┬)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(╥_╥)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(╥﹏╥)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(╯_╰)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(╯︵╰,)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(。﹏。*)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(っ °Д °;)っ",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(っ˘̩╭╮˘̩)っ",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(つω｡)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(ノ_<、)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(ノ_<。)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(ノへ￣、)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(个_个)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(／ˍ・、)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(；′⌒`)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(｡T ω T｡)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(｡•́︿•̀｡)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(｡╯︵╰｡)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(ﾉω･､)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(ﾉД)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "(￣ ‘i ￣;)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": ".·´¯`(>▂<)´¯`·.",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": ".·´¯`(>▂<)´¯`·.",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": ".｡･ﾟﾟ･(＞_＜)･ﾟﾟ･｡.",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": ".･ﾟﾟ･(／ω＼)･ﾟﾟ･.",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "/(ㄒoㄒ)/~~",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "/_ \\",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "::>_<::",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "<( _ _ )>",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "<(＿　＿)>",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "X﹏X",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "o(TヘTo)",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "o(〒﹏〒)o",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "o(￣┰￣*)ゞ",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "{{{(>_<)}}}",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "~(>_<。)＼",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "~~>_<~~",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "Ó╭╮Ò",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "ʕ´• ᴥ•̥`ʔ",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "இ௰இ",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "ಥ_ಥ",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "ಥ_ಥ",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "ಥ‿ಥ",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "ಥ╭╮ಥ",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "༎ຶ‿༎ຶ",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "༼;´༎ຶ  ༎ຶ༽",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "•́  ‿ ,•̀",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "≡(▔﹏▔)≡",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "≧ ﹏ ≦",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "⊙﹏⊙∥",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "━((*′д｀)爻(′д｀*))━!!!!",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "┗( T﹏T )┛",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "╯︿╰",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "。゜゜(´Ｏ) ゜゜。",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "〒▽〒",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "ヽ(*。>Д<)o゜",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "（；´д｀）ゞ",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "（＞人＜；）",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "＞︿＜",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "＞﹏＜",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "｡:ﾟ(;´∩`;)ﾟ:｡",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "｡･ﾟ(ﾟ><ﾟ)ﾟ･｡",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "｡･ﾟﾟ*(>д<)*ﾟﾟ･｡",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "｡ﾟ(｡ﾉωヽ｡)ﾟ｡",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "｡ﾟ･ (>﹏<) ･ﾟ｡",
+      "name": "sadness negative"
+    },
+    {
+      "symbol": "･ﾟ･(｡>ω<｡)･ﾟ･",
+      "name": "sadness negative"
+    }
+  ],
+  "Negative - Pain": [
+    {
+      "symbol": "(>_<)",
+      "name": "pain negative"
+    },
+    {
+      "symbol": "☆⌒(> _ <)",
+      "name": "pain negative"
+    },
+    {
+      "symbol": "☆⌒(>。<)",
+      "name": "pain negative"
+    },
+    {
+      "symbol": "(☆_@)",
+      "name": "pain negative"
+    },
+    {
+      "symbol": "(×_×)",
+      "name": "pain negative"
+    },
+    {
+      "symbol": "(x_x)",
+      "name": "pain negative"
+    },
+    {
+      "symbol": "(×_×)⌒☆",
+      "name": "pain negative"
+    },
+    {
+      "symbol": "(x_x)⌒☆",
+      "name": "pain negative"
+    },
+    {
+      "symbol": "(×﹏×)",
+      "name": "pain negative"
+    },
+    {
+      "symbol": "☆(＃××)",
+      "name": "pain negative"
+    },
+    {
+      "symbol": "(＋_＋)",
+      "name": "pain negative"
+    },
+    {
+      "symbol": "[ ± _ ± ]",
+      "name": "pain negative"
+    },
+    {
+      "symbol": "٩(× ×)۶",
+      "name": "pain negative"
+    },
+    {
+      "symbol": ":(´ཀ`」 ∠):",
+      "name": "pain negative"
+    },
+    {
+      "symbol": "(ﾒ﹏ﾒ)",
+      "name": "pain negative"
+    },
+    {
+      "symbol": "o(>< )o",
+      "name": "pain negative"
+    },
+    {
+      "symbol": "o(TヘTo)",
+      "name": "pain negative"
+    },
+    {
+      "symbol": "（；￣д￣）",
+      "name": "pain negative"
+    },
+    {
+      "symbol": "(つω｡)",
+      "name": "pain negative"
+    },
+    {
+      "symbol": "(ノ_<。)ヾ(´ ▽ )",
+      "name": "pain negative"
+    },
+    {
+      "symbol": "o(｀ω´*)o",
+      "name": "pain negative"
+    },
+    {
+      "symbol": "(T_T)",
+      "name": "pain negative"
+    },
+    {
+      "symbol": "(><)",
+      "name": "pain negative"
+    },
+    {
+      "symbol": "(><。)",
+      "name": "pain negative"
+    },
+    {
+      "symbol": "（´＿｀）",
+      "name": "pain negative"
+    }
+  ],
+  "Negative - Fear": [
+    {
+      "symbol": "(((＞＜)))",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(*ﾉωﾉ)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(/ω＼)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(/＼)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(;;;_)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(″ロ゛)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(*・～・*)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(*﹏*;)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(-_-;)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(-_-;)・・・",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(-_-メ)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(;;;・_・)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(;ŏ﹏ŏ)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(^_^メ)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(^～^;)ゞ",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(~_~;)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(~_~メ)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(´-﹏-`；)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(ʘ言ʘ╬)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(˘･_･˘)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(٥↼_↼)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(๑•﹏•)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(• ▽ •;)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(⊙_◎)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(─.─||）",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(╬☉д⊙)⊰⊹ฺ",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(●´⌓`●)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(・_・;)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(・–・;)ゞ",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(ー_ー゛)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(ꏿ﹏ꏿ;)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(；^ω^）",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(＠_＠;)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(￣ヘ￣;)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(つω`｡)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(ノωヽ)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(ノдヽ)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(・人・)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(／。＼)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(ﾉ_ヽ)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "(ﾉдヽ)",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "..・ヾ(。＞＜)シ",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "{{ (><) }}",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "Σ(°△°|||)︴",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "Σ(っ °Д °;)っ",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "⊙﹏⊙",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "╏ ” ⊚ ͟ʖ ⊚ ” ╏",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "▓▒░(°◡°)░▒▓",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "〜(＞＜)〜",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "〣( ºΔº )〣",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "ヘ（。□°）ヘ",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "ミ●﹏☉ミ",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "（・□・；）",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "（；￣д￣）",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "＼(º □ º l|l)/",
+      "name": "fear negative"
+    },
+    {
+      "symbol": "＼(〇_ｏ)／",
+      "name": "fear negative"
+    }
+  ],
+  "Neutral - Indifference": [
+    {
+      "symbol": "( ˘•ω•˘ )",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "(--)",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "(-_-メ)",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "(・・ヾ",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "(・・；)",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "(￣ω￣;)",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "(￣▽￣)",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "¯\\(ツ)/¯",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "¯\\(°_o)/¯",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "¯\\(◉‿◉)/¯",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "¯\\_( ͠° ͟ʖ °͠ )_/¯",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "¯\\_( ͡° ͜ʖ ͡°)_/¯",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "¯\\_(⊙_ʖ⊙)_/¯",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "¯\\_(☯෴☯)_/¯",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "¯\\_(ツ)_/¯",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "¯\\_ʘ‿ʘ_/¯",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "¯\\_༼ ಥ ‿ ಥ ༽_/¯",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "¯\\_༼ •́ ͜ʖ •̀ ༽_/¯",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "¯\\_༼ᴼل͜ᴼ༽_/¯",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "¯\\_〳 •̀ o •́ 〵_/¯",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "ᕕ( ᐛ )ᕗ",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "┐( ´ д ` )┌",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "┐( ˘ ､ ˘ )┌",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "┐( ˘_˘ )┌",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "┐(‘～ )┌",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "┐(シ)┌",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "┐(︶▽︶)┌",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "┐(￣∀￣)┌",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "┐(￣ヘ￣)┌",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "┐(￣ヮ￣)┌",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "┐(￣～￣)┌",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "┐( ˘_˘)┌",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "┐( ∵ )┌",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "┐(´(エ)｀)┌",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "┐(´д`)┌",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "┐(´ー｀)┌",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "┐(‘～`;)┌",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "┐(￣ヘ￣)┌",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "╮( ˘ ､ ˘ )╭",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "╮( ˘_˘ )╭",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "╮(︶▽︶)╭",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "╮(︶︿︶)╭",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "╮(￣_￣)╭",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "╮(￣～￣)╭",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "╮(. ❛ ᴗ ❛.)╭",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "╮(╯_╰)╭",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "╮(＾▽＾)╭",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "ヽ(´ー )┌",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "ヽ(ˇヘˇ)ノ",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "ヽ(　￣д￣)ノ",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "ヽ(ー_ー )ノ",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "ヽ(￣～￣　)ノ",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "乁( . ര ʖ̯ ര . )ㄏ",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "乁( •_• )ㄏ",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "乁( ⁰͡ Ĺ̯ ⁰͡ ) ㄏ",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "乁[ ◕ ᴥ ◕ ]ㄏ",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "乁[ᓀ˵▾˵ᓂ]ㄏ",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "乁| ･ 〰 ･ |ㄏ",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "乁 ˘ o ˘ ㄏ",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "乁ʕ •̀  •́ ʔㄏ",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "乁༼☯‿☯✿༽ㄏ",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "乁║ ˙ 益 ˙ ║ㄏ",
+      "name": "indifference neutral"
+    },
+    {
+      "symbol": "（￣～￣;）",
+      "name": "indifference neutral"
+    }
+  ],
+  "Neutral - Confusion": [
+    {
+      "symbol": "(￣ω￣;)",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "σ(￣、￣〃)",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "(￣～￣;)",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "(--;)・・・",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "┐(～`;)┌",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "(・・ヾ",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "(〃￣ω￣〃ゞ",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "┐(￣ヘ￣;)┌",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "(・・;)",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "(￣_￣)・・・",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "╮(￣ω￣;)╭",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "(¯ . ¯;)",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "(＠＠)",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "(・・;)ゞ",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "Σ(￣。￣ﾉ)",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "(・・ ) ?",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "(•ิ_•ิ)?",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "(◎ ◎)ゞ",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "(ーー;)",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "ლ(ಠ_ಠ ლ)",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "ლ(¯ロ¯\"ლ)",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "(¯ . ¯٥)",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "(¯ ¯٥)",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "(・・?",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "Σ( ° △ °|||)︴",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "（・□・；）",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "(°□°；)",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "（；￣ェ￣）",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "Σ(‘◉⌓◉’)",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "⊙﹏⊙",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "(--メ)",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "(゜-゜)",
+      "name": "confusion neutral"
+    },
+    {
+      "symbol": "(・・ヾ",
+      "name": "confusion neutral"
+    }
+  ],
+  "Neutral - Doubt": [
+    {
+      "symbol": "(￢_￢)",
+      "name": "doubt neutral"
+    },
+    {
+      "symbol": "(→_→)",
+      "name": "doubt neutral"
+    },
+    {
+      "symbol": "(￢ ￢)",
+      "name": "doubt neutral"
+    },
+    {
+      "symbol": "(￢‿￢ )",
+      "name": "doubt neutral"
+    },
+    {
+      "symbol": "(¬_¬ )",
+      "name": "doubt neutral"
+    },
+    {
+      "symbol": "(←_←)",
+      "name": "doubt neutral"
+    },
+    {
+      "symbol": "(¬ ¬ )",
+      "name": "doubt neutral"
+    },
+    {
+      "symbol": "(¬‿¬ )",
+      "name": "doubt neutral"
+    },
+    {
+      "symbol": "(↼_↼)",
+      "name": "doubt neutral"
+    },
+    {
+      "symbol": "(⇀_⇀)",
+      "name": "doubt neutral"
+    },
+    {
+      "symbol": "(ᓀ ᓀ)",
+      "name": "doubt neutral"
+    },
+    {
+      "symbol": "(・・?",
+      "name": "doubt neutral"
+    },
+    {
+      "symbol": "Σ( ° △ °|||)︴",
+      "name": "doubt neutral"
+    },
+    {
+      "symbol": "（・□・；）",
+      "name": "doubt neutral"
+    },
+    {
+      "symbol": "(°□°；)",
+      "name": "doubt neutral"
+    },
+    {
+      "symbol": "（；￣ェ￣）",
+      "name": "doubt neutral"
+    },
+    {
+      "symbol": "Σ(‘◉⌓◉’)",
+      "name": "doubt neutral"
+    },
+    {
+      "symbol": "⊙﹏⊙",
+      "name": "doubt neutral"
+    },
+    {
+      "symbol": "(--メ)",
+      "name": "doubt neutral"
+    },
+    {
+      "symbol": "(゜-゜)",
+      "name": "doubt neutral"
+    },
+    {
+      "symbol": "(・・ヾ",
+      "name": "doubt neutral"
+    }
+  ],
+  "Neutral - Surprise": [
+    {
+      "symbol": "( : ౦ ‸ ౦ : )",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "( ╯□╰ )",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(#`O′)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(((φ(◎ロ◎;)φ)))",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(*Φ皿Φ*)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(*￣rǒ￣)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(+_+)?",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(O.O)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(O_O)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(O_O;)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(lll￢ω￢)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(o_ _)ﾉ",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(o_O)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(o_O) !",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(°ロ°)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(°ロ°) !",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(°ー°〃)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(´･ω･`)?",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(´ｰ∀ｰ`)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(ʘ言ʘ╬)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(ˉ▽ˉ；)...",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(ˉ▽￣～)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(ˉ﹃ˉ)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(๐॔˃̶ᗜ˂̶๐॓)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(•ˋ _ ˊ•)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(((;ꏿ_ꏿ;)))",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(>0<；)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(@_@)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(´⊙ω⊙`)！",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(ʘᗩʘ’)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(‘◉⌓◉’)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(⑉⊙ȏ⊙)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(╬⁽⁽ ⁰ ⁾⁾ Д ⁽⁽ ⁰ ⁾⁾)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(●__●)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(☉｡☉)!",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(✿☉｡☉)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(゜o゜;",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(・o・)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(｡☬０☬｡)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(･o･;)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(ﾉ*0*)ﾉ",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(ﾉﾟ0ﾟ)ﾉ~",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(⊙_(⊙_⊙)_⊙)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(⊙_⊙)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(⊙_⊙)？",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(⊙_⊙;)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(⊙_◎)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(⊙o⊙)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(⊙ˍ⊙)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(⊙﹏⊙)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(□_□)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(○´･д･)ﾉ",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(◎ロ◎;)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(◎﹏◎)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(●__●)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(☆-ｖ-)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(。>︿<)_θ",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(。_。)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(。・・)ノ",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(。﹏。)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(ノω<。)ノ))☆.。",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(・_・ヾ",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(・∀・(・∀・(・∀・*)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(＃°Д°)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(＠_＠;)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(ﾉ*･ω･)ﾉ",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(ﾟοﾟ人))",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(￣_,￣ )",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(￣_￣|||)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(￣m￣）",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(￣┰￣*)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(￣▽￣)\"",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "(￣、￣)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": ",,ԾㅂԾ,,",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "...( ＿ ＿)ノ｜",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "...(*￣０￣)ノ",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": ".______.",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "<(￣ c￣)y▂ξ",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "<@_@>",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "_(:з)∠)_",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "_〆(´Д｀ )",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "m( _ _ )m",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "o((⊙﹏⊙))o.",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "o(><；)oo",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "o_o",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "w(°ｏ°)w",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "w(ﾟДﾟ)w",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "w(°ｏ°)w",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "¯\\(°_o)/¯",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "Σ(O_O)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "Σ(°△°|||)︴",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "Σ(°ロ°)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "Σ(º ﾛ º๑)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "Σ(□_□)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "ε=ε=ε=(~￣▽￣)~",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "ε=ε=ε=┏(゜ロ゜;)┛",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "щ(ʘ╻ʘ)щ",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "щ(゜ロ゜щ)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "༼⁰o⁰；༽",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "ლ(^o^ლ)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "……]((o_ _)'彡☆",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "⁄(⁄ ⁄•⁄-⁄•⁄ ⁄)⁄",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "←_←",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "→_→",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "∑( 口 ||",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "∑(O_O;)",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "⊙.☉",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "⊙.☉",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "⋋✿ ⁰ o ⁰ ✿⋌",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "━━(￣ー￣*|||━━",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "━┳━　━┳━",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "┌( ´_ゝ` )┐",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "┌(。Д。)┐",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "┑(￣Д ￣)┍",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "╮(╯-╰)╭",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "╮(╯▽╰)╭",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "╮（╯＿╰）╭",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "◉_◉",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "○|￣|_",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "♨︎_♨︎",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "⚆_⚆",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "✧\\(>o<)ﾉ✧",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "つ﹏⊂",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "ヽ(°〇°)ﾉ",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "ヽ((◎д◎))ゝ",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "ヽ(｡◕o◕｡)ﾉ.",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "ヽ༼⁰o⁰；༽ノ",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "ヾ(*’Ｏ’*)/",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "ㄟ( ▔, ▔ )ㄏ",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "（*゜ー゜*）",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "（o´・ェ・｀o）",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "（⊙ｏ⊙）",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "（・□・；）",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "－_－b",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "＼(°o°)／",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "＼(◎o◎)／",
+      "name": "surprise neutral"
+    },
+    {
+      "symbol": "＼（〇_ｏ）／",
+      "name": "surprise neutral"
+    }
+  ],
+  "Various - Greeting": [
+    {
+      "symbol": "!(*￣(￣　*)",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "( ° ∀ ° )ﾉﾞ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "( ´ ω )ノﾞ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "( ´ ∀ )ﾉ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "( ´ ▽ )/",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "( ´ ▽ )ﾉ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "( ´ ▽ ` )ﾉ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "( ´･･)ﾉ(._.`)",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "( •_•)>⌐■-■",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "( •̀ .̫ •́ )✧",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "( ﾉ ﾟｰﾟ)ﾉ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "( ﾟдﾟ)つ Bye",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(* ￣3)(ε￣ *)",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(*°ｰ°)ﾉ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(*￣3￣)╭",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(*￣;(￣ *)",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(ToT)/~~~",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(^-^*)/",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(^^ゞ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(^_^)／",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(^o^)/",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(^◇^*)",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(^０^)ノ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(_　_)。゜zｚＺ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(o^ ^o)/",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(o´ωo)ﾉ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(o´▽o)ﾉ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(u‿ฺu✿ฺ)",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(°▽°)/",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(´• ω •)ﾉ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(๑•̀ㅂ•́)و✧",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(•_•)",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(∩^o^)⊃━☆",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(∪.∪ )...zzz",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(≧▽≦)/",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(⌒ω⌒)ﾉ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(╯▽╰ )",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(╹ڡ╹ )",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(▀̿Ĺ̯▀̿ ̿)",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(☆^O^☆)",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(✧∀✧)/",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(。・∀・)ノ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(づ￣ 3￣)づ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(・_・)ノ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(・ω・)",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(・ω・)ﾉ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(・∀・)ノ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(＠´ー)ﾉﾞ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(＠＾０＾)",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(＾ω＾)",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(＾▽＾)",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(＾Ｕ＾)ノ~ＹＯ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(～﹃～)~zZ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(｡･∀･)ﾉﾞ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(￣o￣) . z Z",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(￣ω￣)/",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(￣▽￣)ノ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "(👉ﾟヮﾟ)👉",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "*★,°*:.☆(￣▽￣)/$:*.°★* 。",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "\\(@^0^@)/",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "\\(￣︶￣*\\))",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "b(￣▽￣)d",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "d=====(￣▽￣*)b",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "o(*°▽°*)o",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "o(^▽^)o",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "o(≧∀≦)o",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "o(￣▽￣)ｄ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "||ヽ(*￣▽￣*)ノミ|Ю",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "~\\(≧▽≦)/~",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "~ヾ(・ω・)",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "Ψ(￣∀￣)Ψ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "☆⌒(*＾-゜)v",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "✪ ω ✪",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "ヽ(>∀<☆)ノ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "ヽ(✿ﾟ▽ﾟ)ノ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "ヾ(*\\'▽\\'*)",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "ヾ(^▽^*)))",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "ヾ(•ω•`)o",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "ヾ(☆▽☆)",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "ヾ(・ω・)",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "ヾ(￣▽￣) Bye~Bye~",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "（。＾▽＾）",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "（づ￣3￣）づ╭❤️～",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "（＾∀＾●）ﾉｼ",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "－O－",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "＜（＾－＾）＞",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "＼(^o^)／",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "＼(⌒▽⌒)",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "＼(ﾟｰﾟ＼)",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "👈(⌒▽⌒)👉",
+      "name": "greeting various"
+    },
+    {
+      "symbol": "👈(ﾟヮﾟ👈)",
+      "name": "greeting various"
+    }
+  ],
+  "Various - Hugging": [
+    {
+      "symbol": "( -)",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(/^-^(^ ^)/",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(^^*)♡",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(^з^)-☆",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(/･ω･(-ω-)",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(o´･_･)っ",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "( T_T)＼(^-^ )",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(⊃ • ʖ̫ • )⊃",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(⊃｡•́‿•̀｡)⊃",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(っ.❛ ᴗ ❛.)っ",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(つ≧▽≦)つ",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(つ✧ω✧)つ",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(づ｡◕‿‿◕｡)づ",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(づ￣ ³￣)づ",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(･ω･)つ⊂(･ω･)",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(･–･) \\(･◡･)/",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(⊃｡•́‿•̀｡)⊃",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(っ´ω`c)♡",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(っಠ‿ಠ)っ",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(っ⇀⑃↼)っ",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(つ . •́ _ʖ •̀ .)つ",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(つ°ヮ°)つ",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(つ≧▽≦)つ",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(つ✧ω✧)つ",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(づ ◕‿◕ )づ",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(づ◡﹏◡)づ",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(づ￣ ³￣)づ",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "(｡•̀ᴗ-)✧",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "o((*^▽^*))o",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "ʕっ•ᴥ•ʔっ",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "༼ つ ◕‿◕ ༽つ",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "ლ(´ ❥ `ლ)",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "ლ(◕ω◕ლ)",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "ლ(・﹏・ლ)",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "⊂( ´ ▽ )⊃",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "⊂(´• ω •⊂)",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "⊂(･ω･*⊂)",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "⊂(￣▽￣)⊃",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "⊂((・▽・))⊃",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "⊂(´･◡･⊂ )∘˚˳°",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "⊂(•‿•⊂ )*.✧",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "⊂(◉‿◉)つ",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "⊂(・▽・⊂)",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "⊂(・﹏・⊂)",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "⊂(･ω･*⊂)",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "╰(*´︶`*)╯",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "╰(⸝⸝⸝´꒳`⸝⸝⸝)╯",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "╰(＾3＾)╯",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "♡(˃͈ દ ˂͈ ༶ )",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "ヾ(˙❥˙)ﾉ",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "꒰⸝⸝›_‹⸝⸝꒱",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "＼(^o^)／",
+      "name": "hugging various"
+    },
+    {
+      "symbol": "～(つˆДˆ)つ｡☆",
+      "name": "hugging various"
+    }
+  ],
+  "Various - Winking": [
+    {
+      "symbol": "(^~)",
+      "name": "winking various"
+    },
+    {
+      "symbol": "( ﾟｏ⌒)",
+      "name": "winking various"
+    },
+    {
+      "symbol": "(^-)≡☆",
+      "name": "winking various"
+    },
+    {
+      "symbol": "(^ω~)",
+      "name": "winking various"
+    },
+    {
+      "symbol": "(>ω^)",
+      "name": "winking various"
+    },
+    {
+      "symbol": "(人^)",
+      "name": "winking various"
+    },
+    {
+      "symbol": "(^-)",
+      "name": "winking various"
+    },
+    {
+      "symbol": "( -・)",
+      "name": "winking various"
+    },
+    {
+      "symbol": "(^<)〜☆",
+      "name": "winking various"
+    },
+    {
+      "symbol": "(^人<)〜☆",
+      "name": "winking various"
+    },
+    {
+      "symbol": "☆⌒(≧▽° )",
+      "name": "winking various"
+    },
+    {
+      "symbol": "☆⌒(ゝ。∂)",
+      "name": "winking various"
+    },
+    {
+      "symbol": "(^<)",
+      "name": "winking various"
+    },
+    {
+      "symbol": "(^_−)☆",
+      "name": "winking various"
+    },
+    {
+      "symbol": "(･ω<)☆",
+      "name": "winking various"
+    },
+    {
+      "symbol": "(^.)☆",
+      "name": "winking various"
+    },
+    {
+      "symbol": "(^.~)",
+      "name": "winking various"
+    },
+    {
+      "symbol": "(>ᴗ•)",
+      "name": "winking various"
+    },
+    {
+      "symbol": "(^▽^)",
+      "name": "winking various"
+    },
+    {
+      "symbol": "(^-)",
+      "name": "winking various"
+    },
+    {
+      "symbol": "(^~)",
+      "name": "winking various"
+    },
+    {
+      "symbol": "(^ω^)",
+      "name": "winking various"
+    },
+    {
+      "symbol": "(*＾ω＾)",
+      "name": "winking various"
+    },
+    {
+      "symbol": "(^_−)☆",
+      "name": "winking various"
+    },
+    {
+      "symbol": "(-^〇^-)",
+      "name": "winking various"
+    },
+    {
+      "symbol": "(｡♥‿♥｡)",
+      "name": "winking various"
+    },
+    {
+      "symbol": "（＾＿－）",
+      "name": "winking various"
+    },
+    {
+      "symbol": "(´• ω •`)",
+      "name": "winking various"
+    }
+  ],
+  "Various - Apologizing": [
+    {
+      "symbol": "m(_ )m",
+      "name": "apologizing various"
+    },
+    {
+      "symbol": "(シ )シ",
+      "name": "apologizing various"
+    },
+    {
+      "symbol": "m(. .)m",
+      "name": "apologizing various"
+    },
+    {
+      "symbol": "<( )>",
+      "name": "apologizing various"
+    },
+    {
+      "symbol": "人( )",
+      "name": "apologizing various"
+    },
+    {
+      "symbol": "( )人",
+      "name": "apologizing various"
+    },
+    {
+      "symbol": "m( ;m)",
+      "name": "apologizing various"
+    },
+    {
+      "symbol": "(m; _)m",
+      "name": "apologizing various"
+    },
+    {
+      "symbol": "(シ. .)シ",
+      "name": "apologizing various"
+    },
+    {
+      "symbol": "m(_ )m",
+      "name": "apologizing various"
+    },
+    {
+      "symbol": "(シ )シ",
+      "name": "apologizing various"
+    },
+    {
+      "symbol": "(＠＠;)",
+      "name": "apologizing various"
+    },
+    {
+      "symbol": "m(._.)m",
+      "name": "apologizing various"
+    },
+    {
+      "symbol": "(>人<)",
+      "name": "apologizing various"
+    },
+    {
+      "symbol": "(｡･･｡)",
+      "name": "apologizing various"
+    },
+    {
+      "symbol": "ｍ（＿ ＿；；ｍ",
+      "name": "apologizing various"
+    },
+    {
+      "symbol": "（＾人＾）",
+      "name": "apologizing various"
+    },
+    {
+      "symbol": "(-人-)",
+      "name": "apologizing various"
+    }
+  ],
+  "Various - Nosebleeding": [
+    {
+      "symbol": "(￣ii￣)",
+      "name": "nosebleeding various"
+    },
+    {
+      "symbol": "(￣ﾊ￣)",
+      "name": "nosebleeding various"
+    },
+    {
+      "symbol": "\\(￣ﾊ￣)",
+      "name": "nosebleeding various"
+    },
+    {
+      "symbol": "(＾་།＾)",
+      "name": "nosebleeding various"
+    },
+    {
+      "symbol": "(＾〃＾)",
+      "name": "nosebleeding various"
+    },
+    {
+      "symbol": "(￣ ¨ヽ￣)",
+      "name": "nosebleeding various"
+    },
+    {
+      "symbol": "(￣ ;￣)",
+      "name": "nosebleeding various"
+    },
+    {
+      "symbol": "(￣ ;;￣)",
+      "name": "nosebleeding various"
+    },
+    {
+      "symbol": "(*￣ii￣)",
+      "name": "nosebleeding various"
+    },
+    {
+      "symbol": "(//ω//)",
+      "name": "nosebleeding various"
+    },
+    {
+      "symbol": "(//▽//)",
+      "name": "nosebleeding various"
+    },
+    {
+      "symbol": "(//ω//)",
+      "name": "nosebleeding various"
+    },
+    {
+      "symbol": "(人◕ω◕)",
+      "name": "nosebleeding various"
+    }
+  ],
+  "Various - Hiding": [
+    {
+      "symbol": "|･ω･)",
+      "name": "hiding various"
+    },
+    {
+      "symbol": "ﾍ(･_|",
+      "name": "hiding various"
+    },
+    {
+      "symbol": "|ω･)ﾉ",
+      "name": "hiding various"
+    },
+    {
+      "symbol": "ヾ(･|",
+      "name": "hiding various"
+    },
+    {
+      "symbol": "|д･)",
+      "name": "hiding various"
+    },
+    {
+      "symbol": "|_￣))",
+      "name": "hiding various"
+    },
+    {
+      "symbol": "|▽//)",
+      "name": "hiding various"
+    },
+    {
+      "symbol": "┬┴┬┴┤(･_├┬┴┬┴",
+      "name": "hiding various"
+    },
+    {
+      "symbol": "┬┴┬┴┤･ω･)ﾉ",
+      "name": "hiding various"
+    },
+    {
+      "symbol": "┬┴┬┴┤( ͡° ͜ʖ├┬┴┬┴",
+      "name": "hiding various"
+    },
+    {
+      "symbol": "┬┴┬┴┤(･├┬┴┬┴",
+      "name": "hiding various"
+    },
+    {
+      "symbol": "|・)",
+      "name": "hiding various"
+    },
+    {
+      "symbol": "|･д･)ﾉ",
+      "name": "hiding various"
+    },
+    {
+      "symbol": "|ʘ‿ʘ)╯",
+      "name": "hiding various"
+    },
+    {
+      "symbol": "(_)",
+      "name": "hiding various"
+    },
+    {
+      "symbol": "(・・ ) ?",
+      "name": "hiding various"
+    },
+    {
+      "symbol": "(・_・ヾ",
+      "name": "hiding various"
+    },
+    {
+      "symbol": "(/・・)ノ",
+      "name": "hiding various"
+    },
+    {
+      "symbol": "(oT-T)尸",
+      "name": "hiding various"
+    },
+    {
+      "symbol": "（´-`）.｡oO",
+      "name": "hiding various"
+    },
+    {
+      "symbol": "（／．＼）",
+      "name": "hiding various"
+    }
+  ],
+  "Various - Writing": [
+    {
+      "symbol": "φ(．．)",
+      "name": "writing various"
+    },
+    {
+      "symbol": "( ￣ー￣)φ",
+      "name": "writing various"
+    },
+    {
+      "symbol": "__φ(。。)",
+      "name": "writing various"
+    },
+    {
+      "symbol": "φ(．．;)",
+      "name": "writing various"
+    },
+    {
+      "symbol": "ヾ( `ー´)シφ",
+      "name": "writing various"
+    },
+    {
+      "symbol": "_〆(￣ー￣ )",
+      "name": "writing various"
+    },
+    {
+      "symbol": "....φ(・∀・*)",
+      "name": "writing various"
+    },
+    {
+      "symbol": "〆(・∀・)",
+      "name": "writing various"
+    },
+    {
+      "symbol": "( ^▽^)ψ",
+      "name": "writing various"
+    },
+    {
+      "symbol": "....φ(︶▽︶)φ....",
+      "name": "writing various"
+    },
+    {
+      "symbol": "( . .)φ",
+      "name": "writing various"
+    },
+    {
+      "symbol": "__φ(◎◎ヘ)",
+      "name": "writing various"
+    },
+    {
+      "symbol": "(*￣ii￣)",
+      "name": "writing various"
+    },
+    {
+      "symbol": "｡：ﾟ(｡ﾉω＼｡)ﾟ･｡",
+      "name": "writing various"
+    },
+    {
+      "symbol": "（〃・・〃）",
+      "name": "writing various"
+    },
+    {
+      "symbol": "(*´･д･)ﾉ",
+      "name": "writing various"
+    },
+    {
+      "symbol": "(´ω｀)",
+      "name": "writing various"
+    }
+  ],
+  "Various - Running": [
+    {
+      "symbol": "☆ﾐ(o*･ω･)ﾉ",
+      "name": "running various"
+    },
+    {
+      "symbol": "C= C= C= C= C=┌(;・ω・)┘",
+      "name": "running various"
+    },
+    {
+      "symbol": "─=≡Σ((( つ＞＜)つ",
+      "name": "running various"
+    },
+    {
+      "symbol": "ε=ε=ε=ε=┌(;￣▽￣)┘",
+      "name": "running various"
+    },
+    {
+      "symbol": "ε=ε=┌( >_<)┘",
+      "name": "running various"
+    },
+    {
+      "symbol": "C= C= C= C=┌( `ー´)┘",
+      "name": "running various"
+    },
+    {
+      "symbol": "ε===(っ≧ω≦)っ",
+      "name": "running various"
+    },
+    {
+      "symbol": "ヽ(￣д￣;)ノ=3=3=3",
+      "name": "running various"
+    },
+    {
+      "symbol": "。。。ミヽ(。＞＜)ノ",
+      "name": "running various"
+    },
+    {
+      "symbol": "ε=ε=ε=┌(;￣▽￣)┘",
+      "name": "running various"
+    },
+    {
+      "symbol": "ε=ε=ε=ε=ε=(oﾟｰﾟ)o",
+      "name": "running various"
+    },
+    {
+      "symbol": "ε=ε=ε=ε=ε=ε=┌(;￣▽￣)┘",
+      "name": "running various"
+    },
+    {
+      "symbol": "ε=ε=ε=ε=ε=ε=ε=ε=ε=ε=(oﾟｰﾟ)o",
+      "name": "running various"
+    },
+    {
+      "symbol": "(ﾉ･ｪ･)ﾉ",
+      "name": "running various"
+    },
+    {
+      "symbol": "ε=ε=ε=┌(;￣▽￣)┘",
+      "name": "running various"
+    },
+    {
+      "symbol": "ε=ε=ε=ヾ(;￣▽￣)ノ",
+      "name": "running various"
+    },
+    {
+      "symbol": "ε=ε=ε=ε=(￣▽￣)",
+      "name": "running various"
+    }
+  ],
+  "Various - Sleeping": [
+    {
+      "symbol": "[(－－)]..zzZ",
+      "name": "sleeping various"
+    },
+    {
+      "symbol": "(－_－) zzZ",
+      "name": "sleeping various"
+    },
+    {
+      "symbol": "(∪｡∪)｡｡｡zzZ",
+      "name": "sleeping various"
+    },
+    {
+      "symbol": "(－ω－) zzZ",
+      "name": "sleeping various"
+    },
+    {
+      "symbol": "(￣o￣) zzZZzzZZ",
+      "name": "sleeping various"
+    },
+    {
+      "symbol": "(( _ _ ))..zzzZZ",
+      "name": "sleeping various"
+    },
+    {
+      "symbol": "(￣ρ￣)..zzZZ",
+      "name": "sleeping various"
+    },
+    {
+      "symbol": "(－.－)...zzz",
+      "name": "sleeping various"
+    },
+    {
+      "symbol": "(＿ ＿*) Z z z",
+      "name": "sleeping various"
+    },
+    {
+      "symbol": "(x . x) ~~zzZ",
+      "name": "sleeping various"
+    },
+    {
+      "symbol": "(￣o￣) zzZ",
+      "name": "sleeping various"
+    },
+    {
+      "symbol": "(－－) zzZ",
+      "name": "sleeping various"
+    },
+    {
+      "symbol": "(￣ρ￣)..zzZZ",
+      "name": "sleeping various"
+    },
+    {
+      "symbol": "(--) Zzz...",
+      "name": "sleeping various"
+    },
+    {
+      "symbol": "(≖ᴗ≖✿)",
+      "name": "sleeping various"
+    }
+  ],
+  "Various - Table Flipping": [
+    {
+      "symbol": "(-_- )ﾉ⌒┫ ┻ ┣ ┳",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "(/¯◡ ‿ ◡)/¯ ~ ┻━┻",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "(┛ಸ_ಸ)┛彡┻━┻",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "(┛◉Д◉)┛彡┻━┻",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "(┛✧Д✧))┛彡┻━┻",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "(┛❍ᴥ❍)┛彡┻━┻",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "(╯°□°）╯︵ ┻━┻",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "(╯ರ ~ ರ)╯︵ ┻━┻",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "(ノT＿T)ノ ＾┻━┻",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "(ノಠ益ಠ)ノ彡┻━┻",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "(ノಥ,_｣ಥ)ノ彡┻━┻",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "(ノ•̀ o •́ )ノ ~ ┻━┻",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "(ノ｀Д´)ノ彡┻━┻",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "(ノ｀⌒´)ノ┫：・┻┻",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "(ノ￣皿￣)ノ ⌒== ┫",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "(ヘ･_･)ヘ┳━┳",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "(ﾉ°_o)ﾉ⌒┫ ┻ ┣ ┳",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "(ﾉ´･ω･)ﾉ ﾐ ┻━┻",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "(ﾉ≧∇≦)ﾉ ﾐ ┻━┻",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "ʕノ•ᴥ•ʔノ ︵ ┻━┻",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "─=≡Σ(╯°□°)╯︵┻┻",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "┬──┬ ¯\\_(ツ)",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "┬──┬◡ﾉ(° -°ﾉ)",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "┬─┬ノ( ͡° ͜ʖ ͡°ノ)",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "┬─┬ノ( º _ ºノ)",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "┬─┬ノ(ಠ_ಠノ)",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "┻━┻ ヘ╰( •̀ε•́ ╰)",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "┻━┻ミ＼(≧ﾛ≦＼)",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "┻━┻︵└(´_｀└)",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "┻━┻︵└(՞▽՞ └)",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "┻┻︵¯\\(ツ)/¯︵┻┻",
+      "name": "table flipping various"
+    },
+    {
+      "symbol": "┻┻︵ヽ(`Д´)ﾉ︵┻┻",
+      "name": "table flipping various"
+    }
+  ],
+  "Various - Dancing": [
+    {
+      "symbol": "(*ﾉ・ω・)ﾉ♫",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "(~‾▿‾)~",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "( /^ω^)/♪♪",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "(ノ^_^)ノ",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "(＾3＾♪",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "(＾∇＾)ﾉ♪",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "(｢`･ω･)｢",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "\\(ϋ)/♩",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "\\(๑╹◡╹๑)ﾉ♬",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "ƪ(˘⌣˘)ʃ",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "ƪ(‾.‾“)┐",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "⁽⁽ଘ( ˊᵕˋ )ଓ⁾⁾",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "⁽⁽◝( •௰• )◜⁾⁾",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "₍₍ ◝(　ﾟ∀ ﾟ )◟ ⁾⁾",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "₍₍◞( •௰• )◟₎₎",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "┌(★ｏ☆)┘",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "┌(・。・)┘♪",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "┌|o^▽^o|┘♪",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "┏(＾0＾)┛",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "└( ＾ω＾)」",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "└|∵|┐♪",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "♪(┌・。・)┌",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "♪ \\(^ω^\\ )",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "♪┌|∵|┘♪",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "♪ヽ(･ˇ∀ˇ･ゞ)",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "♪～(´ε｀ )",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "〜(꒪꒳꒪)〜",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "ヘ(￣ω￣ヘ)",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "ヽ(*ﾟｰﾟ*)ﾉ",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "ヾ( ͝° ͜ʖ͡°)ノ♪",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "ヾ(･ω･*)ﾉ",
+      "name": "dancing various"
+    },
+    {
+      "symbol": "＼(ﾟｰﾟ＼)",
+      "name": "dancing various"
+    }
+  ],
+  "Various - Flexing": [
+    {
+      "symbol": "( ͝° ͜ʖ͡°)ᕤ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "୧( ˵ ° ~ ° ˵ )୨",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "୧( ಠ Д ಠ )୨",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "୧(﹒︠ᴗ﹒︡)୨",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "୧(＾ 〰 ＾)୨",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "୧| ͡ᵔ ﹏ ͡ᵔ |୨",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "༼ᕗຈل͜ຈ༽ᕗ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕙ(͡°‿ ͡°)ᕗ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕙ( ͡° ͜ʖ ͡°)ᕗ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕙ( ͡◉ ͜ ʖ ͡◉)ᕗ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕙ( : ˘ ∧ ˘ : )ᕗ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕙ( ~ . ~ )ᕗ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕙ(  • ‿ •  )ᕗ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕙ( ¤ 〰 ¤ )ᕗ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕙ(ಠ ਊ ಠ)ᕗ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕙ(⇀‸↼‶)ᕗ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕙ(☉ਊ☉)ᕗ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕙ(＠°▽°＠)ᕗ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕙ[･･]ᕗ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕙ (° ~͜ʖ~ °) ᕗ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕙ (° ~ ° ~)",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕙ༼◕ ᴥ ◕༽ᕗ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕦ( ⊡ 益 ⊡ )ᕤ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕦ(ò_óˇ)ᕤ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕦ(ಠ_ಠ)ᕤ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕦ[ ◑ □ ◑ ]ᕤ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕦʕ •ᴥ•ʔᕤ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕦ༼ ~ •́ ₒ •̀ ~ ༽ᕤ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕦ༼ຈل͜ຈ༽ᕤ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕦ༼✩ل͜✩༽ᕤ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕦᶘ ᵒ㉨ᵒᶅᕤ",
+      "name": "flexing various"
+    },
+    {
+      "symbol": "ᕦ⊙෴⊙ᕤ",
+      "name": "flexing various"
+    }
+  ],
+  "Various - Pointing": [
+    {
+      "symbol": "(*❛‿❛)→",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "(?・・)σ",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "( ՞ਊ ՞）→",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "(´⊙ω⊙`)→",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "(╭☞•́⍛•̀)╭☞",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "(☉｡☉)!→",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "(☞^o^) ☞",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "(☞ ͡° ͜ʖ ͡°)☞",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "(☞ ಠ_ಠ)☞",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "(☞ﾟ∀ﾟ)☞",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "(☞ﾟヮﾟ)☞",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "(✧Д✧)→",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "(　･ω･)☞",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "(｡◕‿◕｡)➜",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "(ﾉﾟ0ﾟ)ﾉ→",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "*･゜ﾟ(^O^)↝",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "<(￣︶￣)↗",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "´◔‿ゝ◔`)━☞",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "ԅ( ͒  ͒ )ᕤ",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "←(*꒪ヮ꒪*)",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "←(>▽<)ﾉ",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "←_←",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "→(°  °)┗",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "→_→",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "┗(•ˇ_ˇ•)―→",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "╰( ･ ᗜ ･ )➝",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "☜ (↼_↼)",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "☞￣ᴥ￣☞",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "⟵(o_O)",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "⟵(๑¯◡¯๑)",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "〈(•ˇ‿ˇ•)-→",
+      "name": "pointing various"
+    },
+    {
+      "symbol": "｡.ﾟ+ ⟵(｡･ω･)",
+      "name": "pointing various"
+    }
+  ],
+  "Animals - Cat": [
+    {
+      "symbol": "(=^･ω･^=)",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "(=^･ｪ･^=)",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "(=①ω①=)",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "( =ω=)..nyaa",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "(= ; ｪ ; =)",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "(=ω´=)",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "(=^‥^=)",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "( =ノωヽ=)",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "(=⌒‿‿⌒=)",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "(=^ ◡ ^=)",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "(=^-ω-^=)",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "ヾ(=ω´=)ノ”",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "(＾• ω •＾)",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "(/ =ω=)/",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "ฅ(•ㅅ•❀)ฅ",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "ฅ(• ɪ •)ฅ",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "ଲ(ⓛ ω ⓛ)ଲ",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "(^=◕ᴥ◕=^)",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "( =ω= )",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "(^˵◕ω◕˵^)",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "(^◔ᴥ◔^)",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "(^◕ᴥ◕^)",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "ต(=ω=)ต",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "( Φ ω Φ )",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "ฅ(^◕ᴥ◕^)ฅ",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "(^・ω・^ )",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "(=^･ω･^)y＝",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "(=^-ω-^=)",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "(=^･ｪ･^=)",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "ヾ(=｀ω´=)ノ",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "(=^ ◡ ^=)",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "(=^-ω-^=)",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "(=^･ω･^)y＝",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "ヽ(^‥^=ゞ)",
+      "name": "cat animals"
+    },
+    {
+      "symbol": "(^・x・^)",
+      "name": "cat animals"
+    }
+  ],
+  "Animals - Bear": [
+    {
+      "symbol": "( ´(ｴ)ˋ )",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "(￣(ｴ)￣)",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "ヽ(￣(ｴ)￣)ﾉ",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "(／￣(ｴ)￣)／",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "(￣(ｴ)￣)",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "ヽ( ˋ(ｴ)´ )ﾉ",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "⊂(￣(ｴ)￣)⊃",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "(／(ｴ)＼)",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "⊂(´(ェ)ˋ)⊃",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "(/-(ｴ)-＼)",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "(/°(ｴ)°)/",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "ʕ ᵔᴥᵔ ʔ",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "ʕ •ᴥ• ʔ",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "ʕ •̀ ω •́ ʔ",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "ʕ •̀ o •́ ʔ",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "ʕಠᴥಠʔ",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "ʕ•ᴥ•ʔ",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "ʕ·ᴥ·ʔ",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "ʕ•̫͡•ʔ",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "ʕ•ᴥ•ʔゝ☆",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "ʕ•́ᴥ•̀ʔっ",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "ʕ•̀ω•́ʔ✧",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "ʕ•̫͡•ʔ",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "ʕ•́ᴥ•̀ʔっ",
+      "name": "bear animals"
+    },
+    {
+      "symbol": "ʕ·ᴥ·ʔゝ☆",
+      "name": "bear animals"
+    }
+  ],
+  "Animals - Dog": [
+    {
+      "symbol": "∪＾ェ＾∪",
+      "name": "dog animals"
+    },
+    {
+      "symbol": "∪･ω･∪",
+      "name": "dog animals"
+    },
+    {
+      "symbol": "∪￣-￣∪",
+      "name": "dog animals"
+    },
+    {
+      "symbol": "∪･ｪ･∪",
+      "name": "dog animals"
+    },
+    {
+      "symbol": "Ｕ^皿^Ｕ",
+      "name": "dog animals"
+    },
+    {
+      "symbol": "ＵＴｪＴＵ",
+      "name": "dog animals"
+    },
+    {
+      "symbol": "U^ｪ^U",
+      "name": "dog animals"
+    },
+    {
+      "symbol": "V●ᴥ●V",
+      "name": "dog animals"
+    },
+    {
+      "symbol": "U・ᴥ・U",
+      "name": "dog animals"
+    },
+    {
+      "symbol": "V(=^･ω･^=)v",
+      "name": "dog animals"
+    },
+    {
+      "symbol": "V●ᴥ●V",
+      "name": "dog animals"
+    },
+    {
+      "symbol": "V(^_^)V",
+      "name": "dog animals"
+    },
+    {
+      "symbol": "V(=^･ω･^=)v",
+      "name": "dog animals"
+    },
+    {
+      "symbol": "V(^O^)V",
+      "name": "dog animals"
+    },
+    {
+      "symbol": "V(^-^)V",
+      "name": "dog animals"
+    },
+    {
+      "symbol": "V(=^‥^=)v",
+      "name": "dog animals"
+    },
+    {
+      "symbol": "V(=^･ω･^)v",
+      "name": "dog animals"
+    },
+    {
+      "symbol": "V(=^ｪ^=)v",
+      "name": "dog animals"
+    },
+    {
+      "symbol": "V(^ᴗ^)V",
+      "name": "dog animals"
+    }
+  ],
+  "Animals - Rabbit": [
+    {
+      "symbol": "／(≧ x ≦)＼",
+      "name": "rabbit animals"
+    },
+    {
+      "symbol": "／(･ × ･)＼",
+      "name": "rabbit animals"
+    },
+    {
+      "symbol": "／(=´x`=)＼",
+      "name": "rabbit animals"
+    },
+    {
+      "symbol": "／(^ x ^)＼",
+      "name": "rabbit animals"
+    },
+    {
+      "symbol": "／(=･ x ･=)＼",
+      "name": "rabbit animals"
+    },
+    {
+      "symbol": "／(^ × ^)＼",
+      "name": "rabbit animals"
+    },
+    {
+      "symbol": "／(＞×＜)＼",
+      "name": "rabbit animals"
+    },
+    {
+      "symbol": "／(˃ᆺ˂)＼",
+      "name": "rabbit animals"
+    },
+    {
+      "symbol": "（＾・ω・＾✿）",
+      "name": "rabbit animals"
+    },
+    {
+      "symbol": "（*＾3＾)/~☆",
+      "name": "rabbit animals"
+    },
+    {
+      "symbol": "（‐＾▽＾‐）",
+      "name": "rabbit animals"
+    },
+    {
+      "symbol": "／(=´x`=)＼",
+      "name": "rabbit animals"
+    },
+    {
+      "symbol": "／(･ × ･)＼",
+      "name": "rabbit animals"
+    },
+    {
+      "symbol": "／(^ x ^=)＼",
+      "name": "rabbit animals"
+    },
+    {
+      "symbol": "／(=･ x ･=)＼",
+      "name": "rabbit animals"
+    },
+    {
+      "symbol": "／(=･ × ･=)＼",
+      "name": "rabbit animals"
+    },
+    {
+      "symbol": "／(＾×＾)＼",
+      "name": "rabbit animals"
+    },
+    {
+      "symbol": "／(=⌒x⌒=)＼",
+      "name": "rabbit animals"
+    }
+  ],
+  "Animals - Pig": [
+    {
+      "symbol": "( ´(00)ˋ )",
+      "name": "pig animals"
+    },
+    {
+      "symbol": "(￣(ω)￣)",
+      "name": "pig animals"
+    },
+    {
+      "symbol": "ヽ( ˋ(00)´ )ノ",
+      "name": "pig animals"
+    },
+    {
+      "symbol": "( ´(oo)ˋ )",
+      "name": "pig animals"
+    },
+    {
+      "symbol": "＼(￣(oo)￣)／",
+      "name": "pig animals"
+    },
+    {
+      "symbol": "｡ﾟ(ﾟ´(00)`ﾟ)ﾟ｡",
+      "name": "pig animals"
+    },
+    {
+      "symbol": "(￣(00)￣)",
+      "name": "pig animals"
+    },
+    {
+      "symbol": "(ˆ(oo)ˆ)",
+      "name": "pig animals"
+    },
+    {
+      "symbol": "（・∀・）",
+      "name": "pig animals"
+    },
+    {
+      "symbol": "(￣(エ)￣)",
+      "name": "pig animals"
+    },
+    {
+      "symbol": "（＾ω＾）",
+      "name": "pig animals"
+    },
+    {
+      "symbol": "(＾＾)",
+      "name": "pig animals"
+    },
+    {
+      "symbol": "＼(^ω^＼)",
+      "name": "pig animals"
+    },
+    {
+      "symbol": "ヽ(＾Д＾)ﾉ",
+      "name": "pig animals"
+    }
+  ],
+  "Animals - Bird": [
+    {
+      "symbol": "(￣Θ￣)",
+      "name": "bird animals"
+    },
+    {
+      "symbol": "(`･Θ･´)",
+      "name": "bird animals"
+    },
+    {
+      "symbol": "( ˋ Θ ´ )",
+      "name": "bird animals"
+    },
+    {
+      "symbol": "(◉Θ◉)",
+      "name": "bird animals"
+    },
+    {
+      "symbol": "＼( ˋ Θ ´ )／",
+      "name": "bird animals"
+    },
+    {
+      "symbol": "(･θ･)",
+      "name": "bird animals"
+    },
+    {
+      "symbol": "(・Θ・)",
+      "name": "bird animals"
+    },
+    {
+      "symbol": "ヾ(￣◇￣)ノ〃",
+      "name": "bird animals"
+    },
+    {
+      "symbol": "(･Θ･)",
+      "name": "bird animals"
+    },
+    {
+      "symbol": "(・v・)",
+      "name": "bird animals"
+    },
+    {
+      "symbol": "(・ェ・)",
+      "name": "bird animals"
+    },
+    {
+      "symbol": "ヾ(＾-＾)ノ",
+      "name": "bird animals"
+    },
+    {
+      "symbol": "（・□・；）",
+      "name": "bird animals"
+    },
+    {
+      "symbol": "(*・д・)",
+      "name": "bird animals"
+    },
+    {
+      "symbol": "(￣^￣)ゞ",
+      "name": "bird animals"
+    },
+    {
+      "symbol": "(◕ܫ◕)",
+      "name": "bird animals"
+    }
+  ],
+  "Animals - Spider": [
+    {
+      "symbol": "/╲/\\╭(ఠఠ益ఠఠ)╮/\\╱\\",
+      "name": "spider animals"
+    },
+    {
+      "symbol": "/╲/\\╭(ರರ⌓ರರ)╮/\\╱\\",
+      "name": "spider animals"
+    },
+    {
+      "symbol": "/╲/\\╭༼ ººل͟ºº ༽╮/\\╱\\",
+      "name": "spider animals"
+    },
+    {
+      "symbol": "/╲/\\╭( ͡°͡° ͜ʖ ͡°͡°)╮/\\╱\\",
+      "name": "spider animals"
+    },
+    {
+      "symbol": "/╲/\\╭[ ᴼᴼ ౪ ᴼᴼ]╮/\\╱\\",
+      "name": "spider animals"
+    },
+    {
+      "symbol": "/╲/\\( •̀ ω •́ )/\\╱\\",
+      "name": "spider animals"
+    },
+    {
+      "symbol": "/╲/\\╭[☉﹏☉]╮/\\╱\\",
+      "name": "spider animals"
+    }
+  ],
+  "Animals - General": [
+    {
+      "symbol": "(*￣(ｴ)￣*)",
+      "name": "general animals"
+    },
+    {
+      "symbol": "(=^･ｪ･^=)",
+      "name": "general animals"
+    },
+    {
+      "symbol": "(=｀ェ´=)",
+      "name": "general animals"
+    },
+    {
+      "symbol": "(^._.^)ﾉ",
+      "name": "general animals"
+    },
+    {
+      "symbol": "( ͡°ᴥ ͡° ʋ)",
+      "name": "general animals"
+    },
+    {
+      "symbol": "(´(ｪ)｀）",
+      "name": "general animals"
+    },
+    {
+      "symbol": "(´・(oo)・｀)",
+      "name": "general animals"
+    },
+    {
+      "symbol": "(ᵔᴥᵔ)",
+      "name": "general animals"
+    },
+    {
+      "symbol": "(≧(ｴ)≦ )",
+      "name": "general animals"
+    },
+    {
+      "symbol": "(◕ᴥ◕)",
+      "name": "general animals"
+    },
+    {
+      "symbol": "(◠ᴥ◕ʋ)",
+      "name": "general animals"
+    },
+    {
+      "symbol": "(✪㉨✪)",
+      "name": "general animals"
+    },
+    {
+      "symbol": "(・(ｪ)・）",
+      "name": "general animals"
+    },
+    {
+      "symbol": "(￣(ｴ)￣)ﾉ",
+      "name": "general animals"
+    },
+    {
+      "symbol": "-ᄒᴥᄒ-",
+      "name": "general animals"
+    },
+    {
+      "symbol": "/ᐠ｡ꞈ｡ᐟ\\",
+      "name": "general animals"
+    },
+    {
+      "symbol": "/╲/\\╭(•‿•)╮/\\╱\\",
+      "name": "general animals"
+    },
+    {
+      "symbol": "U^ｪ^U",
+      "name": "general animals"
+    },
+    {
+      "symbol": "U ´꓃ ` U",
+      "name": "general animals"
+    },
+    {
+      "symbol": "V●ᴥ●V",
+      "name": "general animals"
+    },
+    {
+      "symbol": "Ƹ̵̡Ӝ̵̨̄Ʒ",
+      "name": "general animals"
+    },
+    {
+      "symbol": "ʕ º ᴥ ºʔ",
+      "name": "general animals"
+    },
+    {
+      "symbol": "ʕ ꈍᴥꈍʔ",
+      "name": "general animals"
+    },
+    {
+      "symbol": "ʕ´•ᴥ•`ʔ",
+      "name": "general animals"
+    },
+    {
+      "symbol": "ʕ·ᴥ·ʔ",
+      "name": "general animals"
+    },
+    {
+      "symbol": "ฅ^•ﻌ•^ฅ",
+      "name": "general animals"
+    },
+    {
+      "symbol": "Ꮚ˘ ꈊ ˘ Ꮚ",
+      "name": "general animals"
+    },
+    {
+      "symbol": "…ᘛ⁐̤ᕐᐷ",
+      "name": "general animals"
+    },
+    {
+      "symbol": "▼・ᴥ・▼",
+      "name": "general animals"
+    },
+    {
+      "symbol": "◖⚆ᴥ⚆◗",
+      "name": "general animals"
+    },
+    {
+      "symbol": "くコ:彡",
+      "name": "general animals"
+    },
+    {
+      "symbol": "～>`)～～～",
+      "name": "general animals"
+    }
+  ],
+  "Friends": [
+    {
+      "symbol": "ヾ(・ω・)メ(・ω・)ノ",
+      "name": "friends other"
+    },
+    {
+      "symbol": "ヽ(∀° )人( °∀)ノ",
+      "name": "friends other"
+    },
+    {
+      "symbol": "ヽ( ⌒o⌒)人(⌒-⌒ )ﾉ",
+      "name": "friends other"
+    },
+    {
+      "symbol": "(*^ω^)八(⌒▽⌒)八(-‿‿- )ヽ",
+      "name": "friends other"
+    },
+    {
+      "symbol": "＼(＾∀＾)メ(＾∀＾)ノ",
+      "name": "friends other"
+    },
+    {
+      "symbol": "ヾ(￣ー￣(≧ω≦*)ゝ",
+      "name": "friends other"
+    },
+    {
+      "symbol": "ヽ( ⌒ω⌒)人(=^‥^= )ﾉ",
+      "name": "friends other"
+    },
+    {
+      "symbol": "ヽ(≧◡≦)八(o^ ^o)ノ",
+      "name": "friends other"
+    },
+    {
+      "symbol": "(*・∀・)爻(・∀・*)",
+      "name": "friends other"
+    },
+    {
+      "symbol": "｡*:☆(・ω・人・ω・)｡:゜☆｡",
+      "name": "friends other"
+    },
+    {
+      "symbol": "o(^^o)(o^^o)(o^^o)(o^^)o",
+      "name": "friends other"
+    },
+    {
+      "symbol": "(((￣(￣(￣▽￣)￣)￣)￣)))",
+      "name": "friends other"
+    },
+    {
+      "symbol": "(°(°ω(°ω°(☆ω☆)°ω°)ω°)°)",
+      "name": "friends other"
+    },
+    {
+      "symbol": "ヾ(・ω・`)ノヾ(´・ω・)ノ゛",
+      "name": "friends other"
+    },
+    {
+      "symbol": "Ψ( `∀)(∀´ )Ψ",
+      "name": "friends other"
+    },
+    {
+      "symbol": "(っ˘▽˘)(˘▽˘)˘▽˘ς)",
+      "name": "friends other"
+    },
+    {
+      "symbol": "(((*°▽°*)八(*°▽°*)))",
+      "name": "friends other"
+    },
+    {
+      "symbol": "☆ヾ(*´・∀・)ﾉヾ(・∀・`*)ﾉ☆",
+      "name": "friends other"
+    },
+    {
+      "symbol": "(*＾ω＾)人(＾ω＾*)",
+      "name": "friends other"
+    },
+    {
+      "symbol": "٩(๑･ิᴗ･ิ)۶٩(･ิᴗ･ิ๑)۶",
+      "name": "friends other"
+    },
+    {
+      "symbol": "(☞°ヮ°)☞ ☜(°ヮ°☜)",
+      "name": "friends other"
+    },
+    {
+      "symbol": "＼(▽￣ \\ (￣▽￣) / ￣▽)／",
+      "name": "friends other"
+    },
+    {
+      "symbol": "\\( ˙▿˙ )/\\( ˙▿˙ )/",
+      "name": "friends other"
+    },
+    {
+      "symbol": "(｡◕‿◕｡)",
+      "name": "friends other"
+    },
+    {
+      "symbol": "ヽ(♡‿♡)ノ",
+      "name": "friends other"
+    },
+    {
+      "symbol": "(★ω★)/",
+      "name": "friends other"
+    },
+    {
+      "symbol": "(ノ・ω・)ノ",
+      "name": "friends other"
+    },
+    {
+      "symbol": "(づ｡◕‿‿◕｡)づ",
+      "name": "friends other"
+    },
+    {
+      "symbol": "٩(◕‿◕｡)۶",
+      "name": "friends other"
+    },
+    {
+      "symbol": "ヾ(＾-＾)ノ",
+      "name": "friends other"
+    },
+    {
+      "symbol": "ヽ(⌐■_■)ノ♪♬",
+      "name": "friends other"
+    },
+    {
+      "symbol": "└(^o^)┐",
+      "name": "friends other"
+    }
+  ],
+  "Enemies": [
+    {
+      "symbol": "ヽ( ･∀･)ﾉ_θ彡☆Σ(ノ `Д´)ノ",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "(*´∇`)┌θ☆(ﾉ>_<)ﾉ",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "( ￣ω￣)ノﾞ⌒☆ﾐ(o _ _)o",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "(*`0´)θ☆(メ°皿°)ﾉ",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "(o¬‿¬o )...☆ﾐ(*x_x)",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "(╬￣皿￣)=○＃(￣#)３￣)",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "(; -_-)――――――C<―_-)",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "＜( ￣︿￣)︵θ︵θ︵☆(＞口＜－)",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "(￣ε(#￣)☆╰╮o(￣▽￣///)",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "ヽ(>_<ヽ) ―⊂|=0ヘ(^‿^ )",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "ヘ(>_<ヘ) ￢o(￣‿￣ﾒ)",
+      "name": "enemies other"
+    },
+    {
+      "symbol": ",,((( ￣□)_／ ＼_(○￣ ))),,",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "(҂` ﾛ ´)︻デ═一 ＼(º □ º l|l)/",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "(╯°Д°)╯︵ /(.□ . ＼)",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "(¬_¬'')ԅ(￣ε￣ԅ)",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "/( .□.)＼ ︵╰(°益°)╯︵ /(.□. /)",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "(ﾉ-.-)ﾉ….((((((((((((●~* ( >_<)",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "!!(ﾒ￣ ￣)_θ☆°0°)/",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "(`⌒*)O-(`⌒´Q)",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "(((ง’ω’)و三 ง’ω’)ڡ≡　☆⌒ﾐ((x_x)",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "(งಠ_ಠ)ง　σ( •̀ ω •́ σ)",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "(っ•﹏•)っ ✴==≡눈٩(`皿´҂)ง",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "(｢• ω •)｢ (⌒ω⌒`)",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "( °ᴗ°)~ð (/❛o❛\\)",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "(¬_¬)",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "凸(｀⌒´メ)凸",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "(╯°□°）╯︵ ┻━┻",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "ಠ益ಠ",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "ᕙ(⇀‸↼‶)ᕗ",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "(ノಠ ∩ಠ)ノ彡( o°o)",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "(`A´)",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "（◞‸◟）",
+      "name": "enemies other"
+    },
+    {
+      "symbol": "٩(ఠ益ఠ)۶",
+      "name": "enemies other"
+    }
+  ],
+  "Magic": [
+    {
+      "symbol": "(ノ ˘_˘)ノ　ζ|||ζ　ζ|||ζ　ζ|||ζ",
+      "name": "magic other"
+    },
+    {
+      "symbol": "(ﾉ≧∀≦)ﾉ ‥…━━━★",
+      "name": "magic other"
+    },
+    {
+      "symbol": "(ﾉ>ω<)ﾉ :｡･:*:･ﾟ’★,｡･:*:･ﾟ’☆",
+      "name": "magic other"
+    },
+    {
+      "symbol": "(ノ°∀°)ノ⌒･*:.｡. .｡.:*･゜ﾟ･*☆",
+      "name": "magic other"
+    },
+    {
+      "symbol": "╰( ͡° ͜ʖ ͡° )つ──☆*:・ﾟ",
+      "name": "magic other"
+    },
+    {
+      "symbol": "(＃￣□￣)o━∈・・━━━━☆",
+      "name": "magic other"
+    },
+    {
+      "symbol": "(⊃｡•́‿•̀｡)⊃━✿✿✿✿✿✿",
+      "name": "magic other"
+    },
+    {
+      "symbol": "(∩ᄑ_ᄑ)⊃━☆ﾟ*･｡*･:≡( ε:)",
+      "name": "magic other"
+    },
+    {
+      "symbol": "(/￣ー￣)/~~☆’.･.･:★’.･.･:☆",
+      "name": "magic other"
+    },
+    {
+      "symbol": "(∩` ﾛ ´)⊃━炎炎炎炎炎",
+      "name": "magic other"
+    },
+    {
+      "symbol": "(∩｀-´)⊃━☆ﾟ.･｡ﾟ",
+      "name": "magic other"
+    },
+    {
+      "symbol": "(∩｀-´)⊃━━☆ﾟ.･｡ﾟ",
+      "name": "magic other"
+    },
+    {
+      "symbol": "(/¯◡ ‿ ◡)/¯ ~ ┻━┻",
+      "name": "magic other"
+    },
+    {
+      "symbol": "╰( ͡° ͜ʖ ͡° )つ──☆*:・ﾟ",
+      "name": "magic other"
+    },
+    {
+      "symbol": "(つ✧ω✧)つ",
+      "name": "magic other"
+    },
+    {
+      "symbol": "ヽ(｀Д´)ﾉ",
+      "name": "magic other"
+    },
+    {
+      "symbol": "╰( ͡° ͜ʖ ͡° )つ──☆*:・ﾟ",
+      "name": "magic other"
+    },
+    {
+      "symbol": "(∩｀-´)⊃━☆ﾟ.*･｡ﾟ",
+      "name": "magic other"
+    }
+  ],
+  "Food": [
+    {
+      "symbol": "(っ˘ڡ˘ς)",
+      "name": "food other"
+    },
+    {
+      "symbol": "( o˘◡˘o) ┌iii┐",
+      "name": "food other"
+    },
+    {
+      "symbol": "(　’ω’)旦~~",
+      "name": "food other"
+    },
+    {
+      "symbol": "( ˘▽˘)っ♨",
+      "name": "food other"
+    },
+    {
+      "symbol": "♨o(>_<)o♨",
+      "name": "food other"
+    },
+    {
+      "symbol": "( ・ω・)o-{{[〃]}}",
+      "name": "food other"
+    },
+    {
+      "symbol": "(　・ω・)⊃-[二二]",
+      "name": "food other"
+    },
+    {
+      "symbol": "( ・・)つ―{}@{}@{}-",
+      "name": "food other"
+    },
+    {
+      "symbol": "( ・・)つ-●●●",
+      "name": "food other"
+    },
+    {
+      "symbol": "(*´ー`)旦 旦(￣ω￣*)",
+      "name": "food other"
+    },
+    {
+      "symbol": "(*´з`)口ﾟ｡ﾟ口(・∀・ )",
+      "name": "food other"
+    },
+    {
+      "symbol": "( o^ ^o)且 且(´ω`*)",
+      "name": "food other"
+    },
+    {
+      "symbol": "( ￣▽￣)[] [](≧▽≦ )",
+      "name": "food other"
+    },
+    {
+      "symbol": "( *^^)o∀*∀o(^^* )",
+      "name": "food other"
+    },
+    {
+      "symbol": "( ^^)_旦~~　 ~~U_(^^ )",
+      "name": "food other"
+    },
+    {
+      "symbol": "(*￣▽￣)旦 且(´∀`*)",
+      "name": "food other"
+    },
+    {
+      "symbol": "-●●●-ｃ(・・ )",
+      "name": "food other"
+    },
+    {
+      "symbol": "( ・・)つ―●○◎-",
+      "name": "food other"
+    }
+  ],
+  "Music": [
+    {
+      "symbol": "ヾ(´〇`)ﾉ♪♪♪",
+      "name": "music other"
+    },
+    {
+      "symbol": "ヘ(￣ω￣ヘ)",
+      "name": "music other"
+    },
+    {
+      "symbol": "(〜￣▽￣)〜",
+      "name": "music other"
+    },
+    {
+      "symbol": "〜(￣▽￣〜)",
+      "name": "music other"
+    },
+    {
+      "symbol": "ヽ(o´∀`)ﾉ♪♬",
+      "name": "music other"
+    },
+    {
+      "symbol": "(ﾉ≧∀≦)ﾉ",
+      "name": "music other"
+    },
+    {
+      "symbol": "♪ヽ(^^ヽ)♪",
+      "name": "music other"
+    },
+    {
+      "symbol": "♪(/_ _ )/♪",
+      "name": "music other"
+    },
+    {
+      "symbol": "♪♬((d⌒ω⌒b))♬♪",
+      "name": "music other"
+    },
+    {
+      "symbol": "└(￣-￣└))",
+      "name": "music other"
+    },
+    {
+      "symbol": "((┘￣ω￣)┘",
+      "name": "music other"
+    },
+    {
+      "symbol": "√(￣‥￣√)",
+      "name": "music other"
+    },
+    {
+      "symbol": "└(＾＾)┐",
+      "name": "music other"
+    },
+    {
+      "symbol": "┌(＾＾)┘",
+      "name": "music other"
+    },
+    {
+      "symbol": "＼(￣▽￣)＼",
+      "name": "music other"
+    },
+    {
+      "symbol": "／(￣▽￣)／",
+      "name": "music other"
+    },
+    {
+      "symbol": "(￣▽￣)/♫•*¨*•.¸¸♪",
+      "name": "music other"
+    },
+    {
+      "symbol": "(^_^♪)",
+      "name": "music other"
+    },
+    {
+      "symbol": "(~˘▽˘)~",
+      "name": "music other"
+    },
+    {
+      "symbol": "~(˘▽˘~)",
+      "name": "music other"
+    },
+    {
+      "symbol": "ヾ(⌐■_■)ノ♪",
+      "name": "music other"
+    },
+    {
+      "symbol": "(〜￣△￣)〜",
+      "name": "music other"
+    },
+    {
+      "symbol": "(~‾▽‾)~",
+      "name": "music other"
+    },
+    {
+      "symbol": "~(˘▽˘)~",
+      "name": "music other"
+    },
+    {
+      "symbol": "乁( • ω •乁)",
+      "name": "music other"
+    },
+    {
+      "symbol": "(｢• ω •)｢",
+      "name": "music other"
+    },
+    {
+      "symbol": "⁽⁽◝( • ω • )◜⁾⁾",
+      "name": "music other"
+    },
+    {
+      "symbol": "✺◟( • ω • )◞✺",
+      "name": "music other"
+    },
+    {
+      "symbol": "♬♫♪◖(● o ●)◗♪♫♬",
+      "name": "music other"
+    },
+    {
+      "symbol": "( ˘ ɜ˘) ♬♪♫",
+      "name": "music other"
+    },
+    {
+      "symbol": "♪♪♪ ヽ(ˇ∀ˇ )ゞ",
+      "name": "music other"
+    },
+    {
+      "symbol": "(ˇ▽ˇ)ノ♪♬♫",
+      "name": "music other"
+    },
+    {
+      "symbol": "♪♪ ヽ(ˇ∀ˇ )ゞ",
+      "name": "music other"
+    },
+    {
+      "symbol": "♪(*^◇^)_θ☆",
+      "name": "music other"
+    },
+    {
+      "symbol": "♪ヽ( ⌒o⌒)人(⌒-⌒ )v ♪",
+      "name": "music other"
+    },
+    {
+      "symbol": "♫꒰･◡･๑꒱",
+      "name": "music other"
+    },
+    {
+      "symbol": "♫~♪ ヽ(ˇ∀ˇ )ゞ",
+      "name": "music other"
+    },
+    {
+      "symbol": "♫♪(◕‿◕)♫♪",
+      "name": "music other"
+    },
+    {
+      "symbol": "♪───Ｏ（≧∇≦）Ｏ────♪",
+      "name": "music other"
+    },
+    {
+      "symbol": "♪～(￣ε￣)",
+      "name": "music other"
+    },
+    {
+      "symbol": "♪♪♪ ヽ(＾Д＾)ﾉ ♪♪♪",
+      "name": "music other"
+    }
+  ],
+  "Games": [
+    {
+      "symbol": "( ^^)p_____|_o____q(^^ )",
+      "name": "games other"
+    },
+    {
+      "symbol": "(／o^)/ °⊥ ＼(^o＼)",
+      "name": "games other"
+    },
+    {
+      "symbol": "!(;ﾟoﾟ)o/￣￣￣￣￣￣￣~ >ﾟ))))彡",
+      "name": "games other"
+    },
+    {
+      "symbol": "ヽ(^o^)ρ┳┻┳°σ(^o^)ノ",
+      "name": "games other"
+    },
+    {
+      "symbol": "(／_^)／　　●　＼(^_＼)",
+      "name": "games other"
+    },
+    {
+      "symbol": "\"( (≡|≡))_／ ＼_((≡|≡) )\"",
+      "name": "games other"
+    },
+    {
+      "symbol": "( ノ-_-)ノﾞ_□ VS □_ヾ(^-^ヽ)",
+      "name": "games other"
+    },
+    {
+      "symbol": "ヽ(；^ ^)ノﾞ ．．．...___〇",
+      "name": "games other"
+    },
+    {
+      "symbol": "(=O*_*)=O Q(*_*Q)",
+      "name": "games other"
+    },
+    {
+      "symbol": "Ю　○三　＼(￣^￣＼)",
+      "name": "games other"
+    },
+    {
+      "symbol": "(˙ω˙)🎮(˙∀˙)🎮",
+      "name": "games other"
+    }
+  ],
+  "Faces": [
+    {
+      "symbol": "( ͡° ͜ʖ ͡°)",
+      "name": "faces other"
+    },
+    {
+      "symbol": "( ͡° ʖ̯ ͡°)",
+      "name": "faces other"
+    },
+    {
+      "symbol": "( ͠° ͟ʖ ͡°)",
+      "name": "faces other"
+    },
+    {
+      "symbol": "( ͡ᵔ ͜ʖ ͡ᵔ)",
+      "name": "faces other"
+    },
+    {
+      "symbol": "( . •́ _ʖ •̀ .)",
+      "name": "faces other"
+    },
+    {
+      "symbol": "( ఠ ͟ʖ ఠ)",
+      "name": "faces other"
+    },
+    {
+      "symbol": "( ͡ಠ ʖ̯ ͡ಠ)",
+      "name": "faces other"
+    },
+    {
+      "symbol": "( ಠ ʖ̯ ಠ)",
+      "name": "faces other"
+    },
+    {
+      "symbol": "( ಠ ͜ʖ ಠ)",
+      "name": "faces other"
+    },
+    {
+      "symbol": "( ಥ ʖ̯ ಥ)",
+      "name": "faces other"
+    },
+    {
+      "symbol": "( ͡• ͜ʖ ͡• )",
+      "name": "faces other"
+    },
+    {
+      "symbol": "( ･ิ ͜ʖ ･ิ)",
+      "name": "faces other"
+    },
+    {
+      "symbol": "( ͡ ͜ʖ ͡ )",
+      "name": "faces other"
+    },
+    {
+      "symbol": "(≖ ͜ʖ≖)",
+      "name": "faces other"
+    },
+    {
+      "symbol": "(ʘ ʖ̯ ʘ)",
+      "name": "faces other"
+    },
+    {
+      "symbol": "(ʘ ͟ʖ ʘ)",
+      "name": "faces other"
+    },
+    {
+      "symbol": "(ʘ ͜ʖ ʘ)",
+      "name": "faces other"
+    },
+    {
+      "symbol": "(;´༎ຶٹ༎ຶ`)",
+      "name": "faces other"
+    },
+    {
+      "symbol": "(◕‿◕)",
+      "name": "faces other"
+    },
+    {
+      "symbol": "（＾ｖ＾）",
+      "name": "faces other"
+    },
+    {
+      "symbol": "(^‿^)",
+      "name": "faces other"
+    },
+    {
+      "symbol": "(¬‿¬)",
+      "name": "faces other"
+    },
+    {
+      "symbol": "(◕ω◕✿)",
+      "name": "faces other"
+    },
+    {
+      "symbol": "（＊＾Ｕ＾）人（＾Ｕ＾＊）",
+      "name": "faces other"
+    },
+    {
+      "symbol": "(/◕ヮ◕)/",
+      "name": "faces other"
+    },
+    {
+      "symbol": "٩(^‿^)۶",
+      "name": "faces other"
+    },
+    {
+      "symbol": "( ͡° ͜ʖ ͡°)",
+      "name": "faces other"
+    },
+    {
+      "symbol": "｡^‿^｡",
+      "name": "faces other"
+    }
+  ],
+  "Special": [
+    {
+      "symbol": "٩(ˊ〇ˋ*)و",
+      "name": "special other"
+    },
+    {
+      "symbol": "(￣^￣)ゞ",
+      "name": "special other"
+    },
+    {
+      "symbol": "(－‸ლ)",
+      "name": "special other"
+    },
+    {
+      "symbol": "(╯°益°)╯彡┻━┻",
+      "name": "special other"
+    },
+    {
+      "symbol": "(╮°-°)╮┳━━┳ ( ╯°□°)╯ ┻━━┻",
+      "name": "special other"
+    },
+    {
+      "symbol": "┬─┬ノ( º _ ºノ)",
+      "name": "special other"
+    },
+    {
+      "symbol": "(oT-T)尸",
+      "name": "special other"
+    },
+    {
+      "symbol": "( ͡° ͜ʖ ͡°)",
+      "name": "special other"
+    },
+    {
+      "symbol": "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]",
+      "name": "special other"
+    },
+    {
+      "symbol": "(ಠ_ಠ)",
+      "name": "special other"
+    },
+    {
+      "symbol": "౦０o ｡ (‾́。‾́ )y~~",
+      "name": "special other"
+    },
+    {
+      "symbol": "(￣﹃￣)",
+      "name": "special other"
+    },
+    {
+      "symbol": "(x(x_(x_x(O_o)x_x)_x)x)",
+      "name": "special other"
+    },
+    {
+      "symbol": "(　･ω･)☞",
+      "name": "special other"
+    },
+    {
+      "symbol": "(⌐■_■)",
+      "name": "special other"
+    },
+    {
+      "symbol": "(◕‿◕✿)",
+      "name": "special other"
+    },
+    {
+      "symbol": "(　￣.)o-　　【　TV　】",
+      "name": "special other"
+    },
+    {
+      "symbol": "｀、ヽ｀ヽ｀、ヽ(ノ＞＜)ノ ｀、ヽ｀☂ヽ｀、ヽ",
+      "name": "special other"
+    },
+    {
+      "symbol": "‿︵‿︵‿︵‿ヽ(°□° )ノ︵‿︵‿︵‿︵",
+      "name": "special other"
+    },
+    {
+      "symbol": "( • )( • )ԅ(≖‿≖ԅ)",
+      "name": "special other"
+    },
+    {
+      "symbol": "( ＾▽＾)っ✂╰⋃╯",
+      "name": "special other"
+    },
+    {
+      "symbol": "〜〜(／￣▽)／　〜ф",
+      "name": "special other"
+    },
+    {
+      "symbol": "ଘ(੭ˊᵕˋ)੭* ੈ✩‧₊˚",
+      "name": "special other"
+    },
+    {
+      "symbol": "ଘ(੭ˊ꒳ˋ)੭✧",
+      "name": "special other"
+    },
+    {
+      "symbol": "_(:3 」∠)_",
+      "name": "special other"
+    },
+    {
+      "symbol": "∠( ᐛ 」∠)_",
+      "name": "special other"
+    },
+    {
+      "symbol": "(▰˘◡˘▰)",
+      "name": "special other"
+    },
+    {
+      "symbol": "(✿◠‿◠)",
+      "name": "special other"
+    },
+    {
+      "symbol": "(づ｡◕‿‿◕｡)づ",
+      "name": "special other"
+    },
+    {
+      "symbol": "(˘︶˘).｡.:*♡",
+      "name": "special other"
+    },
+    {
+      "symbol": "(≧◡≦)♡",
+      "name": "special other"
+    },
+    {
+      "symbol": "(◕‿◕✿)",
+      "name": "special other"
+    },
+    {
+      "symbol": "(っ＾▿＾)۶",
+      "name": "special other"
+    },
+    {
+      "symbol": "｡^‿^｡",
+      "name": "special other"
+    }
+  ],
+  "Classic": [
+    {
+      "symbol": "$_$",
+      "name": "classic other"
+    },
+    {
+      "symbol": "(*_*)",
+      "name": "classic other"
+    },
+    {
+      "symbol": "(+_+)",
+      "name": "classic other"
+    },
+    {
+      "symbol": "(TT)",
+      "name": "classic other"
+    },
+    {
+      "symbol": "(^^)",
+      "name": "classic other"
+    },
+    {
+      "symbol": "):",
+      "name": "classic other"
+    },
+    {
+      "symbol": "*_*",
+      "name": "classic other"
+    },
+    {
+      "symbol": "*\\0/*",
+      "name": "classic other"
+    },
+    {
+      "symbol": "+_+",
+      "name": "classic other"
+    },
+    {
+      "symbol": "-.-",
+      "name": "classic other"
+    },
+    {
+      "symbol": "-0-",
+      "name": "classic other"
+    },
+    {
+      "symbol": "-_-",
+      "name": "classic other"
+    },
+    {
+      "symbol": "8-)",
+      "name": "classic other"
+    },
+    {
+      "symbol": "8-)",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":'(",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":(",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":)",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":-$",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":-(",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":-()",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":-)",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":-*",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":-3",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":-D",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":-O",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":-P",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":-S",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":-]",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":-x",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":/",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":D",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":O",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":O(",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":O)",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":P",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":S",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":[",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":]",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":|",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":'(",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":,-)",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":-!",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":-$",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":-(",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":-)",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":-*",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":-D",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":-O",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":-P",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":-[",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":-\\",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":-|",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":0",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":^)",
+      "name": "classic other"
+    },
+    {
+      "symbol": ":‑X",
+      "name": "classic other"
+    },
+    {
+      "symbol": ";(",
+      "name": "classic other"
+    },
+    {
+      "symbol": ";)",
+      "name": "classic other"
+    },
+    {
+      "symbol": ";-)",
+      "name": "classic other"
+    },
+    {
+      "symbol": ";D",
+      "name": "classic other"
+    },
+    {
+      "symbol": ";O)",
+      "name": "classic other"
+    },
+    {
+      "symbol": ";P",
+      "name": "classic other"
+    },
+    {
+      "symbol": ";[",
+      "name": "classic other"
+    },
+    {
+      "symbol": ";]",
+      "name": "classic other"
+    },
+    {
+      "symbol": ";_;",
+      "name": "classic other"
+    },
+    {
+      "symbol": ";)",
+      "name": "classic other"
+    },
+    {
+      "symbol": ";-)",
+      "name": "classic other"
+    },
+    {
+      "symbol": "<3",
+      "name": "classic other"
+    },
+    {
+      "symbol": "=(",
+      "name": "classic other"
+    },
+    {
+      "symbol": "=)",
+      "name": "classic other"
+    },
+    {
+      "symbol": "=.=",
+      "name": "classic other"
+    },
+    {
+      "symbol": "=/",
+      "name": "classic other"
+    },
+    {
+      "symbol": "=D",
+      "name": "classic other"
+    },
+    {
+      "symbol": "=P",
+      "name": "classic other"
+    },
+    {
+      "symbol": "=[",
+      "name": "classic other"
+    },
+    {
+      "symbol": "=]",
+      "name": "classic other"
+    },
+    {
+      "symbol": "=_=",
+      "name": "classic other"
+    },
+    {
+      "symbol": "=-O",
+      "name": "classic other"
+    },
+    {
+      "symbol": "=_=",
+      "name": "classic other"
+    },
+    {
+      "symbol": "> <",
+      "name": "classic other"
+    },
+    {
+      "symbol": ">\"<",
+      "name": "classic other"
+    },
+    {
+      "symbol": ">.<",
+      "name": "classic other"
+    },
+    {
+      "symbol": ">:(",
+      "name": "classic other"
+    },
+    {
+      "symbol": ">_<",
+      "name": "classic other"
+    },
+    {
+      "symbol": ">.<",
+      "name": "classic other"
+    },
+    {
+      "symbol": "B-)",
+      "name": "classic other"
+    },
+    {
+      "symbol": "B-)",
+      "name": "classic other"
+    },
+    {
+      "symbol": "O.O",
+      "name": "classic other"
+    },
+    {
+      "symbol": "O_O",
+      "name": "classic other"
+    },
+    {
+      "symbol": "OwO",
+      "name": "classic other"
+    },
+    {
+      "symbol": "O_o",
+      "name": "classic other"
+    },
+    {
+      "symbol": "T_T",
+      "name": "classic other"
+    },
+    {
+      "symbol": "U_U",
+      "name": "classic other"
+    },
+    {
+      "symbol": "UwU",
+      "name": "classic other"
+    },
+    {
+      "symbol": "X_X",
+      "name": "classic other"
+    },
+    {
+      "symbol": "Y.Y",
+      "name": "classic other"
+    },
+    {
+      "symbol": "^.^",
+      "name": "classic other"
+    },
+    {
+      "symbol": "^0^",
+      "name": "classic other"
+    },
+    {
+      "symbol": "^3^",
+      "name": "classic other"
+    },
+    {
+      "symbol": "^^",
+      "name": "classic other"
+    },
+    {
+      "symbol": "^^;",
+      "name": "classic other"
+    },
+    {
+      "symbol": "^_+",
+      "name": "classic other"
+    },
+    {
+      "symbol": "^_-",
+      "name": "classic other"
+    },
+    {
+      "symbol": "^_^",
+      "name": "classic other"
+    },
+    {
+      "symbol": "^_____^",
+      "name": "classic other"
+    },
+    {
+      "symbol": "^_~",
+      "name": "classic other"
+    },
+    {
+      "symbol": "^o^",
+      "name": "classic other"
+    },
+    {
+      "symbol": "^_^",
+      "name": "classic other"
+    },
+    {
+      "symbol": "o:-)",
+      "name": "classic other"
+    },
+    {
+      "symbol": "}:‑)",
+      "name": "classic other"
+    },
+    {
+      "symbol": "~_~",
+      "name": "classic other"
+    },
+    {
+      "symbol": "¬_¬",
+      "name": "classic other"
+    }
   ]
 }
