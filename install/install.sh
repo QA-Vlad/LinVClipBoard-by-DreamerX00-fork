@@ -70,6 +70,9 @@ EOF
 systemctl --user daemon-reload
 systemctl --user enable clipd.service
 systemctl --user start clipd.service
+systemctl --user restart clipd.service
+systemctl --user status clipd.service --no-pager
+systemctl --user is-active --quiet clipd.service && echo "✅ clipd service is active and running." || echo "⚠️  clipd service failed to start."
 
 echo ""
 echo "✅ LinVClipBoard installed successfully!"
