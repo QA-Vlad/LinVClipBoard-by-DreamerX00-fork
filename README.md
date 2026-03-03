@@ -1,188 +1,216 @@
 <p align="center">
-  <img src="crates/linvclip-ui/src-tauri/icons/icon.png" width="96" alt="LinVClipBoard icon" />
+  <img src="crates/linvclip-ui/src-tauri/icons/icon.png" width="120" alt="LinVClipBoard" />
 </p>
 
 <h1 align="center">LinVClipBoard</h1>
 
 <p align="center">
-  <strong>A Win+V style clipboard manager for Linux.</strong><br/>
-  Fast, lightweight, works on X11 and Wayland.<br/>
-  <em>v2.0 — i18n, emoji &amp; symbol pickers, zoom, redesigned settings</em>
+  <strong>The clipboard manager Linux deserves.</strong><br/>
+  Blazing fast &bull; Keyboard-first &bull; X11 + Wayland &bull; Under 50 MB RAM
 </p>
 
 <p align="center">
-  <a href="#installation">Install</a> &middot;
-  <a href="#usage">Usage</a> &middot;
-  <a href="#configuration">Config</a> &middot;
+  <a href="https://github.com/DreamerX00/LinVClipBoard/releases/latest"><img src="https://img.shields.io/github/v/release/DreamerX00/LinVClipBoard?style=flat-square&color=6366f1&label=release" alt="Latest Release" /></a>
+  <a href="https://github.com/DreamerX00/LinVClipBoard/blob/main/LICENSE"><img src="https://img.shields.io/github/license/DreamerX00/LinVClipBoard?style=flat-square&color=34d399" alt="MIT License" /></a>
+  <a href="https://github.com/DreamerX00/LinVClipBoard/releases/latest"><img src="https://img.shields.io/github/downloads/DreamerX00/LinVClipBoard/total?style=flat-square&color=f59e0b&label=downloads" alt="Downloads" /></a>
+  <img src="https://img.shields.io/badge/rust-2024-orange?style=flat-square&logo=rust" alt="Rust" />
+  <img src="https://img.shields.io/badge/tauri-v2-24C8D8?style=flat-square&logo=tauri" alt="Tauri v2" />
+</p>
+
+<p align="center">
+  <a href="#-quick-install">Install</a> &bull;
+  <a href="#-features">Features</a> &bull;
+  <a href="#%EF%B8%8F-usage">Usage</a> &bull;
+  <a href="#-configuration">Config</a> &bull;
   <a href="https://github.com/DreamerX00/LinVClipBoard/releases">Releases</a>
 </p>
 
 ---
 
-## What it does
+## Why LinVClipBoard?
 
-LinVClipBoard runs a background daemon (`clipd`) that captures every text and image you copy. You can search, pin, and paste from history using:
+Windows has `Win+V`. Mac has clipboard history. Linux had…nothing great. Until now.
 
-- **Overlay UI** &mdash; Press `Super+.` to open. Glassmorphism dark/light theme, keyboard-driven.
-- **CLI** &mdash; `clipctl list`, `clipctl search "query"`, `clipctl paste <id>`
-- **Emoji Picker** &mdash; Built-in searchable emoji grid (~300 emojis, 9 categories)
-- **Symbol Picker** &mdash; Math, arrows, currency, Greek, and more
-- **i18n** &mdash; English and Portuguese, easily extensible
-- **Zoom** &mdash; Scale the UI from 50% to 200% (slider or Ctrl+/−/0)
-- **Window Positioning** &mdash; "Fixed" (center) or "Mouse" (follows cursor)
+LinVClipBoard is a **native**, **lightweight** clipboard platform that gives you everything the other OSes have — and more. GIF search, emoji picker, symbol tables, full-text search across your entire clipboard history, all wrapped in a gorgeous glassmorphism overlay activated with a single keystroke.
 
-Items are stored in a local SQLite database with FTS5 full-text search. Images are saved as PNG blobs. Everything stays under 50 MB RAM.
+Built in **Rust + Tauri v2**. Runs as a systemd user service. No Electron. No bloat.
 
-## Architecture
+---
 
-```
-  linvclip-ui (Tauri)    clipctl (CLI)
-        \                   /
-         \                 /
-      IPC (Unix Domain Socket)
-              |
-         clipd (daemon)
-              |
-     SQLite + FTS5 + blob store
-              |
-     arboard (X11 / Wayland)
-```
+## ✨ Features
 
-| Component       | Description                              |
-|-----------------|------------------------------------------|
-| `clipd`         | Background daemon. Captures clipboard, enforces limits. |
-| `clipctl`       | CLI client. List, search, paste, pin, delete. |
-| `linvclip-ui`   | Tauri overlay window. Toggled with `Super+.` |
-| `shared`        | Library crate: database, IPC, config, models. |
+| Feature | Description |
+|:--------|:------------|
+| 📋 **Clipboard History** | Every text & image you copy, searchable with SQLite FTS5 |
+| 🎞️ **GIF Search** | Browse trending GIFs, search the KLIPY library, copy URL with one click |
+| 😀 **Emoji Picker** | ~300 emojis across 9 categories with recent-used tracking |
+| ∑ **Symbol Table** | Math, arrows, currency, Greek, superscripts, box drawing |
+| 🔍 **Full-text Search** | Instant FTS5 search across your entire history |
+| 📌 **Pin & Organize** | Pin important items so they never expire |
+| 🎨 **Themes** | Dark, Light, or Auto (follows OS). Glassmorphism everywhere |
+| 🌐 **4 Languages** | English, Português, 日本語, हिन्दी — easily extensible |
+| 🔄 **Auto Updates** | Weekly update check with desktop notification. Manual check in Settings |
+| 🖱️ **Draggable Window** | Grab the title bar and move the overlay anywhere |
+| 🔍 **Zoom** | Scale the entire UI from 50% to 200% |
+| ⌨️ **Keyboard-first** | Arrow keys, Enter to paste, Escape to dismiss, Ctrl+/−/0 for zoom |
+| 🔒 **Secure** | Incognito mode, app blacklist, auto-expiry, memory limits |
+| 🖥️ **X11 + Wayland** | Native clipboard access via arboard — no hacks |
 
-## Installation
+---
 
-### From .deb package (recommended)
+## 🚀 Quick Install
 
-Download `linvclipboard_1.0.1-1_amd64.deb` from [Releases](https://github.com/DreamerX00/LinVClipBoard/releases):
+### One command (Debian/Ubuntu)
 
 ```bash
-sudo dpkg -i linvclipboard_1.0.1-1_amd64.deb
-
-# Enable the clipboard daemon
-systemctl --user daemon-reload
-systemctl --user enable --now clipd.service
-
-# Verify
-clipctl status
+# Download the latest .deb from Releases and install:
+sudo dpkg -i linvclipboard_1.5.0-1_amd64.deb
 ```
 
-This single package includes everything: `clipd`, `clipctl`, `linvclip-ui`, the systemd service, desktop entry, and icon.
+That's it. The daemon starts automatically. Press **`Super+.`** to open the overlay.
+
+> The package includes everything: `clipd` (daemon), `clipctl` (CLI), `linvclip-ui` (overlay), systemd service + update timer, desktop entry, and icon.
 
 ### Build from source
 
-#### Prerequisites
-
 ```bash
-# Rust
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-
-# System libraries (Ubuntu/Debian)
+# Prerequisites (Ubuntu/Debian)
 sudo apt install -y build-essential pkg-config libsqlite3-dev \
     libxcb1-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev \
-    libwayland-dev wl-clipboard
+    libwayland-dev wl-clipboard \
+    libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev
 
-# For the Tauri UI (optional, requires Node.js >= 18)
-sudo apt install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev
-```
-
-#### Build and install
-
-```bash
-# Build everything (daemon + CLI + UI) and package as .deb
+# Clone & build
+git clone https://github.com/DreamerX00/LinVClipBoard.git
+cd LinVClipBoard
 make deb
-sudo dpkg -i target/debian/linvclipboard_1.0.1-1_amd64.deb
-
-# Or install directly without packaging
-make build-all
-make install
+sudo dpkg -i target/debian/linvclipboard_*_amd64.deb
 ```
 
-## Usage
+---
+
+## 🏗️ Architecture
+
+```
+  ┌─────────────────┐     ┌─────────────┐
+  │  linvclip-ui    │     │   clipctl   │
+  │  (Tauri v2)     │     │   (CLI)     │
+  └────────┬────────┘     └──────┬──────┘
+           │                     │
+           └──────┬──────────────┘
+                  │
+        Unix Domain Socket (IPC)
+                  │
+           ┌──────┴──────┐
+           │    clipd     │
+           │   (daemon)   │
+           └──────┬──────┘
+                  │
+     ┌────────────┼────────────┐
+     │            │            │
+  SQLite       FTS5        arboard
+  + blobs    full-text    X11/Wayland
+              search      clipboard
+```
+
+| Crate | Role |
+|:------|:-----|
+| **`clipd`** | Background daemon — captures clipboard changes, enforces limits, serves IPC |
+| **`clipctl`** | CLI tool — list, search, paste, pin, delete, status |
+| **`linvclip-ui`** | Tauri v2 overlay — the full GUI experience |
+| **`shared`** | Library — database, IPC protocol, config, models |
+
+---
+
+## ⌨️ Usage
 
 ### Overlay UI
 
-Press **Super+.** (Win+Period) to toggle the overlay. Use arrow keys to navigate, Enter to paste, Escape to dismiss.
+Press **`Super+.`** (or your custom shortcut) to summon the overlay.
 
-The overlay has three tabs:
-- **Clipboard** &mdash; History with type filters (All / Text / Images / Files / Pinned)
-- **Emojis** &mdash; Searchable emoji grid with categories and recently used
-- **Symbols** &mdash; Math, arrows, currency, Greek letters, etc.
+| Key | Action |
+|:----|:-------|
+| `↑` `↓` | Navigate items |
+| `Enter` | Copy selected item to clipboard |
+| `Delete` | Remove selected item |
+| `Escape` | Dismiss overlay |
+| `Ctrl` + `+` / `-` / `0` | Zoom in / out / reset |
 
-Keyboard shortcuts:
-- `Ctrl++` / `Ctrl+-` / `Ctrl+0` &mdash; Zoom in / out / reset
+**Tabs:** Clipboard • Emojis • Symbols • GIFs
+
+Just start typing to search — the search bar auto-focuses.
 
 ### CLI
 
 ```bash
 clipctl list                  # Recent items
-clipctl list --limit 50       # Last 50 items
+clipctl list --limit 50       # Last 50
 clipctl search "hello"        # Full-text search
 clipctl paste <id>            # Copy item back to clipboard
-clipctl pin <id>              # Pin / unpin an item
-clipctl delete <id>           # Delete an item
-clipctl clear                 # Clear all non-pinned items
-clipctl status                # Daemon uptime, item count, DB size
+clipctl pin <id>              # Pin / unpin
+clipctl delete <id>           # Delete
+clipctl clear                 # Clear all non-pinned
+clipctl status                # Daemon info
 ```
 
-### Daemon management
+### Daemon
 
 ```bash
-systemctl --user status clipd         # Check status
-systemctl --user restart clipd        # Restart
-journalctl --user -u clipd -f         # Live logs
+systemctl --user status clipd           # Status
+systemctl --user restart clipd          # Restart
+journalctl --user -u clipd -f           # Live logs
+systemctl --user status linvclip-update-check.timer  # Update timer
 ```
 
-## Configuration
+---
 
-Config file: `~/.config/linvclip/config.toml` (auto-created on first run)
+## ⚙️ Configuration
+
+Auto-created at `~/.config/linvclip/config.toml` on first run.
 
 ```toml
 [daemon]
 poll_interval_ms = 250
-log_level = "info"              # trace | debug | info | warn | error
+log_level = "info"                # trace | debug | info | warn | error
 
 [storage]
 max_items = 10000
-max_item_size_bytes = 52428800  # 50 MB
+max_item_size_bytes = 52428800    # 50 MB
 expiry_days = 30
 
 [security]
 blacklisted_apps = ["keepassxc", "1password", "bitwarden"]
-incognito = false
+incognito = false                 # true = pause all capture
 
 [ui]
-theme = "auto"                  # auto | dark | light
-window_width = 420
-window_height = 520
-language = "en"                 # en | pt (add your own!)
-zoom = 100                      # 50–200
-window_position = "mouse"       # mouse | fixed
+theme = "auto"                    # auto | dark | light
+language = "en"                   # en | pt | ja | hi
+zoom = 100                        # 50–200
+window_position = "mouse"         # mouse | fixed
 ```
 
-## Uninstall
+---
+
+## 🌐 Adding a Language
+
+1. Copy `crates/linvclip-ui/src/i18n/en.json` → `fr.json`
+2. Translate all values (keep keys unchanged)
+3. Import in `crates/linvclip-ui/src/i18n/index.jsx` and add to the `TRANSLATIONS` map
+4. It appears in Settings automatically
+
+---
+
+## 🗑️ Uninstall
 
 ```bash
-systemctl --user stop clipd.service
-systemctl --user disable clipd.service
 sudo dpkg -r linvclipboard
 
-# Remove user data (optional)
+# Optional: remove user data
 rm -rf ~/.config/linvclip ~/.local/share/linvclip
 ```
 
-## Adding a New Language
+---
 
-1. Copy `crates/linvclip-ui/src/i18n/en.json` to `<code>.json` (e.g. `fr.json`)
-2. Translate all values (keep the keys unchanged)
-3. Import the file in `crates/linvclip-ui/src/i18n/index.jsx` and add it to the `TRANSLATIONS` map
-4. The new language will appear automatically in Settings
+## 📄 License
 
-## License
-
-[MIT](LICENSE)
+[MIT](LICENSE) — Built with ❤️ by **DreamerX**
