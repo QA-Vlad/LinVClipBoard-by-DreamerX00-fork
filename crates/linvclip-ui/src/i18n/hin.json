@@ -109,8 +109,9 @@
   },
   "gif": {
     "no_results": "कोई GIF नहीं मिला",
+    "copied": "GIF क्लिपबोर्ड पर कॉपी हो गया!",
     "copied_url": "GIF URL कॉपी किया गया!",
-    "copy_hint": "GIF URL कॉपी करने के लिए क्लिक करें",
+    "copy_hint": "GIF कॉपी करने के लिए क्लिक करें",
     "api_key_required": "KLIPY API कुंजी आवश्यक",
     "api_key_hint": "सेटिंग्स → उन्नत → GIF में अपनी मुफ्त KLIPY API कुंजी जोड़ें।"
   }

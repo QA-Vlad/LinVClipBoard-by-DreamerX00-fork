@@ -109,8 +109,9 @@
   },
   "gif": {
     "no_results": "Nenhum GIF encontrado",
+    "copied": "GIF copiado para a área de transferência!",
     "copied_url": "URL do GIF copiada!",
-    "copy_hint": "Clique para copiar URL do GIF",
+    "copy_hint": "Clique para copiar GIF",
     "api_key_required": "Chave API do KLIPY Necessária",
     "api_key_hint": "Adicione sua chave API gratuita do KLIPY em Configurações → Avançado → GIF."
   }

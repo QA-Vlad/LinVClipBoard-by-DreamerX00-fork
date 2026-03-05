@@ -112,15 +112,15 @@ function GifPicker({ searchQuery, onToast }) {
         return () => observer.disconnect();
     }, [hasNext, loading]);
 
-    const handleCopyUrl = useCallback(
+    const handleCopyGif = useCallback(
         async (gif) => {
             try {
-                await invoke("paste_raw_text", { text: gif.gif_url });
+                await invoke("copy_gif", { url: gif.gif_url });
                 invoke("register_gif_share", {
                     slug: gif.slug || gif.id,
                     query: searchQuery || activeCategory || "",
                 }).catch(() => {});
-                if (onToast) onToast("📋 " + t("gif.copied_url"));
+                if (onToast) onToast("📋 " + t("gif.copied"));
             } catch (_) {
                 if (onToast) onToast("❌ " + t("clipboard.copy_failed"));
             }
@@ -187,7 +187,7 @@ function GifPicker({ searchQuery, onToast }) {
                     <button
                         key={gif.id}
                         className="gif-cell"
-                        onClick={() => handleCopyUrl(gif)}
+                        onClick={() => handleCopyGif(gif)}
                         title={gif.title || t("gif.copy_hint")}
                         aria-label={gif.title || "GIF"}
                     >

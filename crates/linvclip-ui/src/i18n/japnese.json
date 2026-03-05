@@ -109,8 +109,9 @@
   },
   "gif": {
     "no_results": "GIFが見つかりません",
+    "copied": "GIFをクリップボードにコピーしました！",
     "copied_url": "GIF URLをコピーしました！",
-    "copy_hint": "クリックしてGIF URLをコピー",
+    "copy_hint": "GIFをコピー",
     "api_key_required": "KLIPY APIキーが必要です",
     "api_key_hint": "設定 → 詳細設定 → GIFに無料のKLIPY APIキーを追加してください。"
   }

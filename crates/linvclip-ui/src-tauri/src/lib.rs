@@ -239,12 +239,22 @@ async fn clear_all() -> Result<String, String> {
     let socket = AppConfig::socket_path();
     let request = IpcRequest::Clear;
 
-    match send_request(&socket, &request).await {
+    let result = match send_request(&socket, &request).await {
         Ok(IpcResponse::Ok { message }) => Ok(message),
         Ok(IpcResponse::Error { message }) => Err(message),
         Err(e) => Err(format!("Connection failed: {}", e)),
         _ => Err("Unexpected response".to_string()),
+    };
+
+    // Also purge the GIF cache
+    if let Ok(dir) = gif_cache_dir() {
+        if dir.exists() {
+            let _ = std::fs::remove_dir_all(&dir);
+            let _ = std::fs::create_dir_all(&dir);
+        }
     }
+
+    result
 }
 
 /// Get the current configuration.
@@ -528,6 +538,81 @@ async fn register_gif_share(slug: String, query: String) -> Result<String, Strin
     Ok("ok".to_string())
 }
 
+/// Return the GIF cache directory, creating it if needed.
+fn gif_cache_dir() -> Result<std::path::PathBuf, String> {
+    let dir = dirs::cache_dir()
+        .unwrap_or_else(|| std::path::PathBuf::from("/tmp"))
+        .join("linvclip")
+        .join("gifs");
+    std::fs::create_dir_all(&dir).map_err(|e| format!("Cannot create cache dir: {}", e))?;
+    Ok(dir)
+}
+
+/// Copy a GIF URL to the system clipboard.
+///
+/// Worldwide, GIF keyboards on desktop work by copying the direct GIF URL
+/// as plain text.  Chat apps (Discord, Telegram, Slack, etc.) auto-embed
+/// direct `.gif` links, displaying them as animated images.
+///
+/// The `image/gif` MIME type is NOT supported by most paste targets (Electron
+/// apps read `image/png` or `text/plain`), and `wl-clipboard` cannot offer
+/// multiple MIME types simultaneously, so URL-based sharing is the standard.
+#[tauri::command]
+async fn copy_gif(url: String) -> Result<String, String> {
+    let mut clipboard =
+        arboard::Clipboard::new().map_err(|e| format!("Clipboard error: {}", e))?;
+    clipboard
+        .set_text(&url)
+        .map_err(|e| format!("Failed to set clipboard: {}", e))?;
+    Ok("ok".to_string())
+}
+
+/// Purge all cached GIF files.
+#[tauri::command]
+async fn clear_gif_cache() -> Result<String, String> {
+    if let Ok(dir) = gif_cache_dir() {
+        if dir.exists() {
+            std::fs::remove_dir_all(&dir)
+                .map_err(|e| format!("Failed to clear GIF cache: {}", e))?;
+            // Re-create empty dir
+            std::fs::create_dir_all(&dir).ok();
+        }
+    }
+    Ok("ok".to_string())
+}
+
+/// Purge GIF cache files older than the configured expiry days.
+/// Called on app startup.
+fn cleanup_expired_gif_cache() {
+    let expiry_days = {
+        let cfg = AppConfig::load();
+        cfg.storage.expiry_days
+    };
+    let max_age = std::time::Duration::from_secs(expiry_days as u64 * 86400);
+
+    let dir = match gif_cache_dir() {
+        Ok(d) => d,
+        Err(_) => return,
+    };
+
+    let entries = match std::fs::read_dir(&dir) {
+        Ok(e) => e,
+        Err(_) => return,
+    };
+
+    let now = std::time::SystemTime::now();
+    for entry in entries.flatten() {
+        if let Ok(meta) = entry.metadata() {
+            let age = meta.modified().ok().and_then(|m| now.duration_since(m).ok());
+            if let Some(age) = age {
+                if age > max_age {
+                    let _ = std::fs::remove_file(entry.path());
+                }
+            }
+        }
+    }
+}
+
 /// Add a tag to an item.
 #[tauri::command]
 async fn add_tag(id: String, tag: String) -> Result<ClipboardItem, String> {
@@ -686,10 +771,15 @@ pub fn run() {
             fetch_gifs,
             fetch_gif_categories,
             register_gif_share,
+            copy_gif,
+            clear_gif_cache,
             check_for_updates,
         ])
         .setup(|app| {
             let window = app.get_webview_window("main").unwrap();
+
+            // Clean up expired GIF cache files on startup
+            std::thread::spawn(|| cleanup_expired_gif_cache());
 
             // --- System Tray ---
             // NOTE: On Linux with AppIndicator, a menu is REQUIRED for the icon to appear.

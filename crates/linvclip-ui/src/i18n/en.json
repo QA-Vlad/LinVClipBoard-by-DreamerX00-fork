@@ -109,8 +109,9 @@
   },
   "gif": {
     "no_results": "No GIFs found",
+    "copied": "GIF copied to clipboard!",
     "copied_url": "GIF URL copied!",
-    "copy_hint": "Click to copy GIF URL",
+    "copy_hint": "Click to copy GIF",
     "api_key_required": "KLIPY API Key Required",
     "api_key_hint": "Add your free KLIPY API key in Settings → Advanced → GIF to enable GIF search."
   }
