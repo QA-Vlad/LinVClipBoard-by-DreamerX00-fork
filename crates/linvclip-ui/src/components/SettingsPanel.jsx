@@ -15,6 +15,7 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [appVersion, setAppVersion] = useState("");
     const [showUpdatePopup, setShowUpdatePopup] = useState(null); // null | 'up_to_date' | 'error'
+    const [accentColor, setAccentColor] = useState(() => localStorage.getItem("accent_color") || "auto");
 
     useEffect(() => {
         loadConfig();
@@ -86,8 +87,33 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
             ...prev,
             ui: { ...prev.ui, theme: newTheme },
         }));
-        document.documentElement.setAttribute("data-theme", newTheme === "auto" ? "dark" : newTheme);
+        const resolved = newTheme === "auto"
+            ? (window.matchMedia?.("(prefers-color-scheme: light)")?.matches ? "catppuccin-latte" : "catppuccin-mocha")
+            : newTheme;
+        document.documentElement.setAttribute("data-theme", resolved);
         localStorage.setItem("theme", newTheme);
+    };
+
+    const handleAccentChange = (color) => {
+        setAccentColor(color);
+        localStorage.setItem("accent_color", color);
+        updateConfig((prev) => ({
+            ...prev,
+            ui: { ...prev.ui, accent_color: color },
+        }));
+        if (color !== "auto") {
+            document.documentElement.style.setProperty("--accent", color);
+            document.documentElement.style.setProperty("--accent-hover", color + "cc");
+            document.documentElement.style.setProperty("--accent-active", color);
+            document.documentElement.style.setProperty("--accent-glow", color + "4d");
+            document.documentElement.style.setProperty("--border-focus", color + "80");
+        } else {
+            document.documentElement.style.removeProperty("--accent");
+            document.documentElement.style.removeProperty("--accent-hover");
+            document.documentElement.style.removeProperty("--accent-active");
+            document.documentElement.style.removeProperty("--accent-glow");
+            document.documentElement.style.removeProperty("--border-focus");
+        }
     };
 
     const handleCheckUpdate = useCallback(async () => {
@@ -161,25 +187,124 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
                     </div>
 
                     {/* ── 🎨 Theme ── */}
-                    <div className="settings-section">
+                    <div className="settings-section theme-grid-section">
                         <div className="settings-section-label">🎨 {t("settings.theme")}</div>
-                        <div className="toggle-group" role="radiogroup" aria-label={t("settings.theme")}>
+
+                        <div className="theme-grid-group-label">{t("settings.theme_system")}</div>
+                        <div className="theme-grid" role="radiogroup" aria-label={t("settings.theme")}>
                             {[
-                                { value: "dark", label: t("settings.theme_dark") },
-                                { value: "light", label: t("settings.theme_light") },
-                                { value: "auto", label: t("settings.theme_auto") },
-                            ].map((opt) => (
+                                { value: "auto",  label: t("settings.theme_auto"),  colors: ["#818cf8","#f87171","#fbbf24","#34d399"] },
+                                { value: "dark",  label: t("settings.theme_dark"),  colors: ["#0f0f19","#191928","#818cf8","#f1f5f9"] },
+                                { value: "light", label: t("settings.theme_light"), colors: ["#f8fafc","#e2e8f0","#6366f1","#1e293b"] },
+                            ].map((th) => (
                                 <button
-                                    key={opt.value}
+                                    key={th.value}
                                     type="button"
                                     role="radio"
-                                    aria-checked={(config.ui?.theme ?? "dark") === opt.value}
-                                    className={`toggle-btn${(config.ui?.theme ?? "dark") === opt.value ? " toggle-btn-active" : ""}`}
-                                    onClick={() => handleThemeChange(opt.value)}
+                                    aria-checked={(config.ui?.theme ?? "dark") === th.value}
+                                    className={`theme-card${(config.ui?.theme ?? "dark") === th.value ? " theme-card-active" : ""}`}
+                                    onClick={() => handleThemeChange(th.value)}
                                 >
-                                    {opt.label}
+                                    <div className="theme-card-swatches">
+                                        {th.colors.map((c, i) => <span key={i} style={{ background: c }} />)}
+                                    </div>
+                                    <div className="theme-card-name">{th.label}</div>
                                 </button>
                             ))}
+                        </div>
+
+                        <div className="theme-grid-group-label">{t("settings.theme_catppuccin")}</div>
+                        <div className="theme-grid">
+                            {[
+                                { value: "catppuccin-latte",     label: "Latte",     colors: ["#eff1f5","#dce0e8","#1e66f5","#4c4f69"] },
+                                { value: "catppuccin-frappe",    label: "Frappé",    colors: ["#303446","#3b3f4d","#8caaee","#c6d0f5"] },
+                                { value: "catppuccin-macchiato", label: "Macchiato", colors: ["#24273a","#2c2f43","#8aadf4","#cad3f5"] },
+                                { value: "catppuccin-mocha",     label: "Mocha",     colors: ["#1e1e2e","#27273a","#89b4fa","#cdd6f4"] },
+                            ].map((th) => (
+                                <button
+                                    key={th.value}
+                                    type="button"
+                                    role="radio"
+                                    aria-checked={(config.ui?.theme ?? "dark") === th.value}
+                                    className={`theme-card${(config.ui?.theme ?? "dark") === th.value ? " theme-card-active" : ""}`}
+                                    onClick={() => handleThemeChange(th.value)}
+                                >
+                                    <div className="theme-card-swatches">
+                                        {th.colors.map((c, i) => <span key={i} style={{ background: c }} />)}
+                                    </div>
+                                    <div className="theme-card-name">{th.label}</div>
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="theme-grid-group-label">{t("settings.theme_classic")}</div>
+                        <div className="theme-grid">
+                            {[
+                                { value: "nord",    label: "Nord",    colors: ["#2e3440","#3b4252","#88c0d0","#eceff4"] },
+                                { value: "dracula", label: "Dracula", colors: ["#282a36","#44475a","#bd93f9","#f8f8f2"] },
+                            ].map((th) => (
+                                <button
+                                    key={th.value}
+                                    type="button"
+                                    role="radio"
+                                    aria-checked={(config.ui?.theme ?? "dark") === th.value}
+                                    className={`theme-card${(config.ui?.theme ?? "dark") === th.value ? " theme-card-active" : ""}`}
+                                    onClick={() => handleThemeChange(th.value)}
+                                >
+                                    <div className="theme-card-swatches">
+                                        {th.colors.map((c, i) => <span key={i} style={{ background: c }} />)}
+                                    </div>
+                                    <div className="theme-card-name">{th.label}</div>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* ── 🎯 Accent Color ── */}
+                    <div className="settings-section">
+                        <div className="settings-section-label">🎯 {t("settings.accent_color")}</div>
+                        <div className="accent-picker">
+                            <div className="accent-presets" role="radiogroup" aria-label={t("settings.accent_color")}>
+                                <button
+                                    type="button"
+                                    role="radio"
+                                    aria-checked={accentColor === "auto"}
+                                    className={`accent-dot accent-dot-auto${accentColor === "auto" ? " accent-dot-active" : ""}`}
+                                    onClick={() => handleAccentChange("auto")}
+                                    title={t("settings.accent_auto")}
+                                />
+                                {[
+                                    { color: "#818cf8", name: "Indigo" },
+                                    { color: "#8b5cf6", name: "Purple" },
+                                    { color: "#34d399", name: "Green" },
+                                    { color: "#f472b6", name: "Pink" },
+                                    { color: "#fb923c", name: "Orange" },
+                                    { color: "#2dd4bf", name: "Teal" },
+                                    { color: "#f87171", name: "Red" },
+                                    { color: "#fbbf24", name: "Amber" },
+                                    { color: "#60a5fa", name: "Blue" },
+                                ].map((p) => (
+                                    <button
+                                        key={p.color}
+                                        type="button"
+                                        role="radio"
+                                        aria-checked={accentColor === p.color}
+                                        className={`accent-dot${accentColor === p.color ? " accent-dot-active" : ""}`}
+                                        style={{ background: p.color }}
+                                        onClick={() => handleAccentChange(p.color)}
+                                        title={p.name}
+                                    />
+                                ))}
+                            </div>
+                            <div className="accent-custom-row">
+                                <input
+                                    type="color"
+                                    value={accentColor !== "auto" ? accentColor : "#818cf8"}
+                                    onChange={(e) => handleAccentChange(e.target.value)}
+                                    aria-label="Custom accent color"
+                                />
+                                <span className="accent-custom-label">{t("settings.accent_custom")}</span>
+                            </div>
                         </div>
                     </div>
 

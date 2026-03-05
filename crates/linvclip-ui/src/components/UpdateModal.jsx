@@ -81,23 +81,44 @@ function UpdateModal({ updateInfo, onClose }) {
         return `${(b / 1048576).toFixed(1)} MB`;
     };
 
-    /* Render simple Markdown-ish release notes: headings, bold, bullets, code */
+    /**
+     * Render simple Markdown-ish release notes using safe React elements.
+     * Supports: ## headings, ### headings, - bullets, **bold**, `code`.
+     * No dangerouslySetInnerHTML — immune to XSS from malicious release notes.
+     */
     const renderNotes = (md) => {
         if (!md) return null;
-        return md.split("\n").map((line, i) => {
-            if (line.startsWith("### ")) return <h4 key={i}>{line.slice(4)}</h4>;
-            if (line.startsWith("## ")) return <h3 key={i}>{line.slice(3)}</h3>;
-            if (line.startsWith("- ")) {
-                const content = line.slice(2)
-                    .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>")
-                    .replace(/`(.+?)`/g, "<code>$1</code>");
-                return <li key={i} dangerouslySetInnerHTML={{ __html: content }} />;
+
+        /** Parse inline markdown (bold + code) into React nodes. */
+        const parseInline = (text) => {
+            const parts = [];
+            // Match **bold** and `code` spans
+            const regex = /\*\*(.+?)\*\*|`(.+?)`/g;
+            let lastIndex = 0;
+            let match;
+            while ((match = regex.exec(text)) !== null) {
+                if (match.index > lastIndex) {
+                    parts.push(text.slice(lastIndex, match.index));
+                }
+                if (match[1] !== undefined) {
+                    parts.push(<b key={match.index}>{match[1]}</b>);
+                } else if (match[2] !== undefined) {
+                    parts.push(<code key={match.index}>{match[2]}</code>);
+                }
+                lastIndex = regex.lastIndex;
             }
+            if (lastIndex < text.length) {
+                parts.push(text.slice(lastIndex));
+            }
+            return parts.length > 0 ? parts : [text];
+        };
+
+        return md.split("\n").map((line, i) => {
+            if (line.startsWith("### ")) return <h4 key={i}>{parseInline(line.slice(4))}</h4>;
+            if (line.startsWith("## ")) return <h3 key={i}>{parseInline(line.slice(3))}</h3>;
+            if (line.startsWith("- ")) return <li key={i}>{parseInline(line.slice(2))}</li>;
             if (!line.trim()) return <div key={i} className="update-notes-spacer" />;
-            const content = line
-                .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>")
-                .replace(/`(.+?)`/g, "<code>$1</code>");
-            return <p key={i} dangerouslySetInnerHTML={{ __html: content }} />;
+            return <p key={i}>{parseInline(line)}</p>;
         });
     };
 

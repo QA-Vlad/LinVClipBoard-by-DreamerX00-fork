@@ -1,6 +1,6 @@
 [package]
 name = "linvclip-ui"
-version = "1.5.4"
+version = "1.7.0"
 edition = "2021"
 
 [lib]
@@ -11,7 +11,7 @@ crate-type = ["lib", "cdylib", "staticlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = ["tray-icon", "image-png"] }
+tauri = { version = "2", features = ["tray-icon", "image-png", "custom-protocol"] }
 tauri-plugin-global-shortcut = "2"
 tauri-plugin-shell = "2"
 serde = { version = "1", features = ["derive"] }

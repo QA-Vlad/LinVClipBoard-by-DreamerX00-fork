@@ -26,3 +26,6 @@ blobs/
 
 # Embedded API keys (never commit)
 klipy.key
+
+# Upgrade plan (internal planning docs)
+upgrade-plan/

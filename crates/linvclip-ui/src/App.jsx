@@ -34,11 +34,51 @@ function App() {
     const offset = useRef(0);
     const LIMIT = 30;
 
-    // Apply theme to DOM (#39)
+    // Resolve "auto" theme based on OS preference
+    const resolveTheme = (t) => {
+        if (t !== "auto") return t;
+        return window.matchMedia?.("(prefers-color-scheme: light)")?.matches
+            ? "catppuccin-latte"
+            : "catppuccin-mocha";
+    };
+
+    // Apply theme + accent to DOM
     useEffect(() => {
-        document.documentElement.setAttribute("data-theme", theme);
+        document.documentElement.setAttribute("data-theme", resolveTheme(theme));
         localStorage.setItem("theme", theme);
     }, [theme]);
+
+    // Apply accent color override from localStorage
+    useEffect(() => {
+        const accent = localStorage.getItem("accent_color") || "auto";
+        if (accent !== "auto") {
+            document.documentElement.style.setProperty("--accent", accent);
+            // Compute lighter/darker for hover/active
+            document.documentElement.style.setProperty("--accent-hover", accent + "cc");
+            document.documentElement.style.setProperty("--accent-active", accent);
+            document.documentElement.style.setProperty("--accent-glow", accent + "4d");
+            document.documentElement.style.setProperty("--border-focus", accent + "80");
+        } else {
+            document.documentElement.style.removeProperty("--accent");
+            document.documentElement.style.removeProperty("--accent-hover");
+            document.documentElement.style.removeProperty("--accent-active");
+            document.documentElement.style.removeProperty("--accent-glow");
+            document.documentElement.style.removeProperty("--border-focus");
+        }
+    }, [theme]); // re-apply when theme changes
+
+    // Listen for OS theme changes when in "auto" mode
+    useEffect(() => {
+        const mq = window.matchMedia?.("(prefers-color-scheme: light)");
+        if (!mq) return;
+        const handler = () => {
+            if (localStorage.getItem("theme") === "auto") {
+                document.documentElement.setAttribute("data-theme", resolveTheme("auto"));
+            }
+        };
+        mq.addEventListener("change", handler);
+        return () => mq.removeEventListener("change", handler);
+    }, []);
 
     // Store latest values in refs so the document-level keydown handler
     // always sees current state without needing to re-attach the listener.

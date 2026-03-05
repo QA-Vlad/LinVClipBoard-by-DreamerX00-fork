@@ -174,8 +174,6 @@ function ClipItem({
             aria-selected={index === selectedIndex}
             aria-label={`${getTypeIcon(item.content_type)} ${formatPreview(item.preview_text, 40)}`}
         >
-            <span className="drag-handle" aria-hidden="true">⠿</span>
-
             <div className="clip-item-body">
                 <div className="clip-item-header">
                     <span className="clip-type-icon">{getTypeIcon(item.content_type)}</span>

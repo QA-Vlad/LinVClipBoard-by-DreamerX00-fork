@@ -49,9 +49,9 @@ pub struct UiConfig {
     /// Window positioning mode: "fixed" or "mouse".
     #[serde(default = "default_window_position")]
     pub window_position: String,
-    /// Tenor API key for GIF search. Empty = GIF tab shows setup prompt.
-    #[serde(default)]
-    pub tenor_api_key: String,
+    /// Accent color override: "auto" (use theme default) or a hex string like "#818cf8".
+    #[serde(default = "default_accent_color")]
+    pub accent_color: String,
 }
 
 fn default_shortcut() -> String {
@@ -68,6 +68,10 @@ fn default_zoom() -> u32 {
 
 fn default_window_position() -> String {
     "mouse".to_string()
+}
+
+fn default_accent_color() -> String {
+    "auto".to_string()
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -103,7 +107,7 @@ impl Default for AppConfig {
                 language: "en".to_string(),
                 zoom: 100,
                 window_position: "mouse".to_string(),
-                tenor_api_key: String::new(),
+                accent_color: "auto".to_string(),
             },
             storage: StorageConfig {
                 max_items: 10_000,

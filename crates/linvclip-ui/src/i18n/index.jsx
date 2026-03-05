@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useCallback, useEffect } from "react";
 import en from "./en.json";
 import pt from "./pt.json";
-import ja from "./japnese.json";
+import ja from "./japanese.json";
 import hi from "./hin.json";
 
 const locales = { en, pt, ja, hi };
