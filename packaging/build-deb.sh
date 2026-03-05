@@ -32,6 +32,7 @@ mkdir -p "${PKG_DIR}/usr/lib/linvclipboard"
 mkdir -p "${PKG_DIR}/usr/share/applications"
 mkdir -p "${PKG_DIR}/usr/share/icons/hicolor/128x128/apps"
 mkdir -p "${PKG_DIR}/usr/share/doc/${PKG_NAME}"
+mkdir -p "${PKG_DIR}/etc/xdg/autostart"
 
 # Copy binaries
 install -Dm755 "${RELEASE_DIR}/clipd"        "${PKG_DIR}/usr/bin/clipd"
@@ -49,6 +50,8 @@ install -Dm755 "${PROJECT_DIR}/install/linvclip-update-check.sh" \
     "${PKG_DIR}/usr/lib/linvclipboard/update-check.sh"
 install -Dm644 "${PROJECT_DIR}/install/linvclipboard.desktop" \
     "${PKG_DIR}/usr/share/applications/linvclipboard.desktop"
+install -Dm644 "${PROJECT_DIR}/install/linvclipboard-autostart.desktop" \
+    "${PKG_DIR}/etc/xdg/autostart/linvclipboard.desktop"
 install -Dm644 "${PROJECT_DIR}/crates/linvclip-ui/src-tauri/icons/icon.png" \
     "${PKG_DIR}/usr/share/icons/hicolor/128x128/apps/linvclipboard.png"
 

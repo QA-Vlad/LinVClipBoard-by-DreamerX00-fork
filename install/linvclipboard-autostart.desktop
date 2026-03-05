@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=LinVClipBoard
+Comment=Clipboard Manager for Linux
+Exec=linvclip-ui
+Icon=linvclipboard
+Type=Application
+StartupNotify=false
+StartupWMClass=LinVClipBoard
+X-GNOME-Autostart-enabled=true
+X-GNOME-Autostart-Delay=3
+NoDisplay=true

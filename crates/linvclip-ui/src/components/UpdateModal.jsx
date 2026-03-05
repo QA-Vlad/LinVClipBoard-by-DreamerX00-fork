@@ -148,6 +148,7 @@ function UpdateModal({ updateInfo, onClose }) {
                             </div>
                             <div className="update-install-body">
                                 <p className="update-install-desc">{t("update.installing_desc")}</p>
+                                <p className="update-install-hint">{t("update.installing_restart_hint")}</p>
                             </div>
                         </>
                     )}

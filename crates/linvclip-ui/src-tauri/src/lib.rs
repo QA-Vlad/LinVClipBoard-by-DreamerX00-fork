@@ -307,6 +307,12 @@ async fn get_image_base64(path: String) -> Result<String, String> {
     Ok(format!("data:image/png;base64,{}", encoded))
 }
 
+/// Return the compile-time application version.
+#[tauri::command]
+fn get_app_version() -> String {
+    env!("CARGO_PKG_VERSION").to_string()
+}
+
 /// Check GitHub releases for a newer version.
 #[tauri::command]
 async fn check_for_updates() -> Result<UpdateInfo, String> {
@@ -443,6 +449,10 @@ async fn download_update(
 }
 
 /// Install a downloaded .deb package using pkexec (shows native auth dialog).
+///
+/// Creates a wrapper script so that after `dpkg -i` finishes (which kills the
+/// running UI via the prerm hook), the script re-launches linvclip-ui as the
+/// current user — giving a seamless upgrade experience.
 #[tauri::command]
 async fn install_update(path: String) -> Result<String, String> {
     let p = std::path::Path::new(&path);
@@ -453,12 +463,35 @@ async fn install_update(path: String) -> Result<String, String> {
         return Err("Not a .deb file".to_string());
     }
 
-    // Use pkexec for graphical sudo prompt
+    // Capture current user environment so the wrapper script can restart the UI.
+    let username = std::env::var("USER").unwrap_or_default();
+    let display = std::env::var("DISPLAY").unwrap_or_default();
+    let wayland = std::env::var("WAYLAND_DISPLAY").unwrap_or_default();
+
+    let script = format!(
+        r#"#!/bin/bash
+dpkg -i "{path}"
+RET=$?
+if [ $RET -eq 0 ]; then
+    CALLING_UID=$(id -u "{username}" 2>/dev/null)
+    XDG_RT="/run/user/$CALLING_UID"
+    su "{username}" -c "DISPLAY='{display}' WAYLAND_DISPLAY='{wayland}' XDG_RUNTIME_DIR='$XDG_RT' nohup /usr/bin/linvclip-ui >/dev/null 2>&1 &"
+fi
+exit $RET
+"#
+    );
+
+    let script_path = format!("/tmp/linvclip-update-{}.sh", std::process::id());
+    std::fs::write(&script_path, &script).map_err(|e| e.to_string())?;
+
+    // pkexec runs the script as root; even if dpkg kills us, the script continues.
     let output = tokio::process::Command::new("pkexec")
-        .args(["dpkg", "-i", &path])
+        .args(["bash", &script_path])
         .output()
         .await
         .map_err(|e| format!("Failed to launch installer: {}", e))?;
+
+    let _ = std::fs::remove_file(&script_path);
 
     if output.status.success() {
         Ok("installed".to_string())
@@ -898,6 +931,7 @@ pub fn run() {
             register_gif_share,
             copy_gif,
             clear_gif_cache,
+            get_app_version,
             check_for_updates,
             download_update,
             install_update,

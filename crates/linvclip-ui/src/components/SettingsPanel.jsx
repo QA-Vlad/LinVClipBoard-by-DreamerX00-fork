@@ -13,9 +13,12 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
     const dirtyRef = useRef(false);
     const [updateStatus, setUpdateStatus] = useState(null); // null | 'checking' | {has_update, ...} | {error}
     const [showUpdateModal, setShowUpdateModal] = useState(false);
+    const [appVersion, setAppVersion] = useState("");
+    const [showUpdatePopup, setShowUpdatePopup] = useState(null); // null | 'up_to_date' | 'error'
 
     useEffect(() => {
         loadConfig();
+        invoke("get_app_version").then(setAppVersion).catch(() => {});
     }, []);
 
     const loadConfig = async () => {
@@ -89,11 +92,22 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
 
     const handleCheckUpdate = useCallback(async () => {
         setUpdateStatus("checking");
+        setShowUpdatePopup(null);
         try {
             const info = await invoke("check_for_updates");
             setUpdateStatus(info);
+            if (info.has_update) {
+                // Auto-open the download/install modal
+                setShowUpdateModal(true);
+            } else {
+                // Show "up to date" popup
+                setShowUpdatePopup("up_to_date");
+                setTimeout(() => setShowUpdatePopup(null), 4000);
+            }
         } catch (err) {
             setUpdateStatus({ error: String(err) });
+            setShowUpdatePopup("error");
+            setTimeout(() => setShowUpdatePopup(null), 5000);
         }
     }, []);
 
@@ -376,7 +390,7 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
                     <div className="settings-section settings-update-section">
                         <div className="settings-section-label">🔄 {t("settings.updates")}</div>
                         <div className="settings-update-row">
-                            <span className="settings-version">v{updateStatus?.current_version || "1.4.4"}</span>
+                            <span className="settings-version">v{appVersion || "…"}</span>
                             <button
                                 className="settings-update-btn"
                                 onClick={handleCheckUpdate}
@@ -385,24 +399,27 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
                                 {updateStatus === "checking" ? t("settings.checking") : t("settings.check_updates")}
                             </button>
                         </div>
-                        {updateStatus && updateStatus !== "checking" && !updateStatus.error && (
-                            <div className={`settings-update-result ${updateStatus.has_update ? "has-update" : "up-to-date"}`}>
-                                {updateStatus.has_update ? (
+                    </div>
+
+                    {/* "Up to date" / error popup */}
+                    {showUpdatePopup && (
+                        <div className="update-popup-overlay" onClick={() => setShowUpdatePopup(null)}>
+                            <div className="update-popup" onClick={(e) => e.stopPropagation()}>
+                                {showUpdatePopup === "up_to_date" ? (
                                     <>
-                                        <span>✨ {t("settings.update_available").replace("{v}", updateStatus.latest_version)}</span>
-                                        <button className="settings-update-link" onClick={() => setShowUpdateModal(true)}>
-                                            {t("settings.download")}
-                                        </button>
+                                        <span className="update-popup-icon">✅</span>
+                                        <h3 className="update-popup-title">{t("settings.up_to_date")}</h3>
+                                        <p className="update-popup-desc">LinVClipBoard v{appVersion}</p>
                                     </>
                                 ) : (
-                                    <span>✅ {t("settings.up_to_date")}</span>
+                                    <>
+                                        <span className="update-popup-icon">⚠️</span>
+                                        <h3 className="update-popup-title">{updateStatus?.error || "Error"}</h3>
+                                    </>
                                 )}
                             </div>
-                        )}
-                        {updateStatus?.error && (
-                            <div className="settings-update-result update-error">⚠️ {updateStatus.error}</div>
-                        )}
-                    </div>
+                        </div>
+                    )}
 
                     {/* Update modal */}
                     {showUpdateModal && updateStatus?.has_update && (
