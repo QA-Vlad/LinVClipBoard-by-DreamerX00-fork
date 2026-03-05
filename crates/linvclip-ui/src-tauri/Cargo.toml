@@ -1,6 +1,6 @@
 [package]
 name = "linvclip-ui"
-version = "1.7.0"
+version = "1.8.0"
 edition = "2021"
 
 [lib]
@@ -23,3 +23,5 @@ arboard = { version = "3", features = ["wayland-data-control"] }
 reqwest = { version = "0.12", features = ["json", "stream"] }
 dirs = "5"
 tokio-stream = "0.1"
+qrcode = "0.14"
+image = { version = "0.25", default-features = false, features = ["png"] }

@@ -120,6 +120,28 @@
     "api_key_required": "KLIPY API Key Required",
     "api_key_hint": "Add your free KLIPY API key in Settings → Advanced → GIF to enable GIF search."
   },
+  "context": {
+    "copy": "Copy",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "delete": "Delete",
+    "transform": "Transform",
+    "trim": "Trim Whitespace",
+    "encode_decode": "Encode / Decode",
+    "json": "JSON",
+    "json_prettify": "Prettify",
+    "json_minify": "Minify",
+    "qr_code": "QR Code",
+    "word_count": "Word Count",
+    "add_tag": "Add Tag",
+    "remove_tags": "Remove Tags"
+  },
+  "toast": {
+    "copied_as": "Copied as",
+    "word_count": "Word count",
+    "invalid_json": "Invalid JSON",
+    "invalid_base64": "Invalid Base64"
+  },
   "update": {
     "title": "Update Available",
     "download_now": "Download Now",

@@ -120,6 +120,28 @@
     "api_key_required": "Chave API do KLIPY Necessária",
     "api_key_hint": "Adicione sua chave API gratuita do KLIPY em Configurações → Avançado → GIF."
   },
+  "context": {
+    "copy": "Copiar",
+    "pin": "Fixar",
+    "unpin": "Desafixar",
+    "delete": "Excluir",
+    "transform": "Transformar",
+    "trim": "Remover Espaços",
+    "encode_decode": "Codificar / Decodificar",
+    "json": "JSON",
+    "json_prettify": "Formatar",
+    "json_minify": "Minificar",
+    "qr_code": "Código QR",
+    "word_count": "Contar Palavras",
+    "add_tag": "Adicionar Tag",
+    "remove_tags": "Remover Tags"
+  },
+  "toast": {
+    "copied_as": "Copiado como",
+    "word_count": "Contagem de palavras",
+    "invalid_json": "JSON inválido",
+    "invalid_base64": "Base64 inválido"
+  },
   "update": {
     "title": "Atualização Disponível",
     "download_now": "Baixar Agora",

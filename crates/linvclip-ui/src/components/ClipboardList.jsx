@@ -27,6 +27,7 @@ function ClipboardList({
     onLoadMore,
     loading,
     hasMore,
+    onContextMenu,
 }) {
     const { t } = useTranslation();
     const listRef = useRef(null);
@@ -120,6 +121,7 @@ function ClipboardList({
                     onPaste={onPaste}
                     onPin={onPin}
                     onDelete={onDelete}
+                    onContextMenu={onContextMenu}
                     getTypeIcon={getTypeIcon}
                     formatPreview={formatPreview}
                     formatTime={formatTime}
@@ -146,6 +148,7 @@ function ClipItem({
     onPaste,
     onPin,
     onDelete,
+    onContextMenu,
     getTypeIcon,
     formatPreview,
     formatTime,
@@ -170,6 +173,11 @@ function ClipItem({
                 item.pinned ? "pinned" : ""
             }`}
             onClick={() => onPaste(item.id)}
+            onContextMenu={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (onContextMenu) onContextMenu(e, item);
+            }}
             role="option"
             aria-selected={index === selectedIndex}
             aria-label={`${getTypeIcon(item.content_type)} ${formatPreview(item.preview_text, 40)}`}

@@ -799,6 +799,24 @@ async fn remove_tag(id: String, tag: String) -> Result<ClipboardItem, String> {
     }
 }
 
+/// Generate a QR code PNG for the given text, returned as a base64 data-URL.
+#[tauri::command]
+fn generate_qr_code(text: String) -> Result<String, String> {
+    use image::Luma;
+    use qrcode::QrCode;
+    use std::io::Cursor;
+
+    let code = QrCode::new(text.as_bytes()).map_err(|e| format!("QR encode error: {e}"))?;
+    let img = code.render::<Luma<u8>>().quiet_zone(true).build();
+
+    let mut buf: Vec<u8> = Vec::new();
+    img.write_to(&mut Cursor::new(&mut buf), image::ImageFormat::Png)
+        .map_err(|e| format!("PNG encode error: {e}"))?;
+
+    let b64 = base64::engine::general_purpose::STANDARD.encode(&buf);
+    Ok(format!("data:image/png;base64,{b64}"))
+}
+
 /// Position the window based on the configured mode.
 ///
 /// - `"mouse"` → spawn near cursor on the active monitor, clamped to screen edges
@@ -935,6 +953,7 @@ pub fn run() {
             check_for_updates,
             download_update,
             install_update,
+            generate_qr_code,
         ])
         .setup(|app| {
             let window = app.get_webview_window("main").unwrap();

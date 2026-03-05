@@ -120,6 +120,28 @@
     "api_key_required": "KLIPY APIキーが必要です",
     "api_key_hint": "設定 → 詳細設定 → GIFに無料のKLIPY APIキーを追加してください。"
   },
+  "context": {
+    "copy": "コピー",
+    "pin": "固定",
+    "unpin": "固定解除",
+    "delete": "削除",
+    "transform": "変換",
+    "trim": "空白を除去",
+    "encode_decode": "エンコード / デコード",
+    "json": "JSON",
+    "json_prettify": "整形",
+    "json_minify": "圧縮",
+    "qr_code": "QRコード",
+    "word_count": "文字数カウント",
+    "add_tag": "タグを追加",
+    "remove_tags": "タグを削除"
+  },
+  "toast": {
+    "copied_as": "コピー済み",
+    "word_count": "文字数",
+    "invalid_json": "無効なJSON",
+    "invalid_base64": "無効なBase64"
+  },
   "update": {
     "title": "アップデートがあります",
     "download_now": "今すぐダウンロード",

@@ -15,6 +15,8 @@ import FilterPills from "./components/FilterPills";
 import Footer from "./components/Footer";
 import SettingsPanel from "./components/SettingsPanel";
 import ConfirmDialog from "./components/ConfirmDialog";
+import ContextMenu from "./components/ContextMenu";
+import QrModal from "./components/QrModal";
 
 function App() {
     const { t } = useTranslation();
@@ -31,6 +33,8 @@ function App() {
     const [showSettings, setShowSettings] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
     const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "dark");
+    const [ctxMenu, setCtxMenu] = useState(null); // { item, x, y }
+    const [qrText, setQrText] = useState(null); // text to generate QR for
     const offset = useRef(0);
     const LIMIT = 30;
 
@@ -261,6 +265,16 @@ function App() {
         handleClearAll();
     };
 
+    // Context menu handler
+    const handleContextMenu = useCallback((e, item) => {
+        setCtxMenu({ item, x: e.clientX, y: e.clientY });
+    }, []);
+
+    // Update a single item in the list (after tag add/remove)
+    const handleItemUpdate = useCallback((updated) => {
+        setItems((prev) => prev.map((it) => (it.id === updated.id ? updated : it)));
+    }, []);
+
     // ─── Global keyboard handler via document listener ───
     // Uses refs so the handler always sees fresh state without re-attaching.
     useEffect(() => {
@@ -373,6 +387,7 @@ function App() {
                                 onLoadMore={handleLoadMore}
                                 loading={loading}
                                 hasMore={items.length < total}
+                                onContextMenu={handleContextMenu}
                             />
                         </>
                     )}
@@ -405,6 +420,29 @@ function App() {
                     message={t("confirm.clear_all")}
                     onConfirm={handleConfirmClear}
                     onCancel={() => setShowConfirm(false)}
+                />
+            )}
+
+            {ctxMenu && (
+                <ContextMenu
+                    item={ctxMenu.item}
+                    x={ctxMenu.x}
+                    y={ctxMenu.y}
+                    onClose={() => setCtxMenu(null)}
+                    onPin={handlePin}
+                    onDelete={handleDelete}
+                    onPaste={handlePaste}
+                    onToast={showToast}
+                    onShowQr={(text) => setQrText(text)}
+                    onItemUpdate={handleItemUpdate}
+                />
+            )}
+
+            {qrText && (
+                <QrModal
+                    text={qrText}
+                    onClose={() => setQrText(null)}
+                    onToast={showToast}
                 />
             )}
         </div>

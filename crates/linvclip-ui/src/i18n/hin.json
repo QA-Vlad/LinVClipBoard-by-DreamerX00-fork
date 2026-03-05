@@ -120,6 +120,28 @@
     "api_key_required": "KLIPY API कुंजी आवश्यक",
     "api_key_hint": "सेटिंग्स → उन्नत → GIF में अपनी मुफ्त KLIPY API कुंजी जोड़ें।"
   },
+  "context": {
+    "copy": "कॉपी",
+    "pin": "पिन करें",
+    "unpin": "अनपिन करें",
+    "delete": "हटाएँ",
+    "transform": "रूपांतरण",
+    "trim": "खाली स्थान हटाएँ",
+    "encode_decode": "एन्कोड / डिकोड",
+    "json": "JSON",
+    "json_prettify": "सुंदर बनाएँ",
+    "json_minify": "छोटा करें",
+    "qr_code": "QR कोड",
+    "word_count": "शब्द गणना",
+    "add_tag": "टैग जोड़ें",
+    "remove_tags": "टैग हटाएँ"
+  },
+  "toast": {
+    "copied_as": "इस रूप में कॉपी किया",
+    "word_count": "शब्द गणना",
+    "invalid_json": "अमान्य JSON",
+    "invalid_base64": "अमान्य Base64"
+  },
   "update": {
     "title": "अपडेट उपलब्ध है",
     "download_now": "अभी डाउनलोड करें",
