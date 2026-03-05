@@ -114,5 +114,16 @@
     "copy_hint": "GIFをコピー",
     "api_key_required": "KLIPY APIキーが必要です",
     "api_key_hint": "設定 → 詳細設定 → GIFに無料のKLIPY APIキーを追加してください。"
+  },
+  "update": {
+    "title": "アップデートがあります",
+    "download_now": "今すぐダウンロード",
+    "visit_github": "GitHubを開く",
+    "cancel": "後で",
+    "close": "閉じる",
+    "downloading": "ダウンロード中…",
+    "retry": "再試行",
+    "saved_to": "保存先",
+    "install_hint": "インストール: sudo dpkg -i <ファイル>"
   }
 }

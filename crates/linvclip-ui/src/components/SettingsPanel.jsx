@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-shell";
 import { useTranslation } from "../i18n/index.jsx";
+import UpdateModal from "./UpdateModal.jsx";
 
 function SettingsPanel({ onClose, zoom, onZoomChange }) {
     const { t, lang, setLang, availableLanguages } = useTranslation();
@@ -11,6 +12,7 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
     const configRef = useRef(null);
     const dirtyRef = useRef(false);
     const [updateStatus, setUpdateStatus] = useState(null); // null | 'checking' | {has_update, ...} | {error}
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
 
     useEffect(() => {
         loadConfig();
@@ -388,7 +390,7 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
                                 {updateStatus.has_update ? (
                                     <>
                                         <span>✨ {t("settings.update_available").replace("{v}", updateStatus.latest_version)}</span>
-                                        <button className="settings-update-link" onClick={() => handleOpenRelease(updateStatus.release_url)}>
+                                        <button className="settings-update-link" onClick={() => setShowUpdateModal(true)}>
                                             {t("settings.download")}
                                         </button>
                                     </>
@@ -401,6 +403,14 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
                             <div className="settings-update-result update-error">⚠️ {updateStatus.error}</div>
                         )}
                     </div>
+
+                    {/* Update modal */}
+                    {showUpdateModal && updateStatus?.has_update && (
+                        <UpdateModal
+                            updateInfo={updateStatus}
+                            onClose={() => setShowUpdateModal(false)}
+                        />
+                    )}
                 </div>
             </div>
         </div>

@@ -114,5 +114,16 @@
     "copy_hint": "Clique para copiar GIF",
     "api_key_required": "Chave API do KLIPY Necessária",
     "api_key_hint": "Adicione sua chave API gratuita do KLIPY em Configurações → Avançado → GIF."
+  },
+  "update": {
+    "title": "Atualização Disponível",
+    "download_now": "Baixar Agora",
+    "visit_github": "Visitar GitHub",
+    "cancel": "Agora Não",
+    "close": "Fechar",
+    "downloading": "Baixando…",
+    "retry": "Tentar Novamente",
+    "saved_to": "Salvo em",
+    "install_hint": "Execute: sudo dpkg -i <arquivo> para instalar"
   }
 }

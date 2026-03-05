@@ -54,6 +54,15 @@ pub struct UpdateInfo {
     pub current_version: String,
     pub latest_version: String,
     pub release_url: String,
+    pub release_notes: String,
+    pub deb_download_url: String,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct DownloadProgress {
+    pub downloaded: u64,
+    pub total: u64,
+    pub percent: f64,
 }
 
 /// Get clipboard items from the daemon.
@@ -331,6 +340,23 @@ async fn check_for_updates() -> Result<UpdateInfo, String> {
         "https://github.com/DreamerX00/LinVClipBoard/releases",
     );
 
+    let release_notes = body["body"].as_str().unwrap_or("").to_string();
+
+    // Find .deb asset download URL
+    let deb_download_url = body["assets"]
+        .as_array()
+        .and_then(|assets| {
+            assets.iter().find_map(|a| {
+                let name = a["name"].as_str().unwrap_or("");
+                if name.ends_with(".deb") {
+                    a["browser_download_url"].as_str().map(|s| s.to_string())
+                } else {
+                    None
+                }
+            })
+        })
+        .unwrap_or_default();
+
     // Simple semver comparison: split by '.' and compare numerically
     let parse_ver = |s: &str| -> Vec<u32> {
         s.split('.').filter_map(|p| p.parse().ok()).collect()
@@ -344,7 +370,76 @@ async fn check_for_updates() -> Result<UpdateInfo, String> {
         current_version: current.to_string(),
         latest_version: latest.to_string(),
         release_url: html_url.to_string(),
+        release_notes,
+        deb_download_url,
     })
+}
+
+/// Download a .deb update from GitHub releases, emitting progress events.
+/// The file is saved to ~/Downloads/linvclipboard_<version>.deb.
+#[tauri::command]
+async fn download_update(
+    url: String,
+    version: String,
+    app: tauri::AppHandle,
+) -> Result<String, String> {
+    let download_dir = dirs::download_dir()
+        .or_else(|| dirs::home_dir().map(|h| h.join("Downloads")))
+        .ok_or("Cannot determine Downloads directory")?;
+    std::fs::create_dir_all(&download_dir)
+        .map_err(|e| format!("Cannot create download dir: {}", e))?;
+
+    let filename = format!("linvclipboard_{}_amd64.deb", version);
+    let dest = download_dir.join(&filename);
+
+    let client = reqwest::Client::builder()
+        .user_agent("LinVClipBoard")
+        .build()
+        .map_err(|e| format!("HTTP client error: {}", e))?;
+
+    let resp = client
+        .get(&url)
+        .send()
+        .await
+        .map_err(|e| format!("Download failed: {}", e))?;
+
+    if !resp.status().is_success() {
+        return Err(format!("Download error: HTTP {}", resp.status()));
+    }
+
+    let total = resp.content_length().unwrap_or(0);
+    let mut downloaded: u64 = 0;
+
+    let mut file = std::fs::File::create(&dest)
+        .map_err(|e| format!("Cannot create file: {}", e))?;
+
+    use std::io::Write;
+    let mut stream = resp.bytes_stream();
+    use tokio_stream::StreamExt;
+
+    while let Some(chunk) = stream.next().await {
+        let chunk = chunk.map_err(|e| format!("Download stream error: {}", e))?;
+        file.write_all(&chunk)
+            .map_err(|e| format!("Write error: {}", e))?;
+        downloaded += chunk.len() as u64;
+
+        let percent = if total > 0 {
+            (downloaded as f64 / total as f64) * 100.0
+        } else {
+            0.0
+        };
+
+        let _ = app.emit(
+            "download-progress",
+            DownloadProgress {
+                downloaded,
+                total,
+                percent,
+            },
+        );
+    }
+
+    Ok(dest.to_string_lossy().to_string())
 }
 
 /// Decode the embedded KLIPY app key (XOR-descrambled at runtime).
@@ -774,6 +869,7 @@ pub fn run() {
             copy_gif,
             clear_gif_cache,
             check_for_updates,
+            download_update,
         ])
         .setup(|app| {
             let window = app.get_webview_window("main").unwrap();

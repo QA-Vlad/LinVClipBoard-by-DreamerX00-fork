@@ -114,5 +114,16 @@
     "copy_hint": "GIF कॉपी करने के लिए क्लिक करें",
     "api_key_required": "KLIPY API कुंजी आवश्यक",
     "api_key_hint": "सेटिंग्स → उन्नत → GIF में अपनी मुफ्त KLIPY API कुंजी जोड़ें।"
+  },
+  "update": {
+    "title": "अपडेट उपलब्ध है",
+    "download_now": "अभी डाउनलोड करें",
+    "visit_github": "GitHub पर जाएं",
+    "cancel": "अभी नहीं",
+    "close": "बंद करें",
+    "downloading": "डाउनलोड हो रहा है…",
+    "retry": "पुनः प्रयास",
+    "saved_to": "यहाँ सहेजा गया",
+    "install_hint": "इंस्टॉल करें: sudo dpkg -i <फ़ाइल>"
   }
 }

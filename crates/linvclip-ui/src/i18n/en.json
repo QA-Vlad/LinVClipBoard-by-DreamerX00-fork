@@ -114,5 +114,16 @@
     "copy_hint": "Click to copy GIF",
     "api_key_required": "KLIPY API Key Required",
     "api_key_hint": "Add your free KLIPY API key in Settings → Advanced → GIF to enable GIF search."
+  },
+  "update": {
+    "title": "Update Available",
+    "download_now": "Download Now",
+    "visit_github": "Visit GitHub",
+    "cancel": "Not Now",
+    "close": "Close",
+    "downloading": "Downloading…",
+    "retry": "Retry",
+    "saved_to": "Saved to",
+    "install_hint": "Run: sudo dpkg -i <file> to install"
   }
 }

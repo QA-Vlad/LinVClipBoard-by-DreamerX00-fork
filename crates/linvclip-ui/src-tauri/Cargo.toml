@@ -1,6 +1,6 @@
 [package]
 name = "linvclip-ui"
-version = "1.5.1"
+version = "1.5.2"
 edition = "2021"
 
 [lib]
@@ -20,5 +20,6 @@ tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "io-uti
 shared = { path = "../../shared" }
 base64 = "0.22"
 arboard = { version = "3", features = ["wayland-data-control"] }
-reqwest = { version = "0.12", features = ["json"] }
+reqwest = { version = "0.12", features = ["json", "stream"] }
 dirs = "5"
+tokio-stream = "0.1"
