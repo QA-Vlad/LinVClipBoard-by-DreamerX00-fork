@@ -124,6 +124,14 @@
     "downloading": "Baixando…",
     "retry": "Tentar Novamente",
     "saved_to": "Salvo em",
-    "install_hint": "Execute: sudo dpkg -i <arquivo> para instalar"
+    "install_hint": "Execute: sudo dpkg -i <arquivo> para instalar",
+    "ready_to_install": "Pronto para Instalar",
+    "install_now": "Instalar Agora",
+    "install_later": "Depois",
+    "install_desc": "A atualização foi baixada. Clique em Instalar Agora para aplicá-la. Sua senha será solicitada.",
+    "installing": "Instalando…",
+    "installing_desc": "Aplicando atualização — insira sua senha se solicitado.",
+    "installed": "Atualização Instalada!",
+    "installed_desc": "A atualização foi instalada com sucesso. Reinicie o app para usar a nova versão."
   }
 }

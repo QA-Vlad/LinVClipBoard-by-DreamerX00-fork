@@ -124,6 +124,14 @@
     "downloading": "ダウンロード中…",
     "retry": "再試行",
     "saved_to": "保存先",
-    "install_hint": "インストール: sudo dpkg -i <ファイル>"
+    "install_hint": "インストール: sudo dpkg -i <ファイル>",
+    "ready_to_install": "インストール準備完了",
+    "install_now": "今すぐインストール",
+    "install_later": "後で",
+    "install_desc": "アップデートがダウンロードされました。「今すぐインストール」をクリックして適用してください。パスワードが必要です。",
+    "installing": "インストール中…",
+    "installing_desc": "アップデートを適用中です。パスワードを入力してください。",
+    "installed": "アップデート完了！",
+    "installed_desc": "アップデートが正常にインストールされました。新しいバージョンを使用するにはアプリを再起動してください。"
   }
 }

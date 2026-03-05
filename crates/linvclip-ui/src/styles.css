@@ -2021,3 +2021,85 @@ select:focus-visible {
     opacity: 0.55;
     cursor: default;
 }
+
+/* ── Install-after-download modal ── */
+.update-install-modal {
+    max-width: 370px;
+    padding: 24px;
+    text-align: center;
+}
+
+.update-install-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.update-install-icon {
+    font-size: 2.4rem;
+    line-height: 1;
+}
+
+.update-install-body {
+    margin-bottom: 18px;
+}
+
+.update-install-file {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    word-break: break-all;
+    margin-bottom: 8px;
+}
+
+.update-install-size {
+    font-weight: 400;
+    color: var(--text-tertiary);
+}
+
+.update-install-desc {
+    font-size: 0.76rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+.update-install-success {
+    font-size: 0.78rem;
+    line-height: 1.55;
+    color: var(--accent);
+}
+
+/* Install-now button (green accent) */
+.update-btn-install {
+    width: 100%;
+    padding: 10px 16px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    border: none;
+    border-radius: var(--radius-sm);
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.update-btn-install:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* Spinner for installing state */
+.update-installing-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: update-spin 0.7s linear infinite;
+}
+
+@keyframes update-spin {
+    to { transform: rotate(360deg); }
+}

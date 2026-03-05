@@ -442,6 +442,36 @@ async fn download_update(
     Ok(dest.to_string_lossy().to_string())
 }
 
+/// Install a downloaded .deb package using pkexec (shows native auth dialog).
+#[tauri::command]
+async fn install_update(path: String) -> Result<String, String> {
+    let p = std::path::Path::new(&path);
+    if !p.exists() {
+        return Err("File not found".to_string());
+    }
+    if !path.ends_with(".deb") {
+        return Err("Not a .deb file".to_string());
+    }
+
+    // Use pkexec for graphical sudo prompt
+    let output = tokio::process::Command::new("pkexec")
+        .args(["dpkg", "-i", &path])
+        .output()
+        .await
+        .map_err(|e| format!("Failed to launch installer: {}", e))?;
+
+    if output.status.success() {
+        Ok("installed".to_string())
+    } else {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        if stderr.contains("dismissed") || stderr.contains("Not authorized") || output.status.code() == Some(126) {
+            Err("auth_cancelled".to_string())
+        } else {
+            Err(format!("Install failed: {}", stderr.trim()))
+        }
+    }
+}
+
 /// Decode the embedded KLIPY app key (XOR-descrambled at runtime).
 fn get_gif_api_key() -> Result<String, String> {
     if KLIPY_KEY_BYTES.is_empty() {
@@ -870,6 +900,7 @@ pub fn run() {
             clear_gif_cache,
             check_for_updates,
             download_update,
+            install_update,
         ])
         .setup(|app| {
             let window = app.get_webview_window("main").unwrap();

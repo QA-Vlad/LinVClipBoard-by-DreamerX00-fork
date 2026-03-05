@@ -124,6 +124,14 @@
     "downloading": "Downloading…",
     "retry": "Retry",
     "saved_to": "Saved to",
-    "install_hint": "Run: sudo dpkg -i <file> to install"
+    "install_hint": "Run: sudo dpkg -i <file> to install",
+    "ready_to_install": "Ready to Install",
+    "install_now": "Install Now",
+    "install_later": "Later",
+    "install_desc": "The update has been downloaded. Click Install Now to apply it. You'll be asked for your password.",
+    "installing": "Installing…",
+    "installing_desc": "Applying update — please enter your password if prompted.",
+    "installed": "Update Installed!",
+    "installed_desc": "The update has been installed successfully. Restart the app to use the new version."
   }
 }

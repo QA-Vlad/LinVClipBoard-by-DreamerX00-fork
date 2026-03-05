@@ -7,13 +7,15 @@ import { useTranslation } from "../i18n/index.jsx";
 /**
  * UpdateModal — shown when a new version is available.
  *
+ * Flow: idle → downloading → ready_to_install → installing → installed / error
+ *
  * Props:
  *   updateInfo  – the UpdateInfo object from check_for_updates
  *   onClose     – callback to dismiss the modal
  */
 function UpdateModal({ updateInfo, onClose }) {
     const { t } = useTranslation();
-    // "idle" | "downloading" | "done" | "error"
+    // "idle" | "downloading" | "ready_to_install" | "installing" | "installed" | "error"
     const [stage, setStage] = useState("idle");
     const [progress, setProgress] = useState({ downloaded: 0, total: 0, percent: 0 });
     const [savedPath, setSavedPath] = useState("");
@@ -39,12 +41,30 @@ function UpdateModal({ updateInfo, onClose }) {
                 version: updateInfo.latest_version,
             });
             setSavedPath(path);
-            setStage("done");
+            setStage("ready_to_install");
         } catch (err) {
             setErrorMsg(String(err));
             setStage("error");
         }
     }, [updateInfo]);
+
+    const handleInstall = useCallback(async () => {
+        setStage("installing");
+        setErrorMsg("");
+        try {
+            await invoke("install_update", { path: savedPath });
+            setStage("installed");
+        } catch (err) {
+            const msg = String(err);
+            if (msg.includes("auth_cancelled")) {
+                // User dismissed the password dialog — go back to ready state
+                setStage("ready_to_install");
+            } else {
+                setErrorMsg(msg);
+                setStage("error");
+            }
+        }
+    }, [savedPath]);
 
     const handleVisitGithub = useCallback(async () => {
         try {
@@ -65,19 +85,15 @@ function UpdateModal({ updateInfo, onClose }) {
     const renderNotes = (md) => {
         if (!md) return null;
         return md.split("\n").map((line, i) => {
-            // headings
             if (line.startsWith("### ")) return <h4 key={i}>{line.slice(4)}</h4>;
             if (line.startsWith("## ")) return <h3 key={i}>{line.slice(3)}</h3>;
-            // bullet
             if (line.startsWith("- ")) {
                 const content = line.slice(2)
                     .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>")
                     .replace(/`(.+?)`/g, "<code>$1</code>");
                 return <li key={i} dangerouslySetInnerHTML={{ __html: content }} />;
             }
-            // empty line
             if (!line.trim()) return <div key={i} className="update-notes-spacer" />;
-            // plain text with bold/code
             const content = line
                 .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>")
                 .replace(/`(.+?)`/g, "<code>$1</code>");
@@ -85,6 +101,79 @@ function UpdateModal({ updateInfo, onClose }) {
         });
     };
 
+    /* ── Ready-to-install popup (appears after download) ── */
+    if (stage === "ready_to_install" || stage === "installing" || stage === "installed") {
+        return (
+            <div className="update-modal-overlay">
+                <div
+                    className="update-modal update-install-modal"
+                    role="dialog"
+                    aria-modal="true"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    {stage === "ready_to_install" && (
+                        <>
+                            <div className="update-install-header">
+                                <span className="update-install-icon">📦</span>
+                                <h2 className="update-modal-title">{t("update.ready_to_install")}</h2>
+                            </div>
+                            <div className="update-install-body">
+                                <p className="update-install-file">
+                                    {savedPath.split("/").pop()}
+                                    <span className="update-install-size">
+                                        {progress.total > 0 ? ` (${fmtBytes(progress.total)})` : ""}
+                                    </span>
+                                </p>
+                                <p className="update-install-desc">{t("update.install_desc")}</p>
+                            </div>
+                            <div className="update-modal-actions">
+                                <button className="update-btn-install" onClick={handleInstall}>
+                                    🚀 {t("update.install_now")}
+                                </button>
+                                <button className="update-btn-secondary" onClick={handleVisitGithub}>
+                                    🌐 {t("update.visit_github")}
+                                </button>
+                                <button className="update-btn-ghost" onClick={onClose}>
+                                    {t("update.install_later")}
+                                </button>
+                            </div>
+                        </>
+                    )}
+
+                    {stage === "installing" && (
+                        <>
+                            <div className="update-install-header">
+                                <div className="update-installing-spinner" />
+                                <h2 className="update-modal-title">{t("update.installing")}</h2>
+                            </div>
+                            <div className="update-install-body">
+                                <p className="update-install-desc">{t("update.installing_desc")}</p>
+                            </div>
+                        </>
+                    )}
+
+                    {stage === "installed" && (
+                        <>
+                            <div className="update-install-header">
+                                <span className="update-install-icon">🎉</span>
+                                <h2 className="update-modal-title">{t("update.installed")}</h2>
+                            </div>
+                            <div className="update-install-body">
+                                <p className="update-install-success">{t("update.installed_desc")}</p>
+                            </div>
+                            <div className="update-modal-actions">
+                                <button className="update-btn-primary" onClick={onClose}>
+                                    {t("update.close")}
+                                </button>
+                            </div>
+                        </>
+                    )}
+                </div>
+            </div>
+        );
+    }
+
+    /* ── Main modal (idle / downloading / error) ── */
     return (
         <div className="update-modal-overlay" onClick={onClose}>
             <div
@@ -112,7 +201,7 @@ function UpdateModal({ updateInfo, onClose }) {
                     </div>
                 </div>
 
-                {/* Progress bar (visible during/after download) */}
+                {/* Progress bar */}
                 {stage === "downloading" && (
                     <div className="update-progress-section">
                         <div className="update-progress-track">
@@ -125,13 +214,6 @@ function UpdateModal({ updateInfo, onClose }) {
                             {fmtBytes(progress.downloaded)} / {progress.total > 0 ? fmtBytes(progress.total) : "…"}{" "}
                             <span className="update-progress-pct">{progress.percent.toFixed(0)}%</span>
                         </div>
-                    </div>
-                )}
-
-                {stage === "done" && (
-                    <div className="update-done-msg">
-                        ✅ {t("update.saved_to")} <code>{savedPath}</code>
-                        <p className="update-install-hint">{t("update.install_hint")}</p>
                     </div>
                 )}
 
@@ -158,16 +240,6 @@ function UpdateModal({ updateInfo, onClose }) {
                         <button className="update-btn-ghost" disabled>
                             {t("update.downloading")}
                         </button>
-                    )}
-                    {stage === "done" && (
-                        <>
-                            <button className="update-btn-secondary" onClick={handleVisitGithub}>
-                                🌐 {t("update.visit_github")}
-                            </button>
-                            <button className="update-btn-ghost" onClick={onClose}>
-                                {t("update.close")}
-                            </button>
-                        </>
                     )}
                     {stage === "error" && (
                         <>
