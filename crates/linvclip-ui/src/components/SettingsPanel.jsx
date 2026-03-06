@@ -1,8 +1,17 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import { open } from "@tauri-apps/plugin-shell";
 import { useTranslation } from "../i18n/index.jsx";
 import UpdateModal from "./UpdateModal.jsx";
+
+const WINDOW_PRESETS = [
+    { label: "Compact",   w: 380, h: 480 },
+    { label: "Default",   w: 420, h: 520 },
+    { label: "Medium",    w: 480, h: 580 },
+    { label: "Large",     w: 540, h: 640 },
+    { label: "Wide",      w: 600, h: 700 },
+];
 
 function SettingsPanel({ onClose, zoom, onZoomChange }) {
     const { t, lang, setLang, availableLanguages } = useTranslation();
@@ -16,6 +25,12 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
     const [appVersion, setAppVersion] = useState("");
     const [showUpdatePopup, setShowUpdatePopup] = useState(null); // null | 'up_to_date' | 'error'
     const [accentColor, setAccentColor] = useState(() => localStorage.getItem("accent_color") || "auto");
+
+    // Window size state
+    const [winSizePreset, setWinSizePreset] = useState(() => localStorage.getItem("winSizePreset") || "Default");
+    const [customW, setCustomW] = useState(() => parseInt(localStorage.getItem("windowWidth")) || 420);
+    const [customH, setCustomH] = useState(() => parseInt(localStorage.getItem("windowHeight")) || 520);
+    const [previewWidth, setPreviewWidth] = useState(() => parseInt(localStorage.getItem("previewWidth")) || 380);
 
     useEffect(() => {
         loadConfig();
@@ -48,6 +63,64 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
     const handleClose = useCallback(() => {
         autoSave().then(() => onClose());
     }, [autoSave, onClose]);
+
+    // Explicit Apply button — saves config + applies window size immediately
+    const [applyToast, setApplyToast] = useState(false);
+    const handleApply = useCallback(async () => {
+        // 1. Save config to disk
+        if (configRef.current) {
+            try {
+                await invoke("save_config", { config: configRef.current });
+                dirtyRef.current = false;
+            } catch (err) {
+                console.error("Apply save failed:", err);
+            }
+        }
+
+        // 2. Re-apply theme
+        const cfg = configRef.current;
+        if (cfg?.ui?.theme) {
+            const resolved = cfg.ui.theme === "auto"
+                ? (window.matchMedia?.("(prefers-color-scheme: light)")?.matches ? "catppuccin-latte" : "catppuccin-mocha")
+                : cfg.ui.theme;
+            document.documentElement.setAttribute("data-theme", resolved);
+            localStorage.setItem("theme", cfg.ui.theme);
+        }
+
+        // 3. Re-apply accent color
+        const accent = localStorage.getItem("accent_color") || "auto";
+        if (accent !== "auto") {
+            document.documentElement.style.setProperty("--accent", accent);
+            document.documentElement.style.setProperty("--accent-hover", accent + "cc");
+            document.documentElement.style.setProperty("--accent-active", accent);
+            document.documentElement.style.setProperty("--accent-glow", accent + "4d");
+            document.documentElement.style.setProperty("--border-focus", accent + "80");
+        }
+
+        // 4. Re-apply zoom
+        if (onZoomChange && cfg?.ui?.zoom) {
+            onZoomChange(cfg.ui.zoom);
+        }
+
+        // 5. Apply window size immediately
+        try {
+            const { LogicalSize } = await import("@tauri-apps/api/dpi");
+            const win = getCurrentWindow();
+            const w = parseInt(localStorage.getItem("windowWidth")) || 420;
+            const h = parseInt(localStorage.getItem("windowHeight")) || 520;
+            const pw = parseInt(localStorage.getItem("previewWidth")) || 380;
+            const showingPreview = localStorage.getItem("showPreview") === "true";
+            const totalW = showingPreview ? w + pw : w;
+            document.documentElement.style.setProperty("--list-width", w + "px");
+            await win.setSize(new LogicalSize(totalW, h));
+        } catch (err) {
+            console.error("Apply resize failed:", err);
+        }
+
+        // 6. Show brief "Applied!" toast
+        setApplyToast(true);
+        setTimeout(() => setApplyToast(false), 2000);
+    }, [onZoomChange]);
 
     const updateConfig = (updater) => {
         dirtyRef.current = true;
@@ -115,6 +188,51 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
             document.documentElement.style.removeProperty("--border-focus");
         }
     };
+
+    // Apply a window size (width × height) and persist it
+    const applyWindowSize = useCallback(async (w, h) => {
+        w = Math.max(320, Math.min(1200, w));
+        h = Math.max(400, Math.min(900, h));
+        localStorage.setItem("windowWidth", String(w));
+        localStorage.setItem("windowHeight", String(h));
+        setCustomW(w);
+        setCustomH(h);
+        try {
+            const { LogicalSize } = await import("@tauri-apps/api/dpi");
+            const win = getCurrentWindow();
+            const showingPreview = localStorage.getItem("showPreview") === "true";
+            const pw = parseInt(localStorage.getItem("previewWidth")) || 380;
+            const totalW = showingPreview ? w + pw : w;
+            document.documentElement.style.setProperty("--list-width", w + "px");
+            await win.setSize(new LogicalSize(totalW, h));
+        } catch {}
+    }, []);
+
+    const handlePresetChange = useCallback((label) => {
+        setWinSizePreset(label);
+        localStorage.setItem("winSizePreset", label);
+        if (label === "Custom") return; // user will type values
+        const preset = WINDOW_PRESETS.find((p) => p.label === label);
+        if (preset) applyWindowSize(preset.w, preset.h);
+    }, [applyWindowSize]);
+
+    const handlePreviewWidthChange = useCallback(async (val) => {
+        const pw = Math.max(250, Math.min(600, parseInt(val) || 380));
+        setPreviewWidth(pw);
+        localStorage.setItem("previewWidth", String(pw));
+        try {
+            const { LogicalSize } = await import("@tauri-apps/api/dpi");
+            const win = getCurrentWindow();
+            const showingPreview = localStorage.getItem("showPreview") === "true";
+            const factor = await win.scaleFactor();
+            const size = await win.innerSize();
+            const logicalH = size.height / factor;
+            const baseW = parseInt(localStorage.getItem("windowWidth")) || 420;
+            if (showingPreview) {
+                await win.setSize(new LogicalSize(baseW + pw, logicalH));
+            }
+        } catch {}
+    }, []);
 
     const handleCheckUpdate = useCallback(async () => {
         setUpdateStatus("checking");
@@ -351,6 +469,71 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
                         </div>
                     </div>
 
+                    {/* ── 📐 Window Size ── */}
+                    <div className="settings-section">
+                        <div className="settings-section-label">📐 {t("settings.window_size")}</div>
+                        <div className="win-size-presets">
+                            <select
+                                className="win-size-select"
+                                value={winSizePreset}
+                                onChange={(e) => handlePresetChange(e.target.value)}
+                                aria-label={t("settings.window_size")}
+                            >
+                                {WINDOW_PRESETS.map((p) => (
+                                    <option key={p.label} value={p.label}>
+                                        {p.label} ({p.w}×{p.h})
+                                    </option>
+                                ))}
+                                <option value="Custom">{t("settings.win_custom")}</option>
+                            </select>
+                        </div>
+                        {winSizePreset === "Custom" && (
+                            <div className="win-size-custom">
+                                <div className="win-size-field">
+                                    <label>{t("settings.win_width")}</label>
+                                    <input
+                                        type="number"
+                                        min="320"
+                                        max="1200"
+                                        value={customW}
+                                        onChange={(e) => setCustomW(parseInt(e.target.value) || 420)}
+                                        onBlur={() => applyWindowSize(customW, customH)}
+                                        onKeyDown={(e) => e.key === "Enter" && applyWindowSize(customW, customH)}
+                                    />
+                                    <span className="win-size-unit">px</span>
+                                </div>
+                                <div className="win-size-field">
+                                    <label>{t("settings.win_height")}</label>
+                                    <input
+                                        type="number"
+                                        min="400"
+                                        max="900"
+                                        value={customH}
+                                        onChange={(e) => setCustomH(parseInt(e.target.value) || 520)}
+                                        onBlur={() => applyWindowSize(customW, customH)}
+                                        onKeyDown={(e) => e.key === "Enter" && applyWindowSize(customW, customH)}
+                                    />
+                                    <span className="win-size-unit">px</span>
+                                </div>
+                            </div>
+                        )}
+                        <div className="win-size-preview-row">
+                            <label>{t("settings.preview_panel_width")}</label>
+                            <div className="win-size-field">
+                                <input
+                                    type="range"
+                                    min="250"
+                                    max="600"
+                                    step="10"
+                                    value={previewWidth}
+                                    onChange={(e) => handlePreviewWidthChange(e.target.value)}
+                                    className="zoom-slider"
+                                />
+                                <span className="zoom-value">{previewWidth}px</span>
+                            </div>
+                        </div>
+                    </div>
+
                     {/* ── ⌨️ Keyboard Shortcuts ── */}
                     <div className="settings-section">
                         <div className="settings-section-label">⌨️ {t("settings.keyboard_shortcuts")}</div>
@@ -509,8 +692,6 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
                         )}
                     </div>
 
-                    <div className="settings-save-hint">{t("settings.close_to_save")}</div>
-
                     {/* ── 🔄 Check for Updates ── */}
                     <div className="settings-section settings-update-section">
                         <div className="settings-section-label">🔄 {t("settings.updates")}</div>
@@ -553,6 +734,17 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
                             onClose={() => setShowUpdateModal(false)}
                         />
                     )}
+                </div>
+
+                {/* ── Sticky Apply footer ── */}
+                <div className="settings-footer">
+                    <div className="settings-apply-row">
+                        <button className="settings-apply-btn" onClick={handleApply}>
+                            ✅ {t("settings.apply")}
+                        </button>
+                    </div>
+                    {applyToast && <div className="settings-apply-toast">✓ {t("settings.applied")}</div>}
+                    <div className="settings-save-hint-footer">{t("settings.close_to_save")}</div>
                 </div>
             </div>
         </div>

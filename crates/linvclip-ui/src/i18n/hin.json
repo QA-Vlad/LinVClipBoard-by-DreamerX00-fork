@@ -71,6 +71,8 @@
     "shortcut_step2": "कस्टम शॉर्टकट जोड़ें",
     "shortcut_step3": "नाम: Clipboard",
     "close_to_save": "सहेजने और लागू करने के लिए बंद करें।",
+    "apply": "सेटिंग्स लागू करें",
+    "applied": "सेटिंग्स लागू हो गईं!",
     "advanced": "उन्नत",
     "daemon": "डेमन",
     "poll_interval": "पोल अंतराल (ms)",
@@ -92,6 +94,12 @@
     "accent_color": "एक्सेंट रंग",
     "accent_auto": "ऑटो (थीम डिफ़ॉल्ट)",
     "accent_custom": "कस्टम रंग",
+
+    "window_size": "विंडो आकार",
+    "win_custom": "कस्टम",
+    "win_width": "चौड़ाई",
+    "win_height": "ऊँचाई",
+    "preview_panel_width": "पूर्वावलोकन पैनल चौड़ाई",
 
     "updates": "अपडेट",
     "check_updates": "अपडेट की जाँच करें",

@@ -16,13 +16,23 @@ function ContextMenu({ item, x, y, onClose, onPin, onDelete, onPaste, onToast, o
 
     // Position adjustment to stay in viewport
     const [pos, setPos] = useState({ x, y });
+    const [flipSub, setFlipSub] = useState(false);
 
     useEffect(() => {
         if (!menuRef.current) return;
         const rect = menuRef.current.getBoundingClientRect();
-        const nx = x + rect.width > window.innerWidth ? Math.max(4, x - rect.width) : x;
-        const ny = y + rect.height > window.innerHeight ? Math.max(4, y - rect.height) : y;
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const pad = 6;
+        let nx = x;
+        let ny = y;
+        // Flip left if overflows right, clamp to pad from edges
+        if (nx + rect.width > vw - pad) nx = Math.max(pad, vw - rect.width - pad);
+        // Flip up if overflows bottom
+        if (ny + rect.height > vh - pad) ny = Math.max(pad, vh - rect.height - pad);
         setPos({ x: nx, y: ny });
+        // Check if submenus would overflow (menu right edge + ~160px submenu width)
+        setFlipSub(nx + rect.width + 160 > vw);
     }, [x, y]);
 
     // Close on outside click, escape, scroll
@@ -183,7 +193,7 @@ function ContextMenu({ item, x, y, onClose, onPin, onDelete, onPaste, onToast, o
             {/* Transform submenu (text only) */}
             {isText && (
                 <div
-                    className={`ctx-submenu-wrap${openSub === "transform" ? " open" : ""}`}
+                    className={`ctx-submenu-wrap${openSub === "transform" ? " open" : ""}${flipSub ? " flip-left" : ""}`}
                     onMouseEnter={() => setOpenSub("transform")}
                     onMouseLeave={() => setOpenSub(null)}
                 >
@@ -204,7 +214,7 @@ function ContextMenu({ item, x, y, onClose, onPin, onDelete, onPaste, onToast, o
             {/* Encode/Decode submenu (text only) */}
             {isText && (
                 <div
-                    className={`ctx-submenu-wrap${openSub === "encode" ? " open" : ""}`}
+                    className={`ctx-submenu-wrap${openSub === "encode" ? " open" : ""}${flipSub ? " flip-left" : ""}`}
                     onMouseEnter={() => setOpenSub("encode")}
                     onMouseLeave={() => setOpenSub(null)}
                 >
@@ -226,7 +236,7 @@ function ContextMenu({ item, x, y, onClose, onPin, onDelete, onPaste, onToast, o
             {/* JSON submenu (text only) */}
             {isText && (
                 <div
-                    className={`ctx-submenu-wrap${openSub === "json" ? " open" : ""}`}
+                    className={`ctx-submenu-wrap${openSub === "json" ? " open" : ""}${flipSub ? " flip-left" : ""}`}
                     onMouseEnter={() => setOpenSub("json")}
                     onMouseLeave={() => setOpenSub(null)}
                 >
@@ -284,7 +294,7 @@ function ContextMenu({ item, x, y, onClose, onPin, onDelete, onPaste, onToast, o
             {/* Remove Tags (if item has tags) */}
             {tags.length > 0 && (
                 <div
-                    className={`ctx-submenu-wrap${openSub === "tags" ? " open" : ""}`}
+                    className={`ctx-submenu-wrap${openSub === "tags" ? " open" : ""}${flipSub ? " flip-left" : ""}`}
                     onMouseEnter={() => setOpenSub("tags")}
                     onMouseLeave={() => setOpenSub(null)}
                 >

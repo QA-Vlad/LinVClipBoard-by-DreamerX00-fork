@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { createPortal } from "react-dom";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
@@ -53,6 +54,9 @@ function App() {
     useEffect(() => {
         document.documentElement.setAttribute("data-theme", resolveTheme(theme));
         localStorage.setItem("theme", theme);
+        // Set --list-width CSS var from stored window width
+        const baseW = parseInt(localStorage.getItem("windowWidth")) || 420;
+        document.documentElement.style.setProperty("--list-width", baseW + "px");
     }, [theme]);
 
     // Apply accent color override from localStorage
@@ -281,20 +285,31 @@ function App() {
     // Persist preview toggle & auto-resize window
     useEffect(() => {
         localStorage.setItem("showPreview", showPreview);
-        // Resize window for comfortable split layout
-        (async () => {
+        // Small delay on initial render to let Tauri window fully initialize
+        const timer = setTimeout(async () => {
             try {
+                const { LogicalSize } = await import("@tauri-apps/api/dpi");
                 const win = getCurrentWindow();
-                const factor = await win.scaleFactor();
-                const size = await win.innerSize();
-                const logicalW = size.width / factor;
-                if (showPreview && logicalW < 700) {
-                    await win.setSize(new (await import("@tauri-apps/api/dpi")).LogicalSize(740, size.height / factor));
-                } else if (!showPreview && logicalW > 500) {
-                    await win.setSize(new (await import("@tauri-apps/api/dpi")).LogicalSize(420, size.height / factor));
-                }
-            } catch {}
-        })();
+                const baseW = parseInt(localStorage.getItem("windowWidth")) || 420;
+                const baseH = parseInt(localStorage.getItem("windowHeight")) || 520;
+                const previewW = parseInt(localStorage.getItem("previewWidth")) || 380;
+                document.documentElement.style.setProperty("--list-width", baseW + "px");
+
+                // Try to get current height, fallback to stored height
+                let h = baseH;
+                try {
+                    const factor = await win.scaleFactor();
+                    const size = await win.innerSize();
+                    h = Math.round(size.height / factor);
+                } catch (_) {}
+
+                const totalW = showPreview ? baseW + previewW : baseW;
+                await win.setSize(new LogicalSize(totalW, h));
+            } catch (err) {
+                console.error("Preview resize failed:", err);
+            }
+        }, 150); // 150ms delay ensures window is ready on first mount
+        return () => clearTimeout(timer);
     }, [showPreview]);
 
     // Update preview item when selection changes
@@ -475,7 +490,7 @@ function App() {
                 />
             )}
 
-            {ctxMenu && (
+            {ctxMenu && createPortal(
                 <ContextMenu
                     item={ctxMenu.item}
                     x={ctxMenu.x}
@@ -487,7 +502,8 @@ function App() {
                     onToast={showToast}
                     onShowQr={(text) => setQrText(text)}
                     onItemUpdate={handleItemUpdate}
-                />
+                />,
+                document.body
             )}
 
             {qrText && (

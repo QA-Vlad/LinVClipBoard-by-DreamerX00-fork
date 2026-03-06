@@ -29,6 +29,7 @@
 
 /* ──── Default Dark ──── */
 [data-theme="dark"] {
+    color-scheme: dark;
     --bg-primary: rgba(15, 15, 25, 0.98);
     --bg-secondary: rgba(25, 25, 40, 0.96);
     --bg-glass: rgba(35, 35, 55, 0.92);
@@ -63,6 +64,7 @@
 
 /* ──── Light ──── */
 [data-theme="light"] {
+    color-scheme: light;
     --bg-primary: rgba(248, 250, 252, 0.98);
     --bg-secondary: rgba(241, 245, 249, 0.96);
     --bg-glass: rgba(226, 232, 240, 0.80);
@@ -97,6 +99,7 @@
 
 /* ──── Catppuccin Latte (light) ──── */
 [data-theme="catppuccin-latte"] {
+    color-scheme: light;
     --bg-primary: rgba(239, 241, 245, 0.98);
     --bg-secondary: rgba(230, 233, 239, 0.96);
     --bg-glass: rgba(220, 224, 232, 0.88);
@@ -131,6 +134,7 @@
 
 /* ──── Catppuccin Frappé (dark) ──── */
 [data-theme="catppuccin-frappe"] {
+    color-scheme: dark;
     --bg-primary: rgba(48, 52, 70, 0.98);
     --bg-secondary: rgba(41, 44, 60, 0.96);
     --bg-glass: rgba(55, 59, 77, 0.92);
@@ -165,6 +169,7 @@
 
 /* ──── Catppuccin Macchiato (dark) ──── */
 [data-theme="catppuccin-macchiato"] {
+    color-scheme: dark;
     --bg-primary: rgba(36, 39, 58, 0.98);
     --bg-secondary: rgba(30, 32, 48, 0.96);
     --bg-glass: rgba(44, 47, 67, 0.92);
@@ -199,6 +204,7 @@
 
 /* ──── Catppuccin Mocha (dark) ──── */
 [data-theme="catppuccin-mocha"] {
+    color-scheme: dark;
     --bg-primary: rgba(30, 30, 46, 0.98);
     --bg-secondary: rgba(24, 24, 37, 0.96);
     --bg-glass: rgba(39, 39, 58, 0.92);
@@ -233,6 +239,7 @@
 
 /* ──── Nord (dark) ──── */
 [data-theme="nord"] {
+    color-scheme: dark;
     --bg-primary: rgba(46, 52, 64, 0.98);
     --bg-secondary: rgba(41, 46, 56, 0.96);
     --bg-glass: rgba(59, 66, 82, 0.92);
@@ -267,6 +274,7 @@
 
 /* ──── Dracula (dark) ──── */
 [data-theme="dracula"] {
+    color-scheme: dark;
     --bg-primary: rgba(40, 42, 54, 0.98);
     --bg-secondary: rgba(33, 34, 44, 0.96);
     --bg-glass: rgba(68, 71, 90, 0.92);
@@ -1231,8 +1239,8 @@ kbd {
     padding: 8px 12px;
     border: 1px solid var(--border);
     border-radius: 6px;
-    background: #1e1e30;
-    color: #f1f5f9;
+    background: var(--bg-glass);
+    color: var(--text-primary);
     font-size: 0.85rem;
     font-weight: 500;
     cursor: pointer;
@@ -1253,20 +1261,9 @@ kbd {
 }
 
 .language-select option {
-    background: #1e1e30;
-    color: #f1f5f9;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
     padding: 6px 8px;
-}
-
-[data-theme="light"] .language-select {
-    background-color: #e2e8f0;
-    color: #1e293b;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23475569' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
-}
-
-[data-theme="light"] .language-select option {
-    background: #e2e8f0;
-    color: #1e293b;
 }
 
 /* ---- Loading ---- */
@@ -1458,7 +1455,6 @@ kbd {
     box-shadow: var(--shadow-lg);
     width: 380px;
     max-height: 85vh;
-    overflow-y: auto;
     display: flex;
     flex-direction: column;
     animation: panelSlideIn 200ms ease-out;
@@ -1511,6 +1507,9 @@ kbd {
     display: flex;
     flex-direction: column;
     gap: 14px;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
 }
 
 .settings-error {
@@ -1760,6 +1759,97 @@ kbd {
     font-variant-numeric: tabular-nums;
 }
 
+/* ── Window Size Setting ── */
+.win-size-presets {
+    margin-bottom: 8px;
+}
+
+.win-size-select {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-glass);
+    color: var(--text-primary);
+    font-size: 0.8rem;
+    cursor: pointer;
+    outline: none;
+    transition: border-color var(--transition-fast);
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+    padding-right: 30px;
+}
+
+.win-size-select option {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.win-size-select:focus {
+    border-color: var(--accent);
+}
+
+.win-size-custom {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.win-size-field {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+}
+
+.win-size-field label {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.win-size-field input[type="number"] {
+    width: 72px;
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-glass);
+    color: var(--text-primary);
+    font-size: 0.78rem;
+    outline: none;
+    text-align: center;
+    -moz-appearance: textfield;
+}
+
+.win-size-field input[type="number"]::-webkit-inner-spin-button,
+.win-size-field input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
+
+.win-size-field input[type="number"]:focus {
+    border-color: var(--accent);
+}
+
+.win-size-unit {
+    font-size: 0.7rem;
+    color: var(--text-dimmed);
+}
+
+.win-size-preview-row {
+    margin-top: 8px;
+}
+
+.win-size-preview-row > label {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
 /* Keyboard Shortcuts info */
 .shortcuts-info {
     background: var(--bg-glass);
@@ -1896,6 +1986,62 @@ kbd {
     font-size: 11px;
     color: var(--text-tertiary);
     padding: 8px 0 4px;
+    font-style: italic;
+}
+
+/* Apply Settings sticky footer */
+.settings-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 16px;
+    border-top: 1px solid var(--border);
+    background: var(--bg-secondary);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    flex-shrink: 0;
+}
+
+.settings-apply-row {
+    display: flex;
+    gap: 8px;
+}
+
+.settings-apply-btn {
+    flex: 1;
+    padding: 10px 16px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.settings-apply-btn:hover {
+    opacity: 0.92;
+    box-shadow: var(--shadow-glow);
+}
+
+.settings-apply-btn:active {
+    transform: scale(0.98);
+}
+
+.settings-apply-toast {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--success);
+    padding: 2px 0;
+    animation: ctxFadeIn 200ms ease-out;
+}
+
+.settings-save-hint-footer {
+    text-align: center;
+    font-size: 10px;
+    color: var(--text-dimmed);
     font-style: italic;
 }
 
@@ -2591,6 +2737,12 @@ select:focus-visible {
     animation: ctxFadeIn 100ms ease-out;
 }
 
+/* Flip submenu left when it would overflow the viewport right edge */
+.ctx-submenu-wrap.flip-left > .ctx-submenu {
+    left: auto;
+    right: 100%;
+}
+
 /* Tag input row */
 .ctx-tag-input-row {
     display: flex;
@@ -2787,20 +2939,20 @@ select:focus-visible {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    transition: flex var(--transition-smooth);
 }
 
-/* When preview is open, constrain the list */
+/* When preview is open, list keeps full width — the window expands instead */
 .app-split .main-list {
-    flex: 0 0 45%;
-    max-width: 45%;
+    flex: none;
+    width: 100%;
+    max-width: var(--list-width, 420px);
     border-right: 1px solid var(--border);
 }
 
 /* ── Preview Pane ── */
 .preview-pane {
     flex: 1;
-    min-width: 0;
+    min-width: 280px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -3226,18 +3378,4 @@ select:focus-visible {
     color: var(--accent);
 }
 
-/* ── Preview — narrow window fallback ── */
-@media (max-width: 520px) {
-    .app-split .main-list {
-        flex: 1;
-        max-width: 100%;
-        border-right: none;
-    }
-    .main-split {
-        flex-direction: column;
-    }
-    .preview-pane {
-        max-height: 40%;
-        border-top: 1px solid var(--border);
-    }
-}
+/* (responsive fallback removed — window auto-resizes for preview) */

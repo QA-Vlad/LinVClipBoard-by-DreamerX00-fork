@@ -71,6 +71,8 @@
     "shortcut_step2": "Adicione um atalho personalizado",
     "shortcut_step3": "Nome: Clipboard",
     "close_to_save": "Feche para salvar e aplicar.",
+    "apply": "Aplicar Configurações",
+    "applied": "Configurações aplicadas!",
     "advanced": "Avançado",
     "daemon": "Daemon",
     "poll_interval": "Intervalo de captura (ms)",
@@ -92,6 +94,12 @@
     "accent_color": "Cor de Destaque",
     "accent_auto": "Auto (padrão do tema)",
     "accent_custom": "Cor personalizada",
+
+    "window_size": "Tamanho da Janela",
+    "win_custom": "Personalizado",
+    "win_width": "Largura",
+    "win_height": "Altura",
+    "preview_panel_width": "Largura do Painel de Visualização",
 
     "updates": "Atualizações",
     "check_updates": "Verificar Atualizações",

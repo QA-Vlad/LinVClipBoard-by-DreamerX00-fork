@@ -71,6 +71,8 @@
     "shortcut_step2": "Add a custom shortcut",
     "shortcut_step3": "Name: Clipboard",
     "close_to_save": "Close to save and apply.",
+    "apply": "Apply Settings",
+    "applied": "Settings applied!",
     "advanced": "Advanced",
     "daemon": "Daemon",
     "poll_interval": "Poll interval (ms)",
@@ -92,6 +94,12 @@
     "accent_color": "Accent Color",
     "accent_auto": "Auto (theme default)",
     "accent_custom": "Custom color",
+
+    "window_size": "Window Size",
+    "win_custom": "Custom",
+    "win_width": "Width",
+    "win_height": "Height",
+    "preview_panel_width": "Preview Panel Width",
 
     "updates": "Updates",
     "check_updates": "Check for Updates",
