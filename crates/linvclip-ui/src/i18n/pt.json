@@ -161,5 +161,16 @@
     "installing_restart_hint": "O app será reiniciado automaticamente após a instalação.",
     "installed": "Atualização Instalada!",
     "installed_desc": "A atualização foi instalada com sucesso. Reinicie o app para usar a nova versão."
+  },
+  "preview": {
+    "title": "Visualização",
+    "toggle": "Alternar Visualização",
+    "copy": "Copiar",
+    "open_external": "Abrir no Navegador",
+    "no_selection": "Selecione um item para visualizar",
+    "lines": "linhas",
+    "words": "palavras",
+    "chars": "caracteres",
+    "detected_language": "Idioma Detectado"
   }
 }

@@ -17,6 +17,7 @@ import SettingsPanel from "./components/SettingsPanel";
 import ConfirmDialog from "./components/ConfirmDialog";
 import ContextMenu from "./components/ContextMenu";
 import QrModal from "./components/QrModal";
+import PreviewPane from "./components/PreviewPane";
 
 function App() {
     const { t } = useTranslation();
@@ -35,6 +36,8 @@ function App() {
     const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "dark");
     const [ctxMenu, setCtxMenu] = useState(null); // { item, x, y }
     const [qrText, setQrText] = useState(null); // text to generate QR for
+    const [showPreview, setShowPreview] = useState(() => localStorage.getItem("showPreview") === "true");
+    const [previewItem, setPreviewItem] = useState(null);
     const offset = useRef(0);
     const LIMIT = 30;
 
@@ -275,6 +278,32 @@ function App() {
         setItems((prev) => prev.map((it) => (it.id === updated.id ? updated : it)));
     }, []);
 
+    // Persist preview toggle & auto-resize window
+    useEffect(() => {
+        localStorage.setItem("showPreview", showPreview);
+        // Resize window for comfortable split layout
+        (async () => {
+            try {
+                const win = getCurrentWindow();
+                const factor = await win.scaleFactor();
+                const size = await win.innerSize();
+                const logicalW = size.width / factor;
+                if (showPreview && logicalW < 700) {
+                    await win.setSize(new (await import("@tauri-apps/api/dpi")).LogicalSize(740, size.height / factor));
+                } else if (!showPreview && logicalW > 500) {
+                    await win.setSize(new (await import("@tauri-apps/api/dpi")).LogicalSize(420, size.height / factor));
+                }
+            } catch {}
+        })();
+    }, [showPreview]);
+
+    // Update preview item when selection changes
+    useEffect(() => {
+        if (showPreview && filteredItems[selectedIndex]) {
+            setPreviewItem(filteredItems[selectedIndex]);
+        }
+    }, [selectedIndex, showPreview, items, filterType]);
+
     // ─── Global keyboard handler via document listener ───
     // Uses refs so the handler always sees fresh state without re-attaching.
     useEffect(() => {
@@ -295,6 +324,16 @@ function App() {
                 case "ArrowUp":
                     e.preventDefault();
                     setSelectedIndex((i) => Math.max(i - 1, 0));
+                    break;
+                case "ArrowRight":
+                    if (document.activeElement?.tagName === "INPUT") return;
+                    e.preventDefault();
+                    setShowPreview(true);
+                    break;
+                case "ArrowLeft":
+                    if (document.activeElement?.tagName === "INPUT") return;
+                    e.preventDefault();
+                    setShowPreview(false);
                     break;
                 case "Enter":
                     // Don't capture Enter if user is typing in search
@@ -359,11 +398,13 @@ function App() {
             : t("search.placeholder_clipboard");
 
     return (
-        <div className="app" role="application" aria-label={t("app.title")}>
+        <div className={`app${showPreview ? " app-split" : ""}`} role="application" aria-label={t("app.title")}>
             <div className="app-container">
                 <AppHeader
                     onOpenSettings={() => setShowSettings(true)}
                     onClearAll={requestClearAll}
+                    showPreview={showPreview}
+                    onTogglePreview={() => setShowPreview((p) => !p)}
                 />
 
                 <TabBar activeTab={activeTab} onTabChange={handleTabChange} />
@@ -375,6 +416,8 @@ function App() {
                 />
 
                 <main role="main" aria-label={t("tabs." + activeTab)}>
+                    <div className="main-split">
+                        <div className="main-list">
                     {activeTab === "clipboard" && (
                         <>
                             <FilterPills activeFilter={filterType} onFilterChange={setFilterType} />
@@ -400,6 +443,15 @@ function App() {
                     {activeTab === "gifs" && (
                         <GifPicker searchQuery={searchQuery} onToast={showToast} />
                     )}
+                        </div>
+                        {showPreview && activeTab === "clipboard" && (
+                            <PreviewPane
+                                item={previewItem}
+                                onPaste={handlePaste}
+                                onToast={showToast}
+                            />
+                        )}
+                    </div>
                 </main>
 
                 <Footer />

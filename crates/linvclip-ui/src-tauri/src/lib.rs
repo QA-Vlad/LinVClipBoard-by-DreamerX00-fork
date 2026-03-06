@@ -828,6 +828,134 @@ fn generate_qr_code(text: String) -> Result<String, String> {
     Ok(format!("data:image/png;base64,{b64}"))
 }
 
+/// Syntax-highlight a code string, returning HTML with inline styles.
+#[tauri::command]
+fn highlight_code(code: String, language: Option<String>) -> Result<String, String> {
+    use syntect::easy::HighlightLines;
+    use syntect::highlighting::{Color, ThemeSet};
+    use syntect::parsing::SyntaxSet;
+    use syntect::util::LinesWithEndings;
+
+    let ss = SyntaxSet::load_defaults_newlines();
+    let ts = ThemeSet::load_defaults();
+    let theme = &ts.themes["base16-ocean.dark"];
+
+    // Find syntax by name or try to guess from first line
+    let syntax = language
+        .as_deref()
+        .and_then(|lang| ss.find_syntax_by_token(lang))
+        .or_else(|| ss.find_syntax_by_first_line(&code))
+        .unwrap_or_else(|| ss.find_syntax_plain_text());
+
+    let mut hl = HighlightLines::new(syntax, theme);
+    let mut html = String::with_capacity(code.len() * 2);
+    html.push_str("<pre class=\"sh-code\">");
+
+    for line in LinesWithEndings::from(&code) {
+        let ranges = hl.highlight_line(line, &ss).map_err(|e| e.to_string())?;
+        for (style, text) in ranges {
+            let Color { r, g, b, .. } = style.foreground;
+            let escaped = text
+                .replace('&', "&amp;")
+                .replace('<', "&lt;")
+                .replace('>', "&gt;");
+            html.push_str(&format!(
+                "<span style=\"color:rgb({r},{g},{b})\">{escaped}</span>"
+            ));
+        }
+    }
+    html.push_str("</pre>");
+    Ok(html)
+}
+
+/// Detect the likely programming language for a code snippet.
+#[tauri::command]
+fn detect_language(code: String) -> String {
+    use syntect::parsing::SyntaxSet;
+    let ss = SyntaxSet::load_defaults_newlines();
+    ss.find_syntax_by_first_line(&code)
+        .map(|s| s.name.clone())
+        .unwrap_or_else(|| "Plain Text".to_string())
+}
+
+/// Fetch Open-Graph / meta-tag preview data for a URL.
+#[derive(Serialize, Deserialize, Clone)]
+pub struct LinkPreview {
+    pub title: Option<String>,
+    pub description: Option<String>,
+    pub image: Option<String>,
+    pub site_name: Option<String>,
+    pub favicon: Option<String>,
+}
+
+#[tauri::command]
+async fn fetch_link_preview(url: String) -> Result<LinkPreview, String> {
+    use scraper::{Html, Selector};
+
+    let client = reqwest::Client::builder()
+        .timeout(std::time::Duration::from_secs(5))
+        .build()
+        .map_err(|e| e.to_string())?;
+
+    let resp = client
+        .get(&url)
+        .header("User-Agent", "LinVClipBoard/1.9 link-preview")
+        .send()
+        .await
+        .map_err(|e| format!("Fetch failed: {e}"))?;
+
+    // Only read up to 1MB of HTML
+    let body = resp
+        .text()
+        .await
+        .map_err(|e| format!("Read body: {e}"))?;
+    let body = if body.len() > 1_048_576 {
+        body[..1_048_576].to_string()
+    } else {
+        body
+    };
+
+    let doc = Html::parse_document(&body);
+
+    let og = |prop: &str| -> Option<String> {
+        let sel = Selector::parse(&format!("meta[property=\"og:{prop}\"]")).ok()?;
+        doc.select(&sel).next()?.value().attr("content").map(|s| s.to_string())
+    };
+
+    let meta_name = |name: &str| -> Option<String> {
+        let sel = Selector::parse(&format!("meta[name=\"{name}\"]")).ok()?;
+        doc.select(&sel).next()?.value().attr("content").map(|s| s.to_string())
+    };
+
+    let title = og("title").or_else(|| {
+        let sel = Selector::parse("title").ok()?;
+        doc.select(&sel).next().map(|el| el.text().collect::<String>())
+    });
+
+    let description = og("description").or_else(|| meta_name("description"));
+    let image = og("image");
+    let site_name = og("site_name");
+
+    let favicon = {
+        let sel = Selector::parse("link[rel~=\"icon\"]").ok();
+        sel.and_then(|s| {
+            let href = doc.select(&s).next()?.value().attr("href")?;
+            if href.starts_with("http") {
+                Some(href.to_string())
+            } else if href.starts_with("//") {
+                Some(format!("https:{href}"))
+            } else {
+                // Build origin from the URL
+                let origin = url.split('/').take(3).collect::<Vec<_>>().join("/");
+                let sep = if href.starts_with('/') { "" } else { "/" };
+                Some(format!("{origin}{sep}{href}"))
+            }
+        })
+    };
+
+    Ok(LinkPreview { title, description, image, site_name, favicon })
+}
+
 /// Position the window based on the configured mode.
 ///
 /// - `"mouse"` → spawn near cursor on the active monitor, clamped to screen edges
@@ -965,6 +1093,9 @@ pub fn run() {
             download_update,
             install_update,
             generate_qr_code,
+            highlight_code,
+            detect_language,
+            fetch_link_preview,
         ])
         .setup(|app| {
             let window = app.get_webview_window("main").unwrap();

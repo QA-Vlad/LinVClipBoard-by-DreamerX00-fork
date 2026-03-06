@@ -1,6 +1,6 @@
 import { useTranslation } from "../i18n/index.jsx";
 
-function AppHeader({ onOpenSettings, onClearAll }) {
+function AppHeader({ onOpenSettings, onClearAll, showPreview, onTogglePreview }) {
     const { t } = useTranslation();
 
     return (
@@ -10,6 +10,15 @@ function AppHeader({ onOpenSettings, onClearAll }) {
                 <h1 className="app-header-title" data-tauri-drag-region>{t("app.title")}</h1>
             </div>
             <div className="app-header-actions">
+                <button
+                    className={`header-btn${showPreview ? " header-btn-active" : ""}`}
+                    onClick={onTogglePreview}
+                    title={t("preview.toggle")}
+                    aria-label={t("preview.toggle")}
+                    aria-pressed={showPreview}
+                >
+                    👁
+                </button>
                 <button
                     className="header-btn"
                     onClick={onOpenSettings}

@@ -161,5 +161,16 @@
     "installing_restart_hint": "インストール後、アプリは自動的に再起動します。",
     "installed": "アップデート完了！",
     "installed_desc": "アップデートが正常にインストールされました。新しいバージョンを使用するにはアプリを再起動してください。"
+  },
+  "preview": {
+    "title": "プレビュー",
+    "toggle": "プレビュー切替",
+    "copy": "コピー",
+    "open_external": "ブラウザで開く",
+    "no_selection": "プレビューするアイテムを選択してください",
+    "lines": "行",
+    "words": "単語",
+    "chars": "文字",
+    "detected_language": "検出された言語"
   }
 }
