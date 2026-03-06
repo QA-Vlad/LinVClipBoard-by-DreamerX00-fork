@@ -111,6 +111,7 @@ free_shortcut() {
     SAVE_FILE="${HOME_DIR}/.config/linvclip/.ibus-emoji-hotkey-backup"
     if [ ! -f "$SAVE_FILE" ]; then
         mkdir -p "${HOME_DIR}/.config/linvclip"
+        chown "$USER":"$USER" "${HOME_DIR}/.config/linvclip"
         echo "$ORIG" > "$SAVE_FILE"
         chown "$USER":"$USER" "$SAVE_FILE"
     fi
@@ -143,19 +144,6 @@ enable_clipd() {
     run_as systemctl --user enable clipd.service 2>/dev/null || true
     run_as systemctl --user enable linvclip-update-check.timer 2>/dev/null || true
     run_as systemctl --user start linvclip-update-check.timer 2>/dev/null || true
-
-    # Import DISPLAY / WAYLAND_DISPLAY into the user manager so
-    # ConditionEnvironment checks pass.  Grab them from the user's
-    # running session via their environment file if possible.
-    for var in DISPLAY WAYLAND_DISPLAY; do
-        val=""
-        # Try to read from an active user process (e.g. their session leader)
-        for pid in $(find /proc -maxdepth 2 -name environ -user "$USER" 2>/dev/null | head -20 | cut -d/ -f3); do
-            val=$(tr '\0' '\n' < "/proc/$pid/environ" 2>/dev/null | grep "^${var}=" | head -1 | cut -d= -f2-)
-            [ -n "$val" ] && break
-        done
-        [ -n "$val" ] && run_as systemctl --user set-environment "${var}=${val}" 2>/dev/null || true
-    done
 
     run_as systemctl --user restart clipd.service 2>/dev/null || true
 }

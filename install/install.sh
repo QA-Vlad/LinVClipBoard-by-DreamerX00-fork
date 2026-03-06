@@ -63,7 +63,7 @@ CPUQuota=5%
 Environment=RUST_LOG=info
 
 [Install]
-WantedBy=default.target
+WantedBy=graphical-session.target
 EOF
 
 # Enable and start the daemon

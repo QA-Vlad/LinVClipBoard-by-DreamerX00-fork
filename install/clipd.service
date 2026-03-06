@@ -2,8 +2,6 @@
 Description=LinVClipBoard Clipboard Daemon
 Documentation=https://github.com/DreamerX00/LinVClipBoard
 After=graphical-session.target
-ConditionEnvironment=WAYLAND_DISPLAY
-ConditionEnvironment=|DISPLAY
 
 [Service]
 Type=simple
@@ -28,4 +26,4 @@ NoNewPrivileges=true
 PrivateTmp=true
 
 [Install]
-WantedBy=default.target
+WantedBy=graphical-session.target
