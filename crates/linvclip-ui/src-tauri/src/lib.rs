@@ -467,18 +467,29 @@ async fn install_update(path: String) -> Result<String, String> {
     let username = std::env::var("USER").unwrap_or_default();
     let display = std::env::var("DISPLAY").unwrap_or_default();
     let wayland = std::env::var("WAYLAND_DISPLAY").unwrap_or_default();
+    let xdg_runtime = std::env::var("XDG_RUNTIME_DIR").unwrap_or_default();
 
     let script = format!(
         r#"#!/bin/bash
+# Kill the current UI before dpkg (avoids prerm race)
+kill {pid} 2>/dev/null || true
+sleep 0.5
+
 dpkg -i "{path}"
 RET=$?
+
+# postinst already restarts clipd and linvclip-ui, but as a safety net:
 if [ $RET -eq 0 ]; then
-    CALLING_UID=$(id -u "{username}" 2>/dev/null)
-    XDG_RT="/run/user/$CALLING_UID"
-    su "{username}" -c "DISPLAY='{display}' WAYLAND_DISPLAY='{wayland}' XDG_RUNTIME_DIR='$XDG_RT' nohup /usr/bin/linvclip-ui >/dev/null 2>&1 &"
+    # Give postinst a moment to finish
+    sleep 1
+    # Check if linvclip-ui is already running (postinst may have started it)
+    if ! pgrep -x linvclip-ui >/dev/null 2>&1; then
+        su "{username}" -c "DISPLAY='{display}' WAYLAND_DISPLAY='{wayland}' XDG_RUNTIME_DIR='{xdg_runtime}' setsid nohup /usr/bin/linvclip-ui >/dev/null 2>&1 &"
+    fi
 fi
 exit $RET
-"#
+"#,
+        pid = std::process::id(),
     );
 
     let script_path = format!("/tmp/linvclip-update-{}.sh", std::process::id());

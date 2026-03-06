@@ -146,6 +146,10 @@ enable_clipd() {
     run_as systemctl --user start linvclip-update-check.timer 2>/dev/null || true
 
     run_as systemctl --user restart clipd.service 2>/dev/null || true
+
+    # Restart the UI if it was running before the upgrade
+    # (setsid + nohup ensures it survives dpkg's process cleanup)
+    run_as "setsid nohup /usr/bin/linvclip-ui >/dev/null 2>&1 &" 2>/dev/null || true
 }
 
 if [ -n "$SUDO_USER" ] && [ "$SUDO_USER" != "root" ]; then
@@ -186,14 +190,19 @@ for user_run in /run/user/[0-9]*; do
     [ "$uid" -ge 1000 ] 2>/dev/null || continue
     username=$(id -nu "$uid" 2>/dev/null) || continue
     su "$username" -c "XDG_RUNTIME_DIR=$user_run DBUS_SESSION_BUS_ADDRESS=unix:path=$user_run/bus systemctl --user stop clipd.service" 2>/dev/null || true
-    su "$username" -c "XDG_RUNTIME_DIR=$user_run DBUS_SESSION_BUS_ADDRESS=unix:path=$user_run/bus systemctl --user disable clipd.service" 2>/dev/null || true
     su "$username" -c "XDG_RUNTIME_DIR=$user_run DBUS_SESSION_BUS_ADDRESS=unix:path=$user_run/bus systemctl --user stop linvclip-update-check.timer" 2>/dev/null || true
-    su "$username" -c "XDG_RUNTIME_DIR=$user_run DBUS_SESSION_BUS_ADDRESS=unix:path=$user_run/bus systemctl --user disable linvclip-update-check.timer" 2>/dev/null || true
+    # Only disable services on full remove, not on upgrade
+    if [ "$1" = "remove" ]; then
+        su "$username" -c "XDG_RUNTIME_DIR=$user_run DBUS_SESSION_BUS_ADDRESS=unix:path=$user_run/bus systemctl --user disable clipd.service" 2>/dev/null || true
+        su "$username" -c "XDG_RUNTIME_DIR=$user_run DBUS_SESSION_BUS_ADDRESS=unix:path=$user_run/bus systemctl --user disable linvclip-update-check.timer" 2>/dev/null || true
+    fi
 done
 
-# Fallback: kill any remaining processes
-pkill -x clipd 2>/dev/null || true
-pkill -x linvclip-ui 2>/dev/null || true
+# Only kill processes on full remove, not on upgrade
+if [ "$1" = "remove" ]; then
+    pkill -x clipd 2>/dev/null || true
+    pkill -x linvclip-ui 2>/dev/null || true
+fi
 PRERM
 chmod 755 "${PKG_DIR}/DEBIAN/prerm"
 
