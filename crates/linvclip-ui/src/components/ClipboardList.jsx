@@ -28,6 +28,9 @@ function ClipboardList({
     loading,
     hasMore,
     onContextMenu,
+    selectedIds,
+    onSelectToggle,
+    onSelectRange,
 }) {
     const { t } = useTranslation();
     const listRef = useRef(null);
@@ -103,6 +106,8 @@ function ClipboardList({
         );
     }
 
+    const isMultiSelect = selectedIds && selectedIds.size > 0;
+
     return (
         <div
             className="clipboard-list"
@@ -127,6 +132,10 @@ function ClipboardList({
                     formatTime={formatTime}
                     looksLikeCode={looksLikeCode}
                     t={t}
+                    isChecked={selectedIds ? selectedIds.has(item.id) : false}
+                    isMultiSelect={isMultiSelect}
+                    onSelectToggle={onSelectToggle}
+                    onSelectRange={onSelectRange}
                 />
             ))}
 
@@ -137,6 +146,44 @@ function ClipboardList({
             )}
         </div>
     );
+}
+
+/** Format file list preview from JSON content. */
+function formatFilesPreview(item) {
+    try {
+        const files = JSON.parse(item.content);
+        if (!Array.isArray(files)) return item.preview_text;
+        const names = files.map((f) => {
+            const parts = f.split("/");
+            return parts[parts.length - 1] || f;
+        });
+        if (names.length <= 3) return names.join(", ");
+        return `${names.slice(0, 3).join(", ")} +${names.length - 3} more`;
+    } catch {
+        return item.preview_text;
+    }
+}
+
+/** Extract domain from URI content. */
+function extractDomain(content) {
+    try {
+        const stripped = content.replace(/^https?:\/\//, "");
+        return stripped.split("/")[0] || content;
+    } catch {
+        return content;
+    }
+}
+
+/** Type badge for rich content. */
+function TypeBadge({ type: contentType }) {
+    const labels = {
+        html: "HTML",
+        uri: "Link",
+        files: "Files",
+    };
+    const label = labels[contentType];
+    if (!label) return null;
+    return <span className={`type-badge type-badge-${contentType}`}>{label}</span>;
 }
 
 /** Individual clip item – extracted for the image preview hook. */
@@ -154,6 +201,10 @@ function ClipItem({
     formatTime,
     looksLikeCode,
     t,
+    isChecked,
+    isMultiSelect,
+    onSelectToggle,
+    onSelectRange,
 }) {
     const imgSrc = useImagePreview(item);
     const tags = (() => {
@@ -166,13 +217,32 @@ function ClipItem({
 
     const isCode = looksLikeCode(item.preview_text);
 
+    const handleClick = (e) => {
+        if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            if (onSelectToggle) onSelectToggle(item.id);
+            return;
+        }
+        if (e.shiftKey) {
+            e.preventDefault();
+            if (onSelectRange) onSelectRange(index);
+            return;
+        }
+        // Normal click: if in multi-select mode, toggle; otherwise paste
+        if (isMultiSelect) {
+            if (onSelectToggle) onSelectToggle(item.id);
+        } else {
+            onPaste(item.id);
+        }
+    };
+
     return (
         <div
             ref={index === selectedIndex ? selectedRef : null}
             className={`clip-item ${index === selectedIndex ? "selected" : ""} ${
                 item.pinned ? "pinned" : ""
-            }`}
-            onClick={() => onPaste(item.id)}
+            } ${isChecked ? "checked" : ""}`}
+            onClick={handleClick}
             onContextMenu={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -182,9 +252,19 @@ function ClipItem({
             aria-selected={index === selectedIndex}
             aria-label={`${getTypeIcon(item.content_type)} ${formatPreview(item.preview_text, 40)}`}
         >
+            {/* Checkmark overlay for multi-select */}
+            {(isMultiSelect || isChecked) && (
+                <div className="check-overlay" onClick={(e) => { e.stopPropagation(); if (onSelectToggle) onSelectToggle(item.id); }}>
+                    <span className={`check-box ${isChecked ? "check-box-checked" : ""}`}>
+                        {isChecked ? "✓" : ""}
+                    </span>
+                </div>
+            )}
+
             <div className="clip-item-body">
                 <div className="clip-item-header">
                     <span className="clip-type-icon">{getTypeIcon(item.content_type)}</span>
+                    <TypeBadge type={item.content_type} />
                     {item.pinned && <span className="pin-badge">📌</span>}
                     {tags.length > 0 && (
                         <span className="tag-badges">
@@ -211,6 +291,14 @@ function ClipItem({
                             )}
                             <span className="clip-type-label">clipboard-image.png</span>
                         </div>
+                    ) : item.content_type === "files" ? (
+                        <p className="clip-text clip-text-files">
+                            📁 {formatFilesPreview(item)}
+                        </p>
+                    ) : item.content_type === "uri" ? (
+                        <p className="clip-text clip-text-uri">
+                            🔗 {extractDomain(item.content)}
+                        </p>
                     ) : (
                         <p className={`clip-text${isCode ? " clip-text-code" : ""}`}>
                             {formatPreview(item.preview_text)}

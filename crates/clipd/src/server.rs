@@ -10,6 +10,7 @@ use std::time::Instant;
 use tokio::net::UnixListener;
 use tokio::sync::{Mutex, Semaphore};
 use tokio_util::sync::CancellationToken;
+use wl_clipboard_rs::copy::{self, Options as WlCopyOptions, MimeType as WlCopyMime};
 
 /// Run the IPC server on a Unix domain socket.
 pub async fn run(
@@ -138,6 +139,15 @@ async fn handle_request(
             },
         },
 
+        IpcRequest::BulkPin { ids, pinned } => match db.bulk_pin(&ids, pinned) {
+            Ok(count) => IpcResponse::Ok {
+                message: format!("Pinned {} items", count),
+            },
+            Err(e) => IpcResponse::Error {
+                message: format!("Bulk pin failed: {}", e),
+            },
+        },
+
         IpcRequest::TogglePin { id } => match db.toggle_pin(&id) {
             Ok(item) => IpcResponse::Item(item),
             Err(e) => IpcResponse::Error {
@@ -149,11 +159,51 @@ async fn handle_request(
             Ok(item) => {
                 let mut clip = clipboard.lock().await;
                 match item.content_type {
+                    ContentType::Html => {
+                        // Try Wayland-native HTML paste, fallback to plain text
+                        let html = item.content.clone();
+                        let plain = html2text::from_read(html.as_bytes(), 200).unwrap_or_default();
+                        match paste_html_wayland(&html, &plain) {
+                            Ok(()) => IpcResponse::Ok {
+                                message: "Pasted HTML to clipboard".to_string(),
+                            },
+                            Err(_) => match clip.set_text(&item.content) {
+                                Ok(()) => IpcResponse::Ok {
+                                    message: "Pasted to clipboard".to_string(),
+                                },
+                                Err(e) => IpcResponse::Error {
+                                    message: format!("Clipboard set failed: {}", e),
+                                },
+                            },
+                        }
+                    }
+                    ContentType::Files => {
+                        // Paste files as gnome-copied-files format, fallback to text
+                        let paths: Vec<String> =
+                            serde_json::from_str(&item.content).unwrap_or_default();
+                        let uri_list: String = paths
+                            .iter()
+                            .map(|p| format!("file://{}", p))
+                            .collect::<Vec<_>>()
+                            .join("\n");
+                        let gnome_fmt = format!("copy\n{}", uri_list);
+                        match paste_files_wayland(&gnome_fmt, &uri_list) {
+                            Ok(()) => IpcResponse::Ok {
+                                message: "Pasted files to clipboard".to_string(),
+                            },
+                            Err(_) => match clip.set_text(&uri_list) {
+                                Ok(()) => IpcResponse::Ok {
+                                    message: "Pasted to clipboard".to_string(),
+                                },
+                                Err(e) => IpcResponse::Error {
+                                    message: format!("Clipboard set failed: {}", e),
+                                },
+                            },
+                        }
+                    }
                     ContentType::PlainText
-                    | ContentType::Html
                     | ContentType::RichText
-                    | ContentType::Uri
-                    | ContentType::Files => match clip.set_text(&item.content) {
+                    | ContentType::Uri => match clip.set_text(&item.content) {
                         Ok(()) => IpcResponse::Ok {
                             message: "Pasted to clipboard".to_string(),
                         },
@@ -258,4 +308,40 @@ async fn handle_request(
             }
         }
     }
+}
+
+/// Paste HTML to clipboard via wl-copy with both text/html and text/plain MIME types.
+fn paste_html_wayland(html: &str, plain: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let opts = WlCopyOptions::new();
+    let html_bytes = html.as_bytes().to_vec();
+    let plain_bytes = plain.as_bytes().to_vec();
+    opts.copy_multi(vec![
+        copy::MimeSource {
+            source: copy::Source::Bytes(html_bytes.into()),
+            mime_type: WlCopyMime::Specific("text/html".to_string()),
+        },
+        copy::MimeSource {
+            source: copy::Source::Bytes(plain_bytes.into()),
+            mime_type: WlCopyMime::Specific("text/plain".to_string()),
+        },
+    ])?;
+    Ok(())
+}
+
+/// Paste files to clipboard via wl-copy with gnome-copied-files and text/uri-list.
+fn paste_files_wayland(gnome_fmt: &str, uri_list: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let opts = WlCopyOptions::new();
+    let gnome_bytes = gnome_fmt.as_bytes().to_vec();
+    let uri_bytes = uri_list.as_bytes().to_vec();
+    opts.copy_multi(vec![
+        copy::MimeSource {
+            source: copy::Source::Bytes(gnome_bytes.into()),
+            mime_type: WlCopyMime::Specific("x-special/gnome-copied-files".to_string()),
+        },
+        copy::MimeSource {
+            source: copy::Source::Bytes(uri_bytes.into()),
+            mime_type: WlCopyMime::Specific("text/uri-list".to_string()),
+        },
+    ])?;
+    Ok(())
 }

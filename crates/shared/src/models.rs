@@ -96,6 +96,8 @@ pub enum IpcRequest {
     Delete { id: String },
     /// Bulk delete items.
     BulkDelete { ids: Vec<String> },
+    /// Bulk pin/unpin items.
+    BulkPin { ids: Vec<String>, pinned: bool },
     /// Toggle pin on an item.
     TogglePin { id: String },
     /// Paste an item (set it as current clipboard content).

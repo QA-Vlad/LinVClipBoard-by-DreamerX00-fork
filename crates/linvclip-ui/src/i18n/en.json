@@ -19,6 +19,8 @@
     "all": "All",
     "text": "Text",
     "images": "Images",
+    "html": "HTML",
+    "links": "Links",
     "files": "Files",
     "pinned": "Pinned"
   },
@@ -108,8 +110,22 @@
     "up_to_date": "You're up to date.",
     "download": "Download"
   },
+  "selection": {
+    "count": "{n} selected",
+    "pin_all": "Pin",
+    "unpin_all": "Unpin",
+    "delete_all": "Delete",
+    "merge": "Merge",
+    "clear": "Clear",
+    "pinned": "Items pinned",
+    "unpinned": "Items unpinned",
+    "deleted": "Items deleted",
+    "merged": "Items merged to clipboard",
+    "merge_need_two": "Select at least 2 text items to merge"
+  },
   "confirm": {
     "clear_all": "Delete all non-pinned clipboard items? This cannot be undone.",
+    "bulk_delete": "Delete selected items? This cannot be undone.",
     "confirm": "Delete",
     "cancel": "Cancel"
   },
@@ -139,6 +155,7 @@
     "json": "JSON",
     "json_prettify": "Prettify",
     "json_minify": "Minify",
+    "paste_as_plain": "Paste as Plain Text",
     "qr_code": "QR Code",
     "word_count": "Word Count",
     "add_tag": "Add Tag",

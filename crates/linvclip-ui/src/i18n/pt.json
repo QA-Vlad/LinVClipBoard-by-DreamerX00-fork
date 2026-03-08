@@ -19,6 +19,8 @@
     "all": "Tudo",
     "text": "Texto",
     "images": "Imagens",
+    "html": "HTML",
+    "links": "Links",
     "files": "Arquivos",
     "pinned": "Fixados"
   },
@@ -108,8 +110,22 @@
     "up_to_date": "Você está atualizado.",
     "download": "Baixar"
   },
+  "selection": {
+    "count": "{n} selecionados",
+    "pin_all": "Fixar",
+    "unpin_all": "Desafixar",
+    "delete_all": "Excluir",
+    "merge": "Mesclar",
+    "clear": "Limpar",
+    "pinned": "Itens fixados",
+    "unpinned": "Itens desafixados",
+    "deleted": "Itens excluídos",
+    "merged": "Itens mesclados para a área de transferência",
+    "merge_need_two": "Selecione pelo menos 2 itens de texto para mesclar"
+  },
   "confirm": {
     "clear_all": "Excluir todos os itens não fixados? Esta ação não pode ser desfeita.",
+    "bulk_delete": "Excluir itens selecionados? Esta ação não pode ser desfeita.",
     "confirm": "Excluir",
     "cancel": "Cancelar"
   },
@@ -139,6 +155,7 @@
     "json": "JSON",
     "json_prettify": "Formatar",
     "json_minify": "Minificar",
+    "paste_as_plain": "Colar como Texto Simples",
     "qr_code": "Código QR",
     "word_count": "Contar Palavras",
     "add_tag": "Adicionar Tag",

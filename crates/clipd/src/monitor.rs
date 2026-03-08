@@ -8,6 +8,9 @@ use std::sync::Arc;
 use std::time::Duration;
 use tokio_util::sync::CancellationToken;
 use uuid::Uuid;
+use wl_clipboard_rs::paste::{
+    get_contents as wl_get_contents, ClipboardType, MimeType as WlMimeType, Seat,
+};
 
 /// Detect the currently focused application name.
 ///
@@ -283,7 +286,112 @@ pub async fn run(
     Ok(())
 }
 
+/// Try to get HTML content from clipboard via Wayland's wl-clipboard-rs.
+/// Returns Some(html_string) if text/html MIME is available.
+fn try_get_html_wayland() -> Option<String> {
+    match wl_get_contents(
+        ClipboardType::Regular,
+        Seat::Unspecified,
+        WlMimeType::Specific("text/html"),
+    ) {
+        Ok((mut reader, _)) => {
+            let mut buf = String::new();
+            if std::io::Read::read_to_string(&mut reader, &mut buf).is_ok() && !buf.trim().is_empty() {
+                Some(buf)
+            } else {
+                None
+            }
+        }
+        Err(_) => None,
+    }
+}
+
+/// Try to get file list from clipboard (gnome-copied-files / text/uri-list).
+fn try_get_files_wayland() -> Option<Vec<String>> {
+    // Try gnome-copied-files first (Nautilus uses this)
+    let raw = match wl_get_contents(
+        ClipboardType::Regular,
+        Seat::Unspecified,
+        WlMimeType::Specific("x-special/gnome-copied-files"),
+    ) {
+        Ok((mut reader, _)) => {
+            let mut buf = String::new();
+            if std::io::Read::read_to_string(&mut reader, &mut buf).is_ok() {
+                Some(buf)
+            } else {
+                None
+            }
+        }
+        Err(_) => None,
+    };
+
+    // Fallback to text/uri-list
+    let raw = raw.or_else(|| {
+        match wl_get_contents(
+            ClipboardType::Regular,
+            Seat::Unspecified,
+            WlMimeType::Specific("text/uri-list"),
+        ) {
+            Ok((mut reader, _)) => {
+                let mut buf = String::new();
+                if std::io::Read::read_to_string(&mut reader, &mut buf).is_ok() {
+                    Some(buf)
+                } else {
+                    None
+                }
+            }
+            Err(_) => None,
+        }
+    });
+
+    let raw = raw?;
+    let paths: Vec<String> = raw
+        .lines()
+        .filter(|l| !l.is_empty() && !l.starts_with('#'))
+        // Skip the "copy\n" / "cut\n" header from gnome-copied-files
+        .filter(|l| *l != "copy" && *l != "cut")
+        .map(|l| {
+            // Convert file:// URIs to paths
+            if let Some(path) = l.strip_prefix("file://") {
+                // Decode percent-encoded characters
+                urlish_decode(path)
+            } else {
+                l.to_string()
+            }
+        })
+        .collect();
+
+    if paths.is_empty() {
+        None
+    } else {
+        Some(paths)
+    }
+}
+
+/// Simple percent-decode for file paths (decodes %XX sequences).
+fn urlish_decode(s: &str) -> String {
+    let mut result = Vec::new();
+    let bytes = s.as_bytes();
+    let mut i = 0;
+    while i < bytes.len() {
+        if bytes[i] == b'%' && i + 2 < bytes.len() {
+            if let Ok(byte) = u8::from_str_radix(
+                &s[i + 1..i + 3],
+                16,
+            ) {
+                result.push(byte);
+                i += 3;
+                continue;
+            }
+        }
+        result.push(bytes[i]);
+        i += 1;
+    }
+    String::from_utf8_lossy(&result).to_string()
+}
+
 /// Attempt to capture text from clipboard. Returns Some if content changed.
+/// Now detects rich content types: HTML > Files > URI > PlainText.
 fn capture_text(
     clipboard: &mut Clipboard,
     last_checksum: &str,
@@ -306,10 +414,97 @@ fn capture_text(
         return Ok(None);
     }
 
+    // Priority detection: HTML > Files > URI > PlainText
+    // 1. Try HTML via Wayland
+    if let Some(html) = try_get_html_wayland() {
+        let preview = html2text::from_read(html.as_bytes(), 200)
+            .unwrap_or_default()
+            .chars()
+            .take(200)
+            .collect::<String>()
+            .trim()
+            .to_string();
+        let preview = if preview.is_empty() {
+            normalized.chars().take(200).collect::<String>()
+        } else {
+            preview
+        };
+        let size = html.len() as u64;
+        let item = ClipboardItem::new(
+            ContentType::Html,
+            html,
+            preview,
+            checksum.clone(),
+            size,
+        );
+        return Ok(Some((item, checksum)));
+    }
+
+    // 2. Try file list via Wayland
+    if let Some(files) = try_get_files_wayland() {
+        let content = serde_json::to_string(&files).unwrap_or_else(|_| "[]".to_string());
+        let preview = if files.len() <= 3 {
+            files
+                .iter()
+                .map(|f| {
+                    std::path::Path::new(f)
+                        .file_name()
+                        .map(|n| n.to_string_lossy().to_string())
+                        .unwrap_or_else(|| f.clone())
+                })
+                .collect::<Vec<_>>()
+                .join(", ")
+        } else {
+            let first3: Vec<_> = files[..3]
+                .iter()
+                .map(|f| {
+                    std::path::Path::new(f)
+                        .file_name()
+                        .map(|n| n.to_string_lossy().to_string())
+                        .unwrap_or_else(|| f.clone())
+                })
+                .collect();
+            format!("{} +{} more", first3.join(", "), files.len() - 3)
+        };
+        let size = content.len() as u64;
+        let item = ClipboardItem::new(
+            ContentType::Files,
+            content,
+            preview,
+            checksum.clone(),
+            size,
+        );
+        return Ok(Some((item, checksum)));
+    }
+
+    // 3. Check for single URI
+    let trimmed = normalized.trim();
+    if (trimmed.starts_with("http://") || trimmed.starts_with("https://"))
+        && !trimmed.contains('\n')
+        && trimmed.len() < 2048
+    {
+        // Extract domain from URL for preview
+        let preview = trimmed
+            .strip_prefix("https://")
+            .or_else(|| trimmed.strip_prefix("http://"))
+            .and_then(|s| s.split('/').next())
+            .unwrap_or(trimmed)
+            .to_string();
+        let size = normalized.len() as u64;
+        let item = ClipboardItem::new(
+            ContentType::Uri,
+            normalized,
+            preview,
+            checksum.clone(),
+            size,
+        );
+        return Ok(Some((item, checksum)));
+    }
+
+    // 4. Plain text fallback
     let preview = normalized.chars().take(200).collect::<String>();
     let size = normalized.len() as u64;
 
-    // Store the *normalized* text so content matches its checksum (#1)
     let item = ClipboardItem::new(
         ContentType::PlainText,
         normalized,

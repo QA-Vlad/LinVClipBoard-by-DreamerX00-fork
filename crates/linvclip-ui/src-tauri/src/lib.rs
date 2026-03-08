@@ -206,6 +206,60 @@ async fn pin_item(id: String) -> Result<ClipboardItem, String> {
     }
 }
 
+/// Bulk delete items.
+#[tauri::command]
+async fn bulk_delete(ids: Vec<String>) -> Result<String, String> {
+    let socket = AppConfig::socket_path();
+    let request = IpcRequest::BulkDelete { ids };
+
+    match send_request(&socket, &request).await {
+        Ok(IpcResponse::Ok { message }) => Ok(message),
+        Ok(IpcResponse::Error { message }) => Err(message),
+        Err(e) => Err(format!("Connection failed: {}", e)),
+        _ => Err("Unexpected response".to_string()),
+    }
+}
+
+/// Bulk pin/unpin items.
+#[tauri::command]
+async fn bulk_pin(ids: Vec<String>, pinned: bool) -> Result<String, String> {
+    let socket = AppConfig::socket_path();
+    let request = IpcRequest::BulkPin { ids, pinned };
+
+    match send_request(&socket, &request).await {
+        Ok(IpcResponse::Ok { message }) => Ok(message),
+        Ok(IpcResponse::Error { message }) => Err(message),
+        Err(e) => Err(format!("Connection failed: {}", e)),
+        _ => Err("Unexpected response".to_string()),
+    }
+}
+
+/// Paste an HTML item as plain text only.
+#[tauri::command]
+async fn paste_as_plain_text(id: String) -> Result<String, String> {
+    let socket = AppConfig::socket_path();
+    // First get the item to extract plain text from HTML
+    let get_req = IpcRequest::Get { id };
+    match send_request(&socket, &get_req).await {
+        Ok(IpcResponse::Item(item)) => {
+            let plain = if item.content_type == shared::models::ContentType::Html {
+                html2text::from_read(item.content.as_bytes(), 200).unwrap_or_default()
+            } else {
+                item.content
+            };
+            let mut clipboard =
+                arboard::Clipboard::new().map_err(|e| format!("Clipboard error: {}", e))?;
+            clipboard
+                .set_text(&plain)
+                .map_err(|e| format!("Clipboard set failed: {}", e))?;
+            Ok("Pasted as plain text".to_string())
+        }
+        Ok(IpcResponse::Error { message }) => Err(message),
+        Err(e) => Err(format!("Connection failed: {}", e)),
+        _ => Err("Unexpected response".to_string()),
+    }
+}
+
 /// Delete an item.
 #[tauri::command]
 async fn delete_item(id: String) -> Result<String, String> {
@@ -1072,10 +1126,13 @@ pub fn run() {
             get_items,
             search_items,
             paste_item,
+            paste_as_plain_text,
             paste_raw_text,
             type_text,
             pin_item,
             delete_item,
+            bulk_delete,
+            bulk_pin,
             get_status,
             clear_all,
             get_config,

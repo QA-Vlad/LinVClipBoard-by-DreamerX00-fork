@@ -4,6 +4,9 @@ const FILTERS = [
     { id: "all",    labelKey: "filters.all" },
     { id: "text",   labelKey: "filters.text" },
     { id: "image",  labelKey: "filters.images" },
+    { id: "html",   labelKey: "filters.html" },
+    { id: "uri",    labelKey: "filters.links" },
+    { id: "files",  labelKey: "filters.files" },
     { id: "pinned", labelKey: "filters.pinned" },
 ];
 

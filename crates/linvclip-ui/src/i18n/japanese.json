@@ -19,6 +19,8 @@
     "all": "すべて",
     "text": "テキスト",
     "images": "画像",
+    "html": "HTML",
+    "links": "リンク",
     "files": "ファイル",
     "pinned": "固定済み"
   },
@@ -106,8 +108,22 @@
     "up_to_date": "最新版です。",
     "download": "ダウンロード"
   },
+  "selection": {
+    "count": "{n}件選択中",
+    "pin_all": "固定",
+    "unpin_all": "固定解除",
+    "delete_all": "削除",
+    "merge": "結合",
+    "clear": "解除",
+    "pinned": "アイテムを固定しました",
+    "unpinned": "アイテムの固定を解除しました",
+    "deleted": "アイテムを削除しました",
+    "merged": "アイテムをクリップボードに結合しました",
+    "merge_need_two": "結合するには少なくとも2つのテキストアイテムを選択してください"
+  },
   "confirm": {
     "clear_all": "固定されていないクリップボード項目をすべて削除しますか？元に戻せません。",
+    "bulk_delete": "選択したアイテムを削除しますか？元に戻せません。",
     "confirm": "削除",
     "cancel": "キャンセル"
   },
@@ -137,6 +153,7 @@
     "json": "JSON",
     "json_prettify": "整形",
     "json_minify": "圧縮",
+    "paste_as_plain": "プレーンテキストとして貼り付け",
     "qr_code": "QRコード",
     "word_count": "文字数カウント",
     "add_tag": "タグを追加",

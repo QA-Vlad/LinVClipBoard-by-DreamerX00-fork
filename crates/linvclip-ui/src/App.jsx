@@ -19,6 +19,7 @@ import ConfirmDialog from "./components/ConfirmDialog";
 import ContextMenu from "./components/ContextMenu";
 import QrModal from "./components/QrModal";
 import PreviewPane from "./components/PreviewPane";
+import SelectionBar from "./components/SelectionBar";
 
 function App() {
     const { t } = useTranslation();
@@ -39,6 +40,7 @@ function App() {
     const [qrText, setQrText] = useState(null); // text to generate QR for
     const [showPreview, setShowPreview] = useState(() => localStorage.getItem("showPreview") === "true");
     const [previewItem, setPreviewItem] = useState(null);
+    const [selectedIds, setSelectedIds] = useState(new Set());
     const offset = useRef(0);
     const LIMIT = 30;
 
@@ -319,6 +321,35 @@ function App() {
         }
     }, [selectedIndex, showPreview, items, filterType]);
 
+    // Multi-select handlers
+    const handleSelectToggle = useCallback((id) => {
+        setSelectedIds((prev) => {
+            const next = new Set(prev);
+            if (next.has(id)) next.delete(id);
+            else next.add(id);
+            return next;
+        });
+    }, []);
+
+    const handleSelectRange = useCallback((toIndex) => {
+        // Select from selectedIndex to toIndex inclusive
+        const from = Math.min(selectedIndex, toIndex);
+        const to = Math.max(selectedIndex, toIndex);
+        setSelectedIds((prev) => {
+            const next = new Set(prev);
+            for (let i = from; i <= to; i++) {
+                if (filteredItems[i]) next.add(filteredItems[i].id);
+            }
+            return next;
+        });
+    }, [selectedIndex, items, filterType]);
+
+    const clearSelection = useCallback(() => setSelectedIds(new Set()), []);
+
+    // Store selectedIds in ref for keyboard handler
+    const selectedIdsRef = useRef(selectedIds);
+    useEffect(() => { selectedIdsRef.current = selectedIds; }, [selectedIds]);
+
     // ─── Global keyboard handler via document listener ───
     // Uses refs so the handler always sees fresh state without re-attaching.
     useEffect(() => {
@@ -330,7 +361,12 @@ function App() {
                 case "Escape":
                     e.preventDefault();
                     e.stopPropagation();
-                    hideWindow();
+                    // If multi-select active, clear it first; otherwise hide window
+                    if (selectedIdsRef.current.size > 0) {
+                        setSelectedIds(new Set());
+                    } else {
+                        hideWindow();
+                    }
                     break;
                 case "ArrowDown":
                     e.preventDefault();
@@ -366,6 +402,15 @@ function App() {
                     break;
             }
 
+            // Ctrl+A: select all visible items
+            if ((e.ctrlKey || e.metaKey) && e.key === "a") {
+                if (document.activeElement?.tagName === "INPUT") return;
+                e.preventDefault();
+                const allIds = new Set(curItems.map((it) => it.id));
+                setSelectedIds(allIds);
+                return;
+            }
+
             // Zoom shortcuts: Ctrl++ / Ctrl+- / Ctrl+0
             if (e.ctrlKey || e.metaKey) {
                 if (e.key === "+" || e.key === "=") {
@@ -396,8 +441,10 @@ function App() {
     const filteredItems = items.filter((item) => {
         if (filterType === "all") return true;
         if (filterType === "pinned") return item.pinned;
-        if (filterType === "text") return item.content_type === "text";
+        if (filterType === "text") return item.content_type === "plain_text";
         if (filterType === "image") return item.content_type === "image";
+        if (filterType === "html") return item.content_type === "html";
+        if (filterType === "uri") return item.content_type === "uri";
         if (filterType === "files") return item.content_type === "files";
         return true;
     });
@@ -446,6 +493,16 @@ function App() {
                                 loading={loading}
                                 hasMore={items.length < total}
                                 onContextMenu={handleContextMenu}
+                                selectedIds={selectedIds}
+                                onSelectToggle={handleSelectToggle}
+                                onSelectRange={handleSelectRange}
+                            />
+                            <SelectionBar
+                                selectedIds={selectedIds}
+                                items={filteredItems}
+                                onClearSelection={clearSelection}
+                                onItemsChanged={() => fetchItems(true)}
+                                onToast={showToast}
                             />
                         </>
                     )}

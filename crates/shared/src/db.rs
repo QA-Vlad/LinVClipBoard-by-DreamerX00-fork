@@ -261,6 +261,22 @@ impl Database {
         Ok(count)
     }
 
+    /// Bulk pin or unpin items inside a single transaction.
+    pub fn bulk_pin(&self, ids: &[String], pinned: bool) -> DbResult<u64> {
+        let conn = self.pool.get()?;
+        let tx = conn.unchecked_transaction()?;
+        let mut count = 0u64;
+        let val = if pinned { 1 } else { 0 };
+        for id in ids {
+            count += tx.execute(
+                "UPDATE clipboard_items SET pinned = ?1 WHERE id = ?2",
+                params![val, id],
+            )? as u64;
+        }
+        tx.commit()?;
+        Ok(count)
+    }
+
     /// Toggle the pinned state of an item.
     pub fn toggle_pin(&self, id: &str) -> DbResult<ClipboardItem> {
         let conn = self.pool.get()?;

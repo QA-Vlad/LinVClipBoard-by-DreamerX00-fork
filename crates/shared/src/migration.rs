@@ -1,7 +1,7 @@
 use rusqlite::Connection;
 
 /// Current schema version. Bump this when adding migrations.
-const CURRENT_SCHEMA_VERSION: u32 = 1;
+const CURRENT_SCHEMA_VERSION: u32 = 2;
 
 /// Run all pending migrations on the given connection.
 ///
@@ -43,12 +43,13 @@ pub fn run_migrations(conn: &Connection) -> Result<(), rusqlite::Error> {
         conn.execute("INSERT INTO schema_version (version) VALUES (?1)", [1])?;
     }
 
-    // ── Future migrations ────────────────────────────────────────────────
-    // if current < 2 {
-    //     tracing::info!("Migration v2: <description>");
-    //     conn.execute_batch("ALTER TABLE clipboard_items ADD COLUMN ... ;")?;
-    //     conn.execute("INSERT INTO schema_version (version) VALUES (?1)", [2])?;
-    // }
+    // ── Migration 2: v2.0.0 rich content types ────────────────────────────
+    // No schema change needed — content_type TEXT already supports Html/Files/Uri.
+    // This migration just records the version bump.
+    if current < 2 {
+        tracing::info!("Migration v2: recording v2.0.0 rich content types");
+        conn.execute("INSERT INTO schema_version (version) VALUES (?1)", [2])?;
+    }
 
     tracing::info!("Migrations complete — now at v{}", CURRENT_SCHEMA_VERSION);
     Ok(())
@@ -84,13 +85,13 @@ mod tests {
         let v: u32 = conn
             .query_row("SELECT MAX(version) FROM schema_version", [], |r| r.get(0))
             .unwrap();
-        assert_eq!(v, 1);
+        assert_eq!(v, 2);
 
         // Second run — should be a no-op
         run_migrations(&conn).unwrap();
         let count: u32 = conn
             .query_row("SELECT COUNT(*) FROM schema_version", [], |r| r.get(0))
             .unwrap();
-        assert_eq!(count, 1); // only one row recorded
+        assert_eq!(count, 2); // two version rows recorded
     }
 }
