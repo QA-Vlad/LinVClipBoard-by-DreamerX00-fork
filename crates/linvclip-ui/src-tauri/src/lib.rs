@@ -522,6 +522,14 @@ async fn install_update(path: String) -> Result<String, String> {
     let display = std::env::var("DISPLAY").unwrap_or_default();
     let wayland = std::env::var("WAYLAND_DISPLAY").unwrap_or_default();
     let xdg_runtime = std::env::var("XDG_RUNTIME_DIR").unwrap_or_default();
+    let home = std::env::var("HOME").unwrap_or_default();
+    let dbus_addr = std::env::var("DBUS_SESSION_BUS_ADDRESS").unwrap_or_default();
+
+    // Resolve the actual binary path (may be ~/.local/bin or /usr/bin)
+    let ui_bin = std::env::current_exe()
+        .unwrap_or_else(|_| std::path::PathBuf::from("/usr/bin/linvclip-ui"))
+        .to_string_lossy()
+        .to_string();
 
     let script = format!(
         r#"#!/bin/bash
@@ -529,16 +537,36 @@ async fn install_update(path: String) -> Result<String, String> {
 kill {pid} 2>/dev/null || true
 sleep 0.5
 
+# Remove any conflicting old package names before installing
+dpkg --list 2>/dev/null | grep -qw linvclipboard && dpkg -r linvclipboard 2>/dev/null || true
+
 dpkg -i "{path}"
 RET=$?
 
-# postinst already restarts clipd and linvclip-ui, but as a safety net:
 if [ $RET -eq 0 ]; then
-    # Give postinst a moment to finish
     sleep 1
-    # Check if linvclip-ui is already running (postinst may have started it)
-    if ! pgrep -x linvclip-ui >/dev/null 2>&1; then
-        su "{username}" -c "DISPLAY='{display}' WAYLAND_DISPLAY='{wayland}' XDG_RUNTIME_DIR='{xdg_runtime}' setsid nohup /usr/bin/linvclip-ui >/dev/null 2>&1 &"
+
+    # Also update the user-local binary if install.sh was used
+    LOCAL_BIN="{home}/.local/bin"
+    if [ -d "$LOCAL_BIN" ]; then
+        # Copy from /usr/bin (deb target) to ~/.local/bin if it exists there
+        [ -f /usr/bin/linvclip-ui ] && cp /usr/bin/linvclip-ui "$LOCAL_BIN/" 2>/dev/null || true
+    fi
+
+    # Restart the clipd daemon if managed by systemd
+    su "{username}" -c "DBUS_SESSION_BUS_ADDRESS='{dbus_addr}' XDG_RUNTIME_DIR='{xdg_runtime}' systemctl --user restart clipd.service 2>/dev/null || true"
+
+    # Restart the UI — try multiple possible locations
+    sleep 0.5
+    if ! pgrep -f 'linvclip-ui' >/dev/null 2>&1; then
+        UI_BIN="{ui_bin}"
+        # Prefer the path that actually exists
+        if [ -f "{home}/.local/bin/linvclip-ui" ]; then
+            UI_BIN="{home}/.local/bin/linvclip-ui"
+        elif [ -f /usr/bin/linvclip-ui ]; then
+            UI_BIN="/usr/bin/linvclip-ui"
+        fi
+        su "{username}" -c "DISPLAY='{display}' WAYLAND_DISPLAY='{wayland}' XDG_RUNTIME_DIR='{xdg_runtime}' DBUS_SESSION_BUS_ADDRESS='{dbus_addr}' HOME='{home}' setsid $UI_BIN >/dev/null 2>&1 &"
     fi
 fi
 exit $RET
