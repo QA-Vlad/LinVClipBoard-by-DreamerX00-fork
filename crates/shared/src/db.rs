@@ -1,4 +1,4 @@
-use crate::models::{ClipboardItem, ContentType};
+use crate::models::{ClipboardItem, ContentType, Snippet};
 use r2d2::Pool;
 use r2d2_sqlite::SqliteConnectionManager;
 use rusqlite::params;
@@ -511,6 +511,147 @@ fn row_to_item(row: &rusqlite::Row) -> ClipboardItem {
         app_source: row.get(6).ok(),
         checksum: row.get(7).unwrap_or_default(),
         size_bytes: row.get::<_, i64>(8).unwrap_or(0) as u64,
+    }
+}
+
+// ─── Snippet helpers ─────────────────────────────────────────────────────────
+
+fn row_to_snippet(row: &rusqlite::Row) -> Snippet {
+    Snippet {
+        id: row.get(0).unwrap_or_default(),
+        name: row.get(1).unwrap_or_default(),
+        content: row.get(2).unwrap_or_default(),
+        folder: row.get(3).unwrap_or_default(),
+        abbreviation: row.get(4).unwrap_or_default(),
+        variables: row.get(5).unwrap_or_else(|_| "[]".to_string()),
+        use_count: row.get::<_, i64>(6).unwrap_or(0) as u64,
+        created_at: row
+            .get::<_, String>(7)
+            .ok()
+            .and_then(|s| s.parse().ok())
+            .unwrap_or_else(chrono::Utc::now),
+        updated_at: row
+            .get::<_, String>(8)
+            .ok()
+            .and_then(|s| s.parse().ok())
+            .unwrap_or_else(chrono::Utc::now),
+    }
+}
+
+const SNIPPET_COLS: &str = "id, name, content, folder, abbreviation, variables, use_count, created_at, updated_at";
+
+impl Database {
+    /// List snippets, optionally filtered by folder.
+    pub fn list_snippets(&self, folder: Option<&str>) -> DbResult<Vec<Snippet>> {
+        let conn = self.pool.get()?;
+        let mut snippets = Vec::new();
+        match folder {
+            Some(f) => {
+                let mut stmt = conn.prepare(&format!(
+                    "SELECT {} FROM snippets WHERE folder = ?1 ORDER BY name ASC",
+                    SNIPPET_COLS
+                ))?;
+                let rows = stmt.query_map(params![f], |row| Ok(row_to_snippet(row)))?;
+                for row in rows {
+                    snippets.push(row?);
+                }
+            }
+            None => {
+                let mut stmt = conn.prepare(&format!(
+                    "SELECT {} FROM snippets ORDER BY name ASC",
+                    SNIPPET_COLS
+                ))?;
+                let rows = stmt.query_map([], |row| Ok(row_to_snippet(row)))?;
+                for row in rows {
+                    snippets.push(row?);
+                }
+            }
+        }
+        Ok(snippets)
+    }
+
+    /// Search snippets by name, content, or abbreviation.
+    pub fn search_snippets(&self, query: &str) -> DbResult<Vec<Snippet>> {
+        let conn = self.pool.get()?;
+        let pattern = format!("%{}%", query);
+        let mut stmt = conn.prepare(&format!(
+            "SELECT {} FROM snippets WHERE name LIKE ?1 OR content LIKE ?1 OR abbreviation LIKE ?1 ORDER BY use_count DESC, name ASC",
+            SNIPPET_COLS
+        ))?;
+        let rows = stmt.query_map(params![pattern], |row| Ok(row_to_snippet(row)))?;
+        let mut snippets = Vec::new();
+        for row in rows {
+            snippets.push(row?);
+        }
+        Ok(snippets)
+    }
+
+    /// Get a single snippet by ID.
+    pub fn get_snippet(&self, id: &str) -> DbResult<Snippet> {
+        let conn = self.pool.get()?;
+        let snippet = conn.query_row(
+            &format!("SELECT {} FROM snippets WHERE id = ?1", SNIPPET_COLS),
+            params![id],
+            |row| Ok(row_to_snippet(row)),
+        )?;
+        Ok(snippet)
+    }
+
+    /// Create a new snippet.
+    pub fn create_snippet(&self, snippet: &Snippet) -> DbResult<()> {
+        let conn = self.pool.get()?;
+        conn.execute(
+            "INSERT INTO snippets (id, name, content, folder, abbreviation, variables, use_count, created_at, updated_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
+            params![
+                snippet.id,
+                snippet.name,
+                snippet.content,
+                snippet.folder,
+                snippet.abbreviation,
+                snippet.variables,
+                snippet.use_count as i64,
+                snippet.created_at.to_rfc3339(),
+                snippet.updated_at.to_rfc3339(),
+            ],
+        )?;
+        Ok(())
+    }
+
+    /// Update an existing snippet.
+    pub fn update_snippet(
+        &self,
+        id: &str,
+        name: &str,
+        content: &str,
+        folder: &str,
+        abbreviation: &str,
+        variables: &str,
+    ) -> DbResult<Snippet> {
+        let conn = self.pool.get()?;
+        let now = chrono::Utc::now().to_rfc3339();
+        conn.execute(
+            "UPDATE snippets SET name = ?1, content = ?2, folder = ?3, abbreviation = ?4, variables = ?5, updated_at = ?6 WHERE id = ?7",
+            params![name, content, folder, abbreviation, variables, now, id],
+        )?;
+        self.get_snippet(id)
+    }
+
+    /// Delete a snippet.
+    pub fn delete_snippet(&self, id: &str) -> DbResult<()> {
+        let conn = self.pool.get()?;
+        conn.execute("DELETE FROM snippets WHERE id = ?1", params![id])?;
+        Ok(())
+    }
+
+    /// Increment use_count for a snippet.
+    pub fn increment_snippet_use(&self, id: &str) -> DbResult<()> {
+        let conn = self.pool.get()?;
+        conn.execute(
+            "UPDATE snippets SET use_count = use_count + 1 WHERE id = ?1",
+            params![id],
+        )?;
+        Ok(())
     }
 }
 

@@ -1,7 +1,7 @@
 use rusqlite::Connection;
 
 /// Current schema version. Bump this when adding migrations.
-const CURRENT_SCHEMA_VERSION: u32 = 2;
+const CURRENT_SCHEMA_VERSION: u32 = 3;
 
 /// Run all pending migrations on the given connection.
 ///
@@ -51,6 +51,27 @@ pub fn run_migrations(conn: &Connection) -> Result<(), rusqlite::Error> {
         conn.execute("INSERT INTO schema_version (version) VALUES (?1)", [2])?;
     }
 
+    // ── Migration 3: v2.1.0 snippets table ──────────────────────────────
+    if current < 3 {
+        tracing::info!("Migration v3: creating snippets table");
+        conn.execute_batch(
+            "CREATE TABLE IF NOT EXISTS snippets (
+                id TEXT PRIMARY KEY,
+                name TEXT NOT NULL,
+                content TEXT NOT NULL,
+                folder TEXT DEFAULT '',
+                abbreviation TEXT DEFAULT '',
+                variables TEXT DEFAULT '[]',
+                use_count INTEGER DEFAULT 0,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            );
+            CREATE INDEX IF NOT EXISTS idx_snippets_folder ON snippets(folder);
+            CREATE INDEX IF NOT EXISTS idx_snippets_abbreviation ON snippets(abbreviation);",
+        )?;
+        conn.execute("INSERT INTO schema_version (version) VALUES (?1)", [3])?;
+    }
+
     tracing::info!("Migrations complete — now at v{}", CURRENT_SCHEMA_VERSION);
     Ok(())
 }
@@ -85,13 +106,13 @@ mod tests {
         let v: u32 = conn
             .query_row("SELECT MAX(version) FROM schema_version", [], |r| r.get(0))
             .unwrap();
-        assert_eq!(v, 2);
+        assert_eq!(v, 3);
 
         // Second run — should be a no-op
         run_migrations(&conn).unwrap();
         let count: u32 = conn
             .query_row("SELECT COUNT(*) FROM schema_version", [], |r| r.get(0))
             .unwrap();
-        assert_eq!(count, 2); // two version rows recorded
+        assert_eq!(count, 3); // three version rows recorded
     }
 }

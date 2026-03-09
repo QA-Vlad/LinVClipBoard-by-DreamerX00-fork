@@ -2,7 +2,7 @@ use base64::Engine;
 use serde::{Deserialize, Serialize};
 use shared::config::AppConfig;
 use shared::ipc::send_request;
-use shared::models::{ClipboardItem, IpcRequest, IpcResponse};
+use shared::models::{ClipboardItem, IpcRequest, IpcResponse, Snippet};
 use tauri::Emitter;
 use tauri::Manager;
 use tauri_plugin_global_shortcut::GlobalShortcutExt;
@@ -254,6 +254,96 @@ async fn paste_as_plain_text(id: String) -> Result<String, String> {
                 .map_err(|e| format!("Clipboard set failed: {}", e))?;
             Ok("Pasted as plain text".to_string())
         }
+        Ok(IpcResponse::Error { message }) => Err(message),
+        Err(e) => Err(format!("Connection failed: {}", e)),
+        _ => Err("Unexpected response".to_string()),
+    }
+}
+
+// ─── Snippet Commands ────────────────────────────────────────────────────────
+
+#[tauri::command]
+async fn list_snippets(folder: Option<String>) -> Result<Vec<Snippet>, String> {
+    let socket = AppConfig::socket_path();
+    let request = IpcRequest::ListSnippets { folder };
+    match send_request(&socket, &request).await {
+        Ok(IpcResponse::Snippets(snippets)) => Ok(snippets),
+        Ok(IpcResponse::Error { message }) => Err(message),
+        Err(e) => Err(format!("Connection failed: {}", e)),
+        _ => Err("Unexpected response".to_string()),
+    }
+}
+
+#[tauri::command]
+async fn search_snippets(query: String) -> Result<Vec<Snippet>, String> {
+    let socket = AppConfig::socket_path();
+    let request = IpcRequest::SearchSnippets { query };
+    match send_request(&socket, &request).await {
+        Ok(IpcResponse::Snippets(snippets)) => Ok(snippets),
+        Ok(IpcResponse::Error { message }) => Err(message),
+        Err(e) => Err(format!("Connection failed: {}", e)),
+        _ => Err("Unexpected response".to_string()),
+    }
+}
+
+#[tauri::command]
+async fn create_snippet(
+    name: String,
+    content: String,
+    folder: String,
+    abbreviation: String,
+    variables: String,
+) -> Result<Snippet, String> {
+    let socket = AppConfig::socket_path();
+    let request = IpcRequest::CreateSnippet { name, content, folder, abbreviation, variables };
+    match send_request(&socket, &request).await {
+        Ok(IpcResponse::Snippet(s)) => Ok(s),
+        Ok(IpcResponse::Error { message }) => Err(message),
+        Err(e) => Err(format!("Connection failed: {}", e)),
+        _ => Err("Unexpected response".to_string()),
+    }
+}
+
+#[tauri::command]
+async fn update_snippet(
+    id: String,
+    name: String,
+    content: String,
+    folder: String,
+    abbreviation: String,
+    variables: String,
+) -> Result<Snippet, String> {
+    let socket = AppConfig::socket_path();
+    let request = IpcRequest::UpdateSnippet { id, name, content, folder, abbreviation, variables };
+    match send_request(&socket, &request).await {
+        Ok(IpcResponse::Snippet(s)) => Ok(s),
+        Ok(IpcResponse::Error { message }) => Err(message),
+        Err(e) => Err(format!("Connection failed: {}", e)),
+        _ => Err("Unexpected response".to_string()),
+    }
+}
+
+#[tauri::command]
+async fn delete_snippet(id: String) -> Result<String, String> {
+    let socket = AppConfig::socket_path();
+    let request = IpcRequest::DeleteSnippet { id };
+    match send_request(&socket, &request).await {
+        Ok(IpcResponse::Ok { message }) => Ok(message),
+        Ok(IpcResponse::Error { message }) => Err(message),
+        Err(e) => Err(format!("Connection failed: {}", e)),
+        _ => Err("Unexpected response".to_string()),
+    }
+}
+
+#[tauri::command]
+async fn use_snippet(
+    id: String,
+    variables: std::collections::HashMap<String, String>,
+) -> Result<String, String> {
+    let socket = AppConfig::socket_path();
+    let request = IpcRequest::UseSnippet { id, variables };
+    match send_request(&socket, &request).await {
+        Ok(IpcResponse::Ok { message }) => Ok(message),
         Ok(IpcResponse::Error { message }) => Err(message),
         Err(e) => Err(format!("Connection failed: {}", e)),
         _ => Err("Unexpected response".to_string()),
@@ -1161,6 +1251,12 @@ pub fn run() {
             delete_item,
             bulk_delete,
             bulk_pin,
+            list_snippets,
+            search_snippets,
+            create_snippet,
+            update_snippet,
+            delete_snippet,
+            use_snippet,
             get_status,
             clear_all,
             get_config,

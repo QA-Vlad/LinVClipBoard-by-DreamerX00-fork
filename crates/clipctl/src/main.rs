@@ -261,6 +261,15 @@ fn print_response(_command: &Commands, response: IpcResponse) {
                 serde_json::to_string_pretty(&config).unwrap_or_default()
             );
         }
+        IpcResponse::Snippets(snippets) => {
+            println!("{} snippet(s)", snippets.len());
+            for s in &snippets {
+                println!("  {} — {} (used {}×)", s.name, s.abbreviation, s.use_count);
+            }
+        }
+        IpcResponse::Snippet(s) => {
+            println!("{}", serde_json::to_string_pretty(&s).unwrap_or_default());
+        }
     }
 }
 

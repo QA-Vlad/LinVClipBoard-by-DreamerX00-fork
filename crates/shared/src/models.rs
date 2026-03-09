@@ -1,5 +1,6 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use uuid::Uuid;
 
 /// Content type of a clipboard item.
@@ -82,6 +83,53 @@ impl ClipboardItem {
     }
 }
 
+/// A reusable snippet / template.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Snippet {
+    pub id: String,
+    pub name: String,
+    pub content: String,
+    pub folder: String,
+    pub abbreviation: String,
+    /// JSON array: [{"name": "var", "default": "value"}]
+    pub variables: String,
+    pub use_count: u64,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}
+
+impl Snippet {
+    pub fn new(
+        name: String,
+        content: String,
+        folder: String,
+        abbreviation: String,
+        variables: String,
+    ) -> Self {
+        let now = Utc::now();
+        Self {
+            id: Uuid::new_v4().to_string(),
+            name,
+            content,
+            folder,
+            abbreviation,
+            variables,
+            use_count: 0,
+            created_at: now,
+            updated_at: now,
+        }
+    }
+}
+
+/// Render a template by replacing {{var}} placeholders with values.
+pub fn render_template(template: &str, vars: &HashMap<String, String>) -> String {
+    let mut result = template.to_string();
+    for (key, value) in vars {
+        result = result.replace(&format!("{{{{{}}}}}", key), value);
+    }
+    result
+}
+
 /// IPC request from client to daemon.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "type", content = "data")]
@@ -114,6 +162,36 @@ pub enum IpcRequest {
     GetConfig,
     /// Save updated configuration.
     SaveConfig { config: crate::config::AppConfig },
+    /// List snippets, optionally filtered by folder.
+    ListSnippets { folder: Option<String> },
+    /// Search snippets by query.
+    SearchSnippets { query: String },
+    /// Get a single snippet.
+    GetSnippet { id: String },
+    /// Create a new snippet.
+    CreateSnippet {
+        name: String,
+        content: String,
+        folder: String,
+        abbreviation: String,
+        variables: String,
+    },
+    /// Update an existing snippet.
+    UpdateSnippet {
+        id: String,
+        name: String,
+        content: String,
+        folder: String,
+        abbreviation: String,
+        variables: String,
+    },
+    /// Delete a snippet.
+    DeleteSnippet { id: String },
+    /// Use a snippet: render template, copy to clipboard, increment use_count.
+    UseSnippet {
+        id: String,
+        variables: HashMap<String, String>,
+    },
 }
 
 /// IPC response from daemon to client.
@@ -139,4 +217,8 @@ pub enum IpcResponse {
     },
     /// Current configuration.
     Config(crate::config::AppConfig),
+    /// List of snippets.
+    Snippets(Vec<Snippet>),
+    /// Single snippet.
+    Snippet(Snippet),
 }

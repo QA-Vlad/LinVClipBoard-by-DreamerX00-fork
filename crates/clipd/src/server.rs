@@ -307,6 +307,88 @@ async fn handle_request(
                 },
             }
         }
+        IpcRequest::ListSnippets { folder } => {
+            match db.list_snippets(folder.as_deref()) {
+                Ok(snippets) => IpcResponse::Snippets(snippets),
+                Err(e) => IpcResponse::Error {
+                    message: format!("List snippets failed: {}", e),
+                },
+            }
+        }
+
+        IpcRequest::SearchSnippets { query } => match db.search_snippets(&query) {
+            Ok(snippets) => IpcResponse::Snippets(snippets),
+            Err(e) => IpcResponse::Error {
+                message: format!("Search snippets failed: {}", e),
+            },
+        },
+
+        IpcRequest::GetSnippet { id } => match db.get_snippet(&id) {
+            Ok(snippet) => IpcResponse::Snippet(snippet),
+            Err(e) => IpcResponse::Error {
+                message: format!("Get snippet failed: {}", e),
+            },
+        },
+
+        IpcRequest::CreateSnippet {
+            name,
+            content,
+            folder,
+            abbreviation,
+            variables,
+        } => {
+            let snippet = shared::models::Snippet::new(name, content, folder, abbreviation, variables);
+            match db.create_snippet(&snippet) {
+                Ok(()) => IpcResponse::Snippet(snippet),
+                Err(e) => IpcResponse::Error {
+                    message: format!("Create snippet failed: {}", e),
+                },
+            }
+        }
+
+        IpcRequest::UpdateSnippet {
+            id,
+            name,
+            content,
+            folder,
+            abbreviation,
+            variables,
+        } => match db.update_snippet(&id, &name, &content, &folder, &abbreviation, &variables) {
+            Ok(snippet) => IpcResponse::Snippet(snippet),
+            Err(e) => IpcResponse::Error {
+                message: format!("Update snippet failed: {}", e),
+            },
+        },
+
+        IpcRequest::DeleteSnippet { id } => match db.delete_snippet(&id) {
+            Ok(()) => IpcResponse::Ok {
+                message: "Snippet deleted".to_string(),
+            },
+            Err(e) => IpcResponse::Error {
+                message: format!("Delete snippet failed: {}", e),
+            },
+        },
+
+        IpcRequest::UseSnippet { id, variables } => match db.get_snippet(&id) {
+            Ok(snippet) => {
+                let rendered = shared::models::render_template(&snippet.content, &variables);
+                let mut clip = clipboard.lock().await;
+                match clip.set_text(&rendered) {
+                    Ok(()) => {
+                        let _ = db.increment_snippet_use(&id);
+                        IpcResponse::Ok {
+                            message: rendered,
+                        }
+                    }
+                    Err(e) => IpcResponse::Error {
+                        message: format!("Clipboard set failed: {}", e),
+                    },
+                }
+            }
+            Err(e) => IpcResponse::Error {
+                message: format!("Snippet not found: {}", e),
+            },
+        },
     }
 }
 

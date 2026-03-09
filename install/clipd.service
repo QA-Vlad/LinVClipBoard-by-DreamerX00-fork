@@ -6,7 +6,7 @@ After=graphical-session.target
 [Service]
 Type=simple
 ExecStart=/usr/bin/clipd
-Restart=on-failure
+Restart=always
 RestartSec=3
 Environment=RUST_LOG=info
 

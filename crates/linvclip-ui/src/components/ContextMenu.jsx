@@ -6,7 +6,7 @@ import { useTranslation } from "../i18n/index.jsx";
  * Context menu for clipboard items.
  * Shows quick actions: copy, pin, delete, transforms, encode/decode, JSON, QR, tags.
  */
-function ContextMenu({ item, x, y, onClose, onPin, onDelete, onPaste, onToast, onShowQr, onItemUpdate }) {
+function ContextMenu({ item, x, y, onClose, onPin, onDelete, onPaste, onToast, onShowQr, onItemUpdate, onSaveAsSnippet }) {
     const { t } = useTranslation();
     const menuRef = useRef(null);
     const [openSub, setOpenSub] = useState(null); // which submenu is open
@@ -258,6 +258,13 @@ function ContextMenu({ item, x, y, onClose, onPin, onDelete, onPaste, onToast, o
             <button className="ctx-item" onClick={handleQrCode} role="menuitem">
                 <span className="ctx-icon">📱</span> {t("context.qr_code")}
             </button>
+
+            {/* Save as Snippet (text only) */}
+            {isText && onSaveAsSnippet && (
+                <button className="ctx-item" onClick={() => { onSaveAsSnippet(item); onClose(); }} role="menuitem">
+                    <span className="ctx-icon">📝</span> {t("context.save_as_snippet")}
+                </button>
+            )}
 
             {/* Word Count (text only) */}
             {isText && (

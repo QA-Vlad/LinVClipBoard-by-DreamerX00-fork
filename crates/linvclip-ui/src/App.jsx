@@ -20,6 +20,7 @@ import ContextMenu from "./components/ContextMenu";
 import QrModal from "./components/QrModal";
 import PreviewPane from "./components/PreviewPane";
 import SelectionBar from "./components/SelectionBar";
+import SnippetPicker from "./components/SnippetPicker";
 
 function App() {
     const { t } = useTranslation();
@@ -514,6 +515,9 @@ function App() {
                     )}
                     {activeTab === "gifs" && (
                         <GifPicker searchQuery={searchQuery} onToast={showToast} />
+                    )}
+                    {activeTab === "snippets" && (
+                        <SnippetPicker searchQuery={searchQuery} onToast={showToast} />
                     )}
                         </div>
                         {showPreview && activeTab === "clipboard" && (

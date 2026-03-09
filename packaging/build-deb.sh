@@ -75,6 +75,8 @@ Priority: optional
 Architecture: ${ARCH}
 Installed-Size: ${INSTALLED_SIZE}
 Maintainer: LinVClipBoard Contributors
+Replaces: linvclipboard
+Breaks: linvclipboard (<< ${VERSION}-1)
 Recommends: wtype | xdotool
 Suggests: ydotool
 Description: Clipboard history manager for Linux
@@ -86,6 +88,63 @@ Description: Clipboard history manager for Linux
  emoji panel), install wtype (Wayland) or xdotool (X11).
 Homepage: https://github.com/DreamerX00/LinVClipBoard
 EOF
+
+# DEBIAN/preinst — clean up old manual installs before unpacking
+cat > "${PKG_DIR}/DEBIAN/preinst" <<'PREINST'
+#!/bin/sh
+set -e
+
+# Remove old manual-install binaries that shadow /usr/bin/ paths
+# (from install.sh / make install which put them in ~/.local/bin/)
+cleanup_old_install() {
+    USER="$1"
+    HOME_DIR="$2"
+    uid=$(id -u "$USER" 2>/dev/null) || return 0
+    XDG_RUNTIME_DIR="/run/user/${uid}"
+    [ -d "$XDG_RUNTIME_DIR" ] || return 0
+    DBUS_SESSION_BUS_ADDRESS="unix:path=${XDG_RUNTIME_DIR}/bus"
+
+    # Stop clipd via the old user service if it's running
+    su "$USER" -c "XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR} DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS} systemctl --user stop clipd.service" 2>/dev/null || true
+
+    # Remove old manual-install binaries
+    for bin in clipd clipctl linvclip-ui; do
+        if [ -f "${HOME_DIR}/.local/bin/${bin}" ]; then
+            rm -f "${HOME_DIR}/.local/bin/${bin}"
+            echo "  Removed old ${HOME_DIR}/.local/bin/${bin}"
+        fi
+    done
+
+    # Remove old user-level service files that shadow the system ones
+    for svc in clipd.service linvclip-update-check.service linvclip-update-check.timer; do
+        if [ -f "${HOME_DIR}/.config/systemd/user/${svc}" ]; then
+            # Disable first so symlinks are cleaned up
+            su "$USER" -c "XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR} DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS} systemctl --user disable ${svc}" 2>/dev/null || true
+            rm -f "${HOME_DIR}/.config/systemd/user/${svc}"
+            echo "  Removed old ${HOME_DIR}/.config/systemd/user/${svc}"
+        fi
+    done
+
+    # Daemon-reload to pick up the removal
+    su "$USER" -c "XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR} DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS} systemctl --user daemon-reload" 2>/dev/null || true
+}
+
+echo "Cleaning up old LinVClipBoard installations..."
+
+if [ -n "${SUDO_USER:-}" ] && [ "$SUDO_USER" != "root" ]; then
+    SUDO_HOME=$(getent passwd "$SUDO_USER" | cut -d: -f6)
+    cleanup_old_install "$SUDO_USER" "$SUDO_HOME"
+else
+    for user_run in /run/user/[0-9]*; do
+        uid=$(basename "$user_run")
+        [ "$uid" -ge 1000 ] 2>/dev/null || continue
+        username=$(id -nu "$uid" 2>/dev/null) || continue
+        user_home=$(getent passwd "$username" | cut -d: -f6)
+        cleanup_old_install "$username" "$user_home"
+    done
+fi
+PREINST
+chmod 755 "${PKG_DIR}/DEBIAN/preinst"
 
 # DEBIAN/postinst
 cat > "${PKG_DIR}/DEBIAN/postinst" <<'POSTINST'
@@ -140,15 +199,26 @@ enable_clipd() {
         su "$USER" -c "XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR} DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS} $*"
     }
 
+    # Remove any lingering user-level service files that shadow /usr/lib/systemd/user/
+    HOME_DIR=$(getent passwd "$USER" | cut -d: -f6)
+    for svc in clipd.service linvclip-update-check.service linvclip-update-check.timer; do
+        if [ -f "${HOME_DIR}/.config/systemd/user/${svc}" ]; then
+            run_as systemctl --user disable "${svc}" 2>/dev/null || true
+            rm -f "${HOME_DIR}/.config/systemd/user/${svc}"
+        fi
+    done
+
     run_as systemctl --user daemon-reload 2>/dev/null || true
     run_as systemctl --user enable clipd.service 2>/dev/null || true
     run_as systemctl --user enable linvclip-update-check.timer 2>/dev/null || true
     run_as systemctl --user start linvclip-update-check.timer 2>/dev/null || true
 
+    # Restart clipd — use restart to handle both fresh install and upgrade
     run_as systemctl --user restart clipd.service 2>/dev/null || true
 
-    # Restart the UI if it was running before the upgrade
-    # (setsid + nohup ensures it survives dpkg's process cleanup)
+    # Kill any existing UI instances, then start exactly one
+    pkill -x linvclip-ui 2>/dev/null || true
+    sleep 0.5
     run_as "setsid nohup /usr/bin/linvclip-ui >/dev/null 2>&1 &" 2>/dev/null || true
 }
 
