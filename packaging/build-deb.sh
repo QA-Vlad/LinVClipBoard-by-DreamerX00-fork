@@ -131,6 +131,30 @@ cleanup_old_install() {
 
 echo "Cleaning up old LinVClipBoard installations..."
 
+# Remove orphaned /usr/bin/ binaries from old versions that weren't
+# properly cleaned up (e.g. v1.4 uninstall leaving files behind).
+# dpkg refuses to overwrite files not owned by any package.
+for bin in clipd clipctl linvclip-ui; do
+    if [ -f "/usr/bin/${bin}" ]; then
+        owner=$(dpkg -S "/usr/bin/${bin}" 2>/dev/null || true)
+        if [ -z "$owner" ]; then
+            echo "  Removing orphaned /usr/bin/${bin} (not owned by any package)"
+            rm -f "/usr/bin/${bin}"
+        fi
+    fi
+done
+
+# Also clean up orphaned systemd unit files in /usr/lib/systemd/user/
+for svc in clipd.service linvclip-update-check.service linvclip-update-check.timer; do
+    if [ -f "/usr/lib/systemd/user/${svc}" ]; then
+        owner=$(dpkg -S "/usr/lib/systemd/user/${svc}" 2>/dev/null || true)
+        if [ -z "$owner" ]; then
+            echo "  Removing orphaned /usr/lib/systemd/user/${svc}"
+            rm -f "/usr/lib/systemd/user/${svc}"
+        fi
+    fi
+done
+
 if [ -n "${SUDO_USER:-}" ] && [ "$SUDO_USER" != "root" ]; then
     SUDO_HOME=$(getent passwd "$SUDO_USER" | cut -d: -f6)
     cleanup_old_install "$SUDO_USER" "$SUDO_HOME"
