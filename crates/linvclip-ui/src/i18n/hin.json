@@ -7,7 +7,8 @@
     "clipboard": "क्लिपबोर्ड",
     "emojis": "इमोजी",
     "symbols": "प्रतीक",
-    "gifs": "GIF"
+    "gifs": "GIF",
+    "snippets": "स्निपेट"
   },
   "search": {
     "placeholder_clipboard": "क्लिपबोर्ड इतिहास खोजें...",
@@ -159,7 +160,32 @@
     "qr_code": "QR कोड",
     "word_count": "शब्द गणना",
     "add_tag": "टैग जोड़ें",
-    "remove_tags": "टैग हटाएँ"
+    "remove_tags": "टैग हटाएँ",
+    "save_as_snippet": "स्निपेट के रूप में सहेजें"
+  },
+  "snippets": {
+    "search": "स्निपेट खोजें...",
+    "new": "नया स्निपेट",
+    "edit": "स्निपेट संपादित करें",
+    "delete": "हटाएँ",
+    "name": "नाम",
+    "folder": "फ़ोल्डर",
+    "new_folder": "नया फ़ोल्डर...",
+    "abbreviation": "संक्षिप्त रूप",
+    "content": "सामग्री",
+    "variables": "चर",
+    "save": "सहेजें",
+    "cancel": "रद्द करें",
+    "fill_variables": "चर भरें",
+    "preview": "पूर्वावलोकन",
+    "copy": "कॉपी करें",
+    "copied": "स्निपेट कॉपी हो गया!",
+    "created": "स्निपेट बनाया गया!",
+    "updated": "स्निपेट अपडेट हो गया!",
+    "deleted": "स्निपेट हटाया गया!",
+    "use_count": "उपयोग",
+    "no_snippets": "अभी कोई स्निपेट नहीं है। अपना पहला बनाएँ!",
+    "confirm_delete": "स्निपेट '{name}' हटाएँ?"
   },
   "toast": {
     "copied_as": "इस रूप में कॉपी किया",

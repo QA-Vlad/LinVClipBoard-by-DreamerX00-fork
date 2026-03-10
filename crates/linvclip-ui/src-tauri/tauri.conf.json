@@ -1,6 +1,6 @@
 {
     "productName": "LinVClipBoard",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "identifier": "com.linvclipboard.app",
     "build": {
         "frontendDist": "../dist",
@@ -29,6 +29,15 @@
         ],
         "security": {
             "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' asset: https://asset.localhost https://static.klipy.com data:; connect-src 'self' https://api.klipy.com https://api.github.com https://github.com https://objects.githubusercontent.com; script-src 'self'; font-src 'self' data:"
+        }
+    },
+    "bundle": {
+        "linux": {
+            "deb": {
+                "provides": ["linvclipboard"],
+                "conflicts": ["linvclipboard"],
+                "replaces": ["linvclipboard"]
+            }
         }
     },
     "plugins": {}

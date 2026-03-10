@@ -7,7 +7,8 @@
     "clipboard": "Clipboard",
     "emojis": "Emojis",
     "symbols": "Símbolos",
-    "gifs": "GIFs"
+    "gifs": "GIFs",
+    "snippets": "Snippets"
   },
   "search": {
     "placeholder_clipboard": "Pesquisar histórico...",
@@ -159,7 +160,32 @@
     "qr_code": "Código QR",
     "word_count": "Contar Palavras",
     "add_tag": "Adicionar Tag",
-    "remove_tags": "Remover Tags"
+    "remove_tags": "Remover Tags",
+    "save_as_snippet": "Salvar como Snippet"
+  },
+  "snippets": {
+    "search": "Pesquisar snippets...",
+    "new": "Novo Snippet",
+    "edit": "Editar Snippet",
+    "delete": "Excluir",
+    "name": "Nome",
+    "folder": "Pasta",
+    "new_folder": "Nova pasta...",
+    "abbreviation": "Abreviação",
+    "content": "Conteúdo",
+    "variables": "Variáveis",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "fill_variables": "Preencher Variáveis",
+    "preview": "Pré-visualização",
+    "copy": "Copiar",
+    "copied": "Snippet copiado!",
+    "created": "Snippet criado!",
+    "updated": "Snippet atualizado!",
+    "deleted": "Snippet excluído!",
+    "use_count": "usos",
+    "no_snippets": "Nenhum snippet ainda. Crie o primeiro!",
+    "confirm_delete": "Excluir snippet '{name}'?"
   },
   "toast": {
     "copied_as": "Copiado como",

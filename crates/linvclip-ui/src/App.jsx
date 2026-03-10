@@ -39,6 +39,7 @@ function App() {
     const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "dark");
     const [ctxMenu, setCtxMenu] = useState(null); // { item, x, y }
     const [qrText, setQrText] = useState(null); // text to generate QR for
+    const [snippetInitContent, setSnippetInitContent] = useState(null);
     const [showPreview, setShowPreview] = useState(() => localStorage.getItem("showPreview") === "true");
     const [previewItem, setPreviewItem] = useState(null);
     const [selectedIds, setSelectedIds] = useState(new Set());
@@ -517,7 +518,7 @@ function App() {
                         <GifPicker searchQuery={searchQuery} onToast={showToast} />
                     )}
                     {activeTab === "snippets" && (
-                        <SnippetPicker searchQuery={searchQuery} onToast={showToast} />
+                        <SnippetPicker searchQuery={searchQuery} onToast={showToast} initialContent={snippetInitContent} onConsumeInitContent={() => setSnippetInitContent(null)} />
                     )}
                         </div>
                         {showPreview && activeTab === "clipboard" && (
@@ -563,6 +564,11 @@ function App() {
                     onToast={showToast}
                     onShowQr={(text) => setQrText(text)}
                     onItemUpdate={handleItemUpdate}
+                    onSaveAsSnippet={(item) => {
+                        setSnippetInitContent(item.preview_text || item.content || "");
+                        setActiveTab("snippets");
+                        setCtxMenu(null);
+                    }}
                 />,
                 document.body
             )}

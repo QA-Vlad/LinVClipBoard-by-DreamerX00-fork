@@ -4,7 +4,7 @@ import { useTranslation } from "../i18n/index.jsx";
 import SnippetEditor from "./SnippetEditor.jsx";
 import SnippetVarDialog from "./SnippetVarDialog.jsx";
 
-function SnippetPicker({ searchQuery, onToast }) {
+function SnippetPicker({ searchQuery, onToast, initialContent, onConsumeInitContent }) {
     const { t } = useTranslation();
     const [snippets, setSnippets] = useState([]);
     const [folders, setFolders] = useState([]);
@@ -12,6 +12,15 @@ function SnippetPicker({ searchQuery, onToast }) {
     const [editorOpen, setEditorOpen] = useState(false);
     const [editingSnippet, setEditingSnippet] = useState(null);
     const [varDialogSnippet, setVarDialogSnippet] = useState(null);
+
+    // Auto-open editor when initialContent is provided (from "Save as Snippet")
+    useEffect(() => {
+        if (initialContent) {
+            setEditingSnippet({ content: initialContent, name: "", folder: "", abbreviation: "", variables: "[]" });
+            setEditorOpen(true);
+            if (onConsumeInitContent) onConsumeInitContent();
+        }
+    }, [initialContent]);
 
     const fetchSnippets = useCallback(async () => {
         try {

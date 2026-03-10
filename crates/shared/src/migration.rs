@@ -69,6 +69,68 @@ pub fn run_migrations(conn: &Connection) -> Result<(), rusqlite::Error> {
             CREATE INDEX IF NOT EXISTS idx_snippets_folder ON snippets(folder);
             CREATE INDEX IF NOT EXISTS idx_snippets_abbreviation ON snippets(abbreviation);",
         )?;
+        // Seed 5 production-ready snippet templates
+        conn.execute_batch(
+            "INSERT OR IGNORE INTO snippets (id, name, content, folder, abbreviation, variables, use_count, created_at, updated_at) VALUES
+            ('seed-email-reply', 'Email Reply', 'Hi {{name}},
+
+Thank you for reaching out. I''ve reviewed your message regarding {{topic}}.
+
+{{response}}
+
+Best regards,
+{{sender}}', 'Email', '/reply', '[{\"name\":\"name\",\"default\":\"\"},{\"name\":\"topic\",\"default\":\"\"},{\"name\":\"response\",\"default\":\"\"},{\"name\":\"sender\",\"default\":\"\"}]', 0, datetime('now'), datetime('now')),
+
+            ('seed-bug-report', 'Bug Report', '## Bug Report
+
+**Summary:** {{summary}}
+
+**Steps to Reproduce:**
+1. {{step1}}
+2. {{step2}}
+3. {{step3}}
+
+**Expected Behavior:** {{expected}}
+**Actual Behavior:** {{actual}}
+
+**Environment:** {{environment}}', 'Development', '/bug', '[{\"name\":\"summary\",\"default\":\"\"},{\"name\":\"step1\",\"default\":\"\"},{\"name\":\"step2\",\"default\":\"\"},{\"name\":\"step3\",\"default\":\"\"},{\"name\":\"expected\",\"default\":\"\"},{\"name\":\"actual\",\"default\":\"\"},{\"name\":\"environment\",\"default\":\"Linux\"}]', 0, datetime('now'), datetime('now')),
+
+            ('seed-meeting-notes', 'Meeting Notes', '# Meeting Notes — {{date}}
+
+**Attendees:** {{attendees}}
+**Topic:** {{topic}}
+
+## Discussion
+{{notes}}
+
+## Action Items
+- [ ] {{action1}}
+- [ ] {{action2}}
+
+## Next Meeting
+{{next_date}}', 'Work', '/meeting', '[{\"name\":\"date\",\"default\":\"\"},{\"name\":\"attendees\",\"default\":\"\"},{\"name\":\"topic\",\"default\":\"\"},{\"name\":\"notes\",\"default\":\"\"},{\"name\":\"action1\",\"default\":\"\"},{\"name\":\"action2\",\"default\":\"\"},{\"name\":\"next_date\",\"default\":\"\"}]', 0, datetime('now'), datetime('now')),
+
+            ('seed-code-review', 'Code Review Comment', '### Code Review — {{file}}
+
+**Severity:** {{severity}}
+
+**Issue:**
+{{issue}}
+
+**Suggestion:**
+```
+{{suggestion}}
+```
+
+**Why:** {{reason}}', 'Development', '/review', '[{\"name\":\"file\",\"default\":\"\"},{\"name\":\"severity\",\"default\":\"minor\"},{\"name\":\"issue\",\"default\":\"\"},{\"name\":\"suggestion\",\"default\":\"\"},{\"name\":\"reason\",\"default\":\"\"}]', 0, datetime('now'), datetime('now')),
+
+            ('seed-quick-note', 'Quick Note', '📌 {{title}}
+
+{{content}}
+
+— {{date}}', 'Personal', '/note', '[{\"name\":\"title\",\"default\":\"\"},{\"name\":\"content\",\"default\":\"\"},{\"name\":\"date\",\"default\":\"\"}]', 0, datetime('now'), datetime('now'));"
+        )?;
+
         conn.execute("INSERT INTO schema_version (version) VALUES (?1)", [3])?;
     }
 

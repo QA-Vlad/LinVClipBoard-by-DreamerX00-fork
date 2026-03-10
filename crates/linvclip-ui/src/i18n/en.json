@@ -7,7 +7,8 @@
     "clipboard": "Clipboard",
     "emojis": "Emojis",
     "symbols": "Symbols",
-    "gifs": "GIFs"
+    "gifs": "GIFs",
+    "snippets": "Snippets"
   },
   "search": {
     "placeholder_clipboard": "Search clipboard history...",
@@ -159,7 +160,32 @@
     "qr_code": "QR Code",
     "word_count": "Word Count",
     "add_tag": "Add Tag",
-    "remove_tags": "Remove Tags"
+    "remove_tags": "Remove Tags",
+    "save_as_snippet": "Save as Snippet"
+  },
+  "snippets": {
+    "search": "Search snippets...",
+    "new": "New Snippet",
+    "edit": "Edit Snippet",
+    "delete": "Delete",
+    "name": "Name",
+    "folder": "Folder",
+    "new_folder": "New folder...",
+    "abbreviation": "Abbreviation",
+    "content": "Content",
+    "variables": "Variables",
+    "save": "Save",
+    "cancel": "Cancel",
+    "fill_variables": "Fill in Variables",
+    "preview": "Preview",
+    "copy": "Copy",
+    "copied": "Snippet copied!",
+    "created": "Snippet created!",
+    "updated": "Snippet updated!",
+    "deleted": "Snippet deleted!",
+    "use_count": "uses",
+    "no_snippets": "No snippets yet. Create your first one!",
+    "confirm_delete": "Delete snippet '{name}'?"
   },
   "toast": {
     "copied_as": "Copied as",

@@ -7,7 +7,8 @@
     "clipboard": "クリップボード",
     "emojis": "絵文字",
     "symbols": "記号",
-    "gifs": "GIF"
+    "gifs": "GIF",
+    "snippets": "スニペット"
   },
   "search": {
     "placeholder_clipboard": "クリップボード履歴を検索...",
@@ -157,7 +158,32 @@
     "qr_code": "QRコード",
     "word_count": "文字数カウント",
     "add_tag": "タグを追加",
-    "remove_tags": "タグを削除"
+    "remove_tags": "タグを削除",
+    "save_as_snippet": "スニペットとして保存"
+  },
+  "snippets": {
+    "search": "スニペットを検索...",
+    "new": "新規スニペット",
+    "edit": "スニペットを編集",
+    "delete": "削除",
+    "name": "名前",
+    "folder": "フォルダ",
+    "new_folder": "新しいフォルダ...",
+    "abbreviation": "略語",
+    "content": "内容",
+    "variables": "変数",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "fill_variables": "変数を入力",
+    "preview": "プレビュー",
+    "copy": "コピー",
+    "copied": "スニペットをコピーしました！",
+    "created": "スニペットを作成しました！",
+    "updated": "スニペットを更新しました！",
+    "deleted": "スニペットを削除しました！",
+    "use_count": "使用回数",
+    "no_snippets": "スニペットがありません。最初のスニペットを作成しましょう！",
+    "confirm_delete": "スニペット '{name}' を削除しますか？"
   },
   "toast": {
     "copied_as": "コピー済み",

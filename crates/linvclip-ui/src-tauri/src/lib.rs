@@ -630,7 +630,7 @@ sleep 0.5
 # Remove any conflicting old package names before installing
 dpkg --list 2>/dev/null | grep -qw linvclipboard && dpkg -r linvclipboard 2>/dev/null || true
 
-dpkg -i "{path}"
+dpkg -i --force-overwrite "{path}"
 RET=$?
 
 if [ $RET -eq 0 ]; then
@@ -643,21 +643,32 @@ if [ $RET -eq 0 ]; then
         [ -f /usr/bin/linvclip-ui ] && cp /usr/bin/linvclip-ui "$LOCAL_BIN/" 2>/dev/null || true
     fi
 
-    # Restart the clipd daemon if managed by systemd
-    su "{username}" -c "DBUS_SESSION_BUS_ADDRESS='{dbus_addr}' XDG_RUNTIME_DIR='{xdg_runtime}' systemctl --user restart clipd.service 2>/dev/null || true"
+    # Restart clipd daemon and UI as the original user with their env
+    ENV_SCRIPT="/tmp/linvclip-restart-{pid}.sh"
+    cat > "$ENV_SCRIPT" << 'USEREOF'
+#!/bin/bash
+export DBUS_SESSION_BUS_ADDRESS="{dbus_addr}"
+export XDG_RUNTIME_DIR="{xdg_runtime}"
+export HOME="{home}"
+export DISPLAY="{display}"
+export WAYLAND_DISPLAY="{wayland}"
 
-    # Restart the UI — try multiple possible locations
-    sleep 0.5
-    if ! pgrep -f 'linvclip-ui' >/dev/null 2>&1; then
-        UI_BIN="{ui_bin}"
-        # Prefer the path that actually exists
-        if [ -f "{home}/.local/bin/linvclip-ui" ]; then
-            UI_BIN="{home}/.local/bin/linvclip-ui"
-        elif [ -f /usr/bin/linvclip-ui ]; then
-            UI_BIN="/usr/bin/linvclip-ui"
-        fi
-        su "{username}" -c "DISPLAY='{display}' WAYLAND_DISPLAY='{wayland}' XDG_RUNTIME_DIR='{xdg_runtime}' DBUS_SESSION_BUS_ADDRESS='{dbus_addr}' HOME='{home}' setsid $UI_BIN >/dev/null 2>&1 &"
-    fi
+# Reload and restart the daemon
+systemctl --user daemon-reload 2>/dev/null
+systemctl --user restart clipd.service 2>/dev/null
+
+# Restart the UI
+sleep 0.5
+UI_BIN="{ui_bin}"
+[ -f "{home}/.local/bin/linvclip-ui" ] && UI_BIN="{home}/.local/bin/linvclip-ui"
+[ -f /usr/bin/linvclip-ui ] && UI_BIN="/usr/bin/linvclip-ui"
+if ! pgrep -f linvclip-ui >/dev/null 2>&1; then
+    setsid "$UI_BIN" >/dev/null 2>&1 &
+fi
+USEREOF
+    chmod +x "$ENV_SCRIPT"
+    su "{username}" -c "bash $ENV_SCRIPT"
+    rm -f "$ENV_SCRIPT"
 fi
 exit $RET
 "#,
