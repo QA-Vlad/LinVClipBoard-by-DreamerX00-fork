@@ -1,7 +1,7 @@
 use rusqlite::Connection;
 
 /// Current schema version. Bump this when adding migrations.
-const CURRENT_SCHEMA_VERSION: u32 = 3;
+const CURRENT_SCHEMA_VERSION: u32 = 4;
 
 /// Run all pending migrations on the given connection.
 ///
@@ -69,7 +69,12 @@ pub fn run_migrations(conn: &Connection) -> Result<(), rusqlite::Error> {
             CREATE INDEX IF NOT EXISTS idx_snippets_folder ON snippets(folder);
             CREATE INDEX IF NOT EXISTS idx_snippets_abbreviation ON snippets(abbreviation);",
         )?;
-        // Seed 5 production-ready snippet templates
+        conn.execute("INSERT INTO schema_version (version) VALUES (?1)", [3])?;
+    }
+
+    // ── Migration 4: v2.1.1 seed 5 built-in snippet templates ────────────
+    if current < 4 {
+        tracing::info!("Migration v4: seeding built-in snippet templates");
         conn.execute_batch(
             "INSERT OR IGNORE INTO snippets (id, name, content, folder, abbreviation, variables, use_count, created_at, updated_at) VALUES
             ('seed-email-reply', 'Email Reply', 'Hi {{name}},
@@ -130,8 +135,7 @@ Best regards,
 
 — {{date}}', 'Personal', '/note', '[{\"name\":\"title\",\"default\":\"\"},{\"name\":\"content\",\"default\":\"\"},{\"name\":\"date\",\"default\":\"\"}]', 0, datetime('now'), datetime('now'));"
         )?;
-
-        conn.execute("INSERT INTO schema_version (version) VALUES (?1)", [3])?;
+        conn.execute("INSERT INTO schema_version (version) VALUES (?1)", [4])?;
     }
 
     tracing::info!("Migrations complete — now at v{}", CURRENT_SCHEMA_VERSION);
@@ -168,13 +172,13 @@ mod tests {
         let v: u32 = conn
             .query_row("SELECT MAX(version) FROM schema_version", [], |r| r.get(0))
             .unwrap();
-        assert_eq!(v, 3);
+        assert_eq!(v, 4);
 
         // Second run — should be a no-op
         run_migrations(&conn).unwrap();
         let count: u32 = conn
             .query_row("SELECT COUNT(*) FROM schema_version", [], |r| r.get(0))
             .unwrap();
-        assert_eq!(count, 3); // three version rows recorded
+        assert_eq!(count, 4); // four version rows recorded
     }
 }
