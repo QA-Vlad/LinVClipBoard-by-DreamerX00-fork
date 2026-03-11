@@ -369,6 +369,15 @@ async fn handle_request(
             },
         },
 
+        IpcRequest::UpdatePreviewText { id, preview_text } => {
+            match db.update_preview_text(&id, &preview_text) {
+                Ok(item) => IpcResponse::Item(item),
+                Err(e) => IpcResponse::Error {
+                    message: format!("Update preview text failed: {}", e),
+                },
+            }
+        }
+
         IpcRequest::UseSnippet { id, variables } => match db.get_snippet(&id) {
             Ok(snippet) => {
                 let rendered = shared::models::render_template(&snippet.content, &variables);

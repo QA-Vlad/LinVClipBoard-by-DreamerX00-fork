@@ -40,11 +40,13 @@ function detectContentType(item) {
     return "text";
 }
 
-function PreviewPane({ item, onPaste, onToast }) {
+function PreviewPane({ item, onPaste, onToast, onItemUpdate }) {
     const { t } = useTranslation();
     const [highlightedHtml, setHighlightedHtml] = useState("");
     const [imgSrc, setImgSrc] = useState(null);
     const [detectedLang, setDetectedLang] = useState("");
+    const [ocrText, setOcrText] = useState("");
+    const [ocrLoading, setOcrLoading] = useState(false);
 
     const contentType = useMemo(() => detectContentType(item), [item]);
     const text = item ? (item.preview_text || item.content || "") : "";
@@ -74,6 +76,12 @@ function PreviewPane({ item, onPaste, onToast }) {
         }
     }, [item?.id, contentType]);
 
+    // Reset OCR text on item change
+    useEffect(() => {
+        setOcrText("");
+        setOcrLoading(false);
+    }, [item?.id]);
+
     // Fetch image
     useEffect(() => {
         if (!item || item.content_type !== "image") { setImgSrc(null); return; }
@@ -81,6 +89,30 @@ function PreviewPane({ item, onPaste, onToast }) {
             .then(setImgSrc)
             .catch(() => setImgSrc(null));
     }, [item?.id]);
+
+    const handleOcr = async () => {
+        if (!item || item.content_type !== "image" || ocrLoading) return;
+        setOcrLoading(true);
+        try {
+            const extracted = await invoke("extract_text_from_image", { imagePath: item.content });
+            setOcrText(extracted);
+            // Update preview text so it's searchable via FTS
+            const updated = await invoke("update_preview_text", { id: item.id, previewText: extracted });
+            if (onItemUpdate) onItemUpdate(updated);
+            if (onToast) onToast(`✅ ${t("ocr.extracted")}`);
+        } catch (err) {
+            if (onToast) onToast(`❌ ${String(err)}`);
+        } finally {
+            setOcrLoading(false);
+        }
+    };
+
+    const handleCopyOcrText = async () => {
+        try {
+            await invoke("paste_raw_text", { text: ocrText });
+            if (onToast) onToast(`✅ ${t("ocr.copy_text")}`);
+        } catch {}
+    };
 
     const handleCopy = () => {
         if (item) {
@@ -142,6 +174,26 @@ function PreviewPane({ item, onPaste, onToast }) {
                                 <span>{item.preview_text}</span>
                             </div>
                         )}
+                        <div className="preview-ocr-section">
+                            <button
+                                className="preview-ocr-btn"
+                                onClick={handleOcr}
+                                disabled={ocrLoading}
+                            >
+                                {ocrLoading ? `⏳ ${t("ocr.extracting")}` : `📝 ${t("ocr.extract")}`}
+                            </button>
+                            {ocrText && (
+                                <div className="preview-ocr-result">
+                                    <div className="preview-ocr-header">
+                                        <span>{t("ocr.extracted")}</span>
+                                        <button className="preview-btn" onClick={handleCopyOcrText}>
+                                            📋 {t("ocr.copy_text")}
+                                        </button>
+                                    </div>
+                                    <pre className="preview-ocr-text">{ocrText}</pre>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 )}
 

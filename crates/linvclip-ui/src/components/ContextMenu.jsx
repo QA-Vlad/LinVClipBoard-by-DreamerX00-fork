@@ -63,6 +63,8 @@ function ContextMenu({ item, x, y, onClose, onPin, onDelete, onPaste, onToast, o
     }, [showTagInput]);
 
     const isText = item.content_type !== "image";
+    const isImage = item.content_type === "image";
+    const [ocrLoading, setOcrLoading] = useState(false);
     const text = item.preview_text || item.content || "";
 
     // Parse tags
@@ -133,6 +135,22 @@ function ContextMenu({ item, x, y, onClose, onPin, onDelete, onPaste, onToast, o
         const count = text.trim() ? text.trim().split(/\s+/).length : 0;
         const chars = text.length;
         onToast(`📊 ${t("toast.word_count")}: ${count} words, ${chars} chars`);
+        onClose();
+    };
+
+    // OCR
+    const handleOcr = async () => {
+        setOcrLoading(true);
+        try {
+            const text = await invoke("extract_text_from_image", { imagePath: item.content });
+            await invoke("update_preview_text", { id: item.id, previewText: text });
+            await invoke("paste_raw_text", { text });
+            onToast(`✅ ${t("ocr.extracted")} — ${t("ocr.copy_text")}`);
+        } catch (err) {
+            onToast(`❌ ${String(err)}`);
+        } finally {
+            setOcrLoading(false);
+        }
         onClose();
     };
 
@@ -253,6 +271,13 @@ function ContextMenu({ item, x, y, onClose, onPin, onDelete, onPaste, onToast, o
             )}
 
             <div className="ctx-separator" />
+
+            {/* OCR (image only) */}
+            {isImage && (
+                <button className="ctx-item" onClick={handleOcr} disabled={ocrLoading} role="menuitem">
+                    <span className="ctx-icon">📝</span> {ocrLoading ? t("ocr.extracting") : t("context.ocr")}
+                </button>
+            )}
 
             {/* QR Code */}
             <button className="ctx-item" onClick={handleQrCode} role="menuitem">

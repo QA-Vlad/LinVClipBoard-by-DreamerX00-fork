@@ -97,19 +97,23 @@
     "accent_color": "Accent Color",
     "accent_auto": "Auto (theme default)",
     "accent_custom": "Custom color",
-
     "window_size": "Window Size",
     "win_custom": "Custom",
     "win_width": "Width",
     "win_height": "Height",
     "preview_panel_width": "Preview Panel Width",
-
     "updates": "Updates",
     "check_updates": "Check for Updates",
     "checking": "Checking…",
     "update_available": "Version {v} is available!",
     "up_to_date": "You're up to date.",
-    "download": "Download"
+    "download": "Download",
+    "smart_features": "Smart Features",
+    "auto_ocr": "Auto-OCR images",
+    "smart_paste": "Smart paste detection",
+    "redact_sensitive": "Redact sensitive content",
+    "sensitive_expiry": "Auto-delete sensitive items after (minutes, 0 = off)",
+    "clear_after_paste": "Clear clipboard after paste"
   },
   "selection": {
     "count": "{n} selected",
@@ -161,7 +165,8 @@
     "word_count": "Word Count",
     "add_tag": "Add Tag",
     "remove_tags": "Remove Tags",
-    "save_as_snippet": "Save as Snippet"
+    "save_as_snippet": "Save as Snippet",
+    "ocr": "Extract Text (OCR)"
   },
   "snippets": {
     "search": "Search snippets...",
@@ -223,5 +228,29 @@
     "words": "words",
     "chars": "chars",
     "detected_language": "Detected Language"
+  },
+  "ocr": {
+    "extract": "Extract Text (OCR)",
+    "extracting": "Extracting text…",
+    "extracted": "Text Extracted",
+    "copy_text": "Copy Text",
+    "not_available": "Tesseract OCR is not installed",
+    "no_text_found": "No text found in image",
+    "save_as_item": "Save as Clipboard Item",
+    "button_label": "OCR"
+  },
+  "smart": {
+    "email": "Email",
+    "phone": "Phone",
+    "url": "URL",
+    "color": "Color",
+    "json": "JSON",
+    "filepath": "File Path",
+    "ip": "IP Address",
+    "date": "Date/Time"
+  },
+  "security": {
+    "sensitive_detected": "Sensitive content detected",
+    "click_to_reveal": "Click to reveal"
   }
 }

@@ -1,6 +1,7 @@
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState, useCallback, useMemo } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { useTranslation } from "../i18n/index.jsx";
+import { detectSmartContent, hasSensitiveContent, redactText } from "../utils/smartDetect.js";
 
 /** Small hook to lazily load image thumbnails (#38). */
 function useImagePreview(item) {
@@ -31,6 +32,9 @@ function ClipboardList({
     selectedIds,
     onSelectToggle,
     onSelectRange,
+    config,
+    onToast,
+    onItemUpdate,
 }) {
     const { t } = useTranslation();
     const listRef = useRef(null);
@@ -136,6 +140,9 @@ function ClipboardList({
                     isMultiSelect={isMultiSelect}
                     onSelectToggle={onSelectToggle}
                     onSelectRange={onSelectRange}
+                    config={config}
+                    onToast={onToast}
+                    onItemUpdate={onItemUpdate}
                 />
             ))}
 
@@ -205,8 +212,12 @@ function ClipItem({
     isMultiSelect,
     onSelectToggle,
     onSelectRange,
+    config,
+    onToast,
+    onItemUpdate,
 }) {
     const imgSrc = useImagePreview(item);
+    const [ocrLoading, setOcrLoading] = useState(false);
     const tags = (() => {
         try {
             return JSON.parse(item.tags || "[]");
@@ -216,6 +227,59 @@ function ClipItem({
     })();
 
     const isCode = looksLikeCode(item.preview_text);
+
+    // Smart paste detection
+    const smartChips = useMemo(() => {
+        if (!config?.features?.smart_paste) return [];
+        const text = item.preview_text || item.content || "";
+        if (item.content_type === "image") return [];
+        return detectSmartContent(text);
+    }, [item.id, item.preview_text, item.content, config?.features?.smart_paste]);
+
+    // Sensitive content detection
+    const isSensitive = useMemo(() => {
+        if (!config?.features?.redact_sensitive) return false;
+        const text = item.preview_text || item.content || "";
+        if (item.content_type === "image") return false;
+        return hasSensitiveContent(text);
+    }, [item.id, item.preview_text, item.content, config?.features?.redact_sensitive]);
+
+    // OCR handler for image items
+    const handleOcr = async (e) => {
+        e.stopPropagation();
+        if (ocrLoading) return;
+        setOcrLoading(true);
+        try {
+            const text = await invoke("extract_text_from_image", { imagePath: item.content });
+            // Save OCR text as preview_text so it's searchable
+            const updated = await invoke("update_preview_text", { id: item.id, previewText: text });
+            if (onItemUpdate) onItemUpdate(updated);
+            // Copy extracted text
+            await invoke("paste_raw_text", { text });
+            if (onToast) onToast(`✅ ${t("ocr.extracted")} — ${t("ocr.copy_text")}`);
+        } catch (err) {
+            if (onToast) onToast(`❌ ${String(err)}`);
+        } finally {
+            setOcrLoading(false);
+        }
+    };
+
+    // Smart chip click handler
+    const handleChipClick = async (e, chip) => {
+        e.stopPropagation();
+        const { action } = chip;
+        if (action.type === "mailto") {
+            window.open(action.url);
+        } else if (action.type === "open") {
+            window.open(action.url, "_blank");
+        } else if (action.type === "copy") {
+            await invoke("paste_raw_text", { text: action.value });
+            if (onToast) onToast(`✅ Copied ${chip.label}`);
+        } else if (action.type === "color") {
+            await invoke("paste_raw_text", { text: action.value });
+            if (onToast) onToast(`✅ Copied color ${action.value}`);
+        }
+    };
 
     const handleClick = (e) => {
         if (e.ctrlKey || e.metaKey) {
@@ -266,6 +330,7 @@ function ClipItem({
                     <span className="clip-type-icon">{getTypeIcon(item.content_type)}</span>
                     <TypeBadge type={item.content_type} />
                     {item.pinned && <span className="pin-badge">📌</span>}
+                    {isSensitive && <span className="sensitive-badge" title={t("security.sensitive_detected")}>🔒</span>}
                     {tags.length > 0 && (
                         <span className="tag-badges">
                             {tags.map((tg) => (
@@ -290,6 +355,14 @@ function ClipItem({
                                 <span className="image-dims">{item.preview_text}</span>
                             )}
                             <span className="clip-type-label">clipboard-image.png</span>
+                            <button
+                                className="ocr-btn"
+                                onClick={handleOcr}
+                                disabled={ocrLoading}
+                                title={t("ocr.extract")}
+                            >
+                                {ocrLoading ? "⏳" : "📝"} {t("ocr.button_label")}
+                            </button>
                         </div>
                     ) : item.content_type === "files" ? (
                         <p className="clip-text clip-text-files">
@@ -300,9 +373,28 @@ function ClipItem({
                             🔗 {extractDomain(item.content)}
                         </p>
                     ) : (
-                        <p className={`clip-text${isCode ? " clip-text-code" : ""}`}>
-                            {formatPreview(item.preview_text)}
+                        <p className={`clip-text${isCode ? " clip-text-code" : ""}${isSensitive ? " clip-text-sensitive" : ""}`}>
+                            {isSensitive ? redactText(item.preview_text) : formatPreview(item.preview_text)}
                         </p>
+                    )}
+
+                    {/* Smart paste detection chips */}
+                    {smartChips.length > 0 && (
+                        <div className="smart-chips">
+                            {smartChips.map((chip) => (
+                                <button
+                                    key={chip.type}
+                                    className={`smart-chip smart-chip-${chip.type}`}
+                                    onClick={(e) => handleChipClick(e, chip)}
+                                    title={chip.match}
+                                >
+                                    {chip.icon} {chip.label}
+                                    {chip.type === "color" && (
+                                        <span className="color-swatch" style={{ background: chip.match }} />
+                                    )}
+                                </button>
+                            ))}
+                        </div>
                     )}
                 </div>
 

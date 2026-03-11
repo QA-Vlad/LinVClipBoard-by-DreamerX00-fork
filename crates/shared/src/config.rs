@@ -8,6 +8,8 @@ pub struct AppConfig {
     pub security: SecurityConfig,
     pub ui: UiConfig,
     pub storage: StorageConfig,
+    #[serde(default)]
+    pub features: FeaturesConfig,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -29,6 +31,39 @@ pub struct SecurityConfig {
     pub blacklisted_apps: Vec<String>,
     /// If true, don't store any clipboard content.
     pub incognito: bool,
+    /// Auto-delete sensitive items after N minutes (0 = disabled).
+    #[serde(default)]
+    pub sensitive_expiry_minutes: u32,
+    /// Clear clipboard after first paste.
+    #[serde(default)]
+    pub clear_after_paste: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct FeaturesConfig {
+    /// Auto-OCR images on clipboard capture (off by default — resource intensive).
+    #[serde(default)]
+    pub auto_ocr: bool,
+    /// Show smart paste detection badges.
+    #[serde(default = "default_true")]
+    pub smart_paste: bool,
+    /// Auto-detect and redact sensitive content.
+    #[serde(default = "default_true")]
+    pub redact_sensitive: bool,
+}
+
+fn default_true() -> bool {
+    true
+}
+
+impl Default for FeaturesConfig {
+    fn default() -> Self {
+        Self {
+            auto_ocr: false,
+            smart_paste: true,
+            redact_sensitive: true,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -98,6 +133,8 @@ impl Default for AppConfig {
                     "bitwarden".to_string(),
                 ],
                 incognito: false,
+                sensitive_expiry_minutes: 0,
+                clear_after_paste: false,
             },
             ui: UiConfig {
                 theme: "auto".to_string(),
@@ -109,6 +146,7 @@ impl Default for AppConfig {
                 window_position: "mouse".to_string(),
                 accent_color: "auto".to_string(),
             },
+            features: FeaturesConfig::default(),
             storage: StorageConfig {
                 max_items: 10_000,
                 max_item_size_bytes: 50 * 1024 * 1024, // 50MB

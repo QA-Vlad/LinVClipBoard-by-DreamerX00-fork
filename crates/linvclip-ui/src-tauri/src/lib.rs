@@ -451,6 +451,56 @@ async fn get_image_base64(path: String) -> Result<String, String> {
     Ok(format!("data:image/png;base64,{}", encoded))
 }
 
+/// Extract text from an image using Tesseract OCR (CLI).
+/// Gracefully returns a helpful error if tesseract is not installed.
+#[tauri::command]
+async fn extract_text_from_image(image_path: String, lang: Option<String>) -> Result<String, String> {
+    let path = std::path::Path::new(&image_path);
+    if !path.exists() {
+        return Err("Image file not found".to_string());
+    }
+
+    let language = lang.unwrap_or_else(|| "eng".to_string());
+
+    let output = tokio::process::Command::new("tesseract")
+        .args([&image_path, "stdout", "-l", &language])
+        .output()
+        .await
+        .map_err(|e| {
+            if e.kind() == std::io::ErrorKind::NotFound {
+                "Tesseract OCR is not installed. Install it with: sudo apt install tesseract-ocr tesseract-ocr-eng".to_string()
+            } else {
+                format!("OCR failed: {}", e)
+            }
+        })?;
+
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        return Err(format!("OCR failed: {}", stderr.trim()));
+    }
+
+    let text = String::from_utf8_lossy(&output.stdout).trim().to_string();
+    if text.is_empty() {
+        return Err("No text found in image".to_string());
+    }
+
+    Ok(text)
+}
+
+/// Update the preview_text of an item via the daemon (makes OCR text searchable).
+#[tauri::command]
+async fn update_preview_text(id: String, preview_text: String) -> Result<ClipboardItem, String> {
+    let socket = AppConfig::socket_path();
+    let request = IpcRequest::UpdatePreviewText { id, preview_text };
+
+    match send_request(&socket, &request).await {
+        Ok(IpcResponse::Item(item)) => Ok(item),
+        Ok(IpcResponse::Error { message }) => Err(message),
+        Err(e) => Err(format!("Connection failed: {}", e)),
+        _ => Err("Unexpected response".to_string()),
+    }
+}
+
 /// Return the compile-time application version.
 #[tauri::command]
 fn get_app_version() -> String {
@@ -1288,6 +1338,8 @@ pub fn run() {
             highlight_code,
             detect_language,
             fetch_link_preview,
+            extract_text_from_image,
+            update_preview_text,
         ])
         .setup(|app| {
             let window = app.get_webview_window("main").unwrap();

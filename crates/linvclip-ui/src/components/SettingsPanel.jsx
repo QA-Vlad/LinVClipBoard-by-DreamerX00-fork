@@ -552,6 +552,77 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
                         </div>
                     </div>
 
+                    {/* ── 🧠 Smart Features ── */}
+                    <div className="settings-section">
+                        <div className="settings-section-label">🧠 {t("settings.smart_features")}</div>
+                        <label className="checkbox-label">
+                            <input
+                                type="checkbox"
+                                checked={config.features?.auto_ocr ?? false}
+                                onChange={(e) =>
+                                    updateConfig((prev) => ({
+                                        ...prev,
+                                        features: { ...prev.features, auto_ocr: e.target.checked },
+                                    }))
+                                }
+                            />
+                            {t("settings.auto_ocr")}
+                        </label>
+                        <label className="checkbox-label">
+                            <input
+                                type="checkbox"
+                                checked={config.features?.smart_paste ?? true}
+                                onChange={(e) =>
+                                    updateConfig((prev) => ({
+                                        ...prev,
+                                        features: { ...prev.features, smart_paste: e.target.checked },
+                                    }))
+                                }
+                            />
+                            {t("settings.smart_paste")}
+                        </label>
+                        <label className="checkbox-label">
+                            <input
+                                type="checkbox"
+                                checked={config.features?.redact_sensitive ?? true}
+                                onChange={(e) =>
+                                    updateConfig((prev) => ({
+                                        ...prev,
+                                        features: { ...prev.features, redact_sensitive: e.target.checked },
+                                    }))
+                                }
+                            />
+                            {t("settings.redact_sensitive")}
+                        </label>
+                        <label htmlFor="sensitive-expiry">{t("settings.sensitive_expiry")}</label>
+                        <input
+                            id="sensitive-expiry"
+                            type="number"
+                            min="0"
+                            max="1440"
+                            value={config.security?.sensitive_expiry_minutes ?? 0}
+                            onChange={(e) =>
+                                updateConfig((prev) => ({
+                                    ...prev,
+                                    security: { ...prev.security, sensitive_expiry_minutes: parseInt(e.target.value) || 0 },
+                                }))
+                            }
+                        />
+                        <label className="checkbox-label">
+                            <input
+                                type="checkbox"
+                                checked={config.security?.clear_after_paste ?? false}
+                                onChange={(e) =>
+                                    updateConfig((prev) => ({
+                                        ...prev,
+                                        security: { ...prev.security, clear_after_paste: e.target.checked },
+                                    }))
+                                }
+                            />
+                            {t("settings.clear_after_paste")}
+                        </label>
+                    </div>
+
                     {/* ── Advanced (collapsible) ── */}
                     <div className="settings-advanced">
                         <button

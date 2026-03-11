@@ -43,6 +43,7 @@ function App() {
     const [showPreview, setShowPreview] = useState(() => localStorage.getItem("showPreview") === "true");
     const [previewItem, setPreviewItem] = useState(null);
     const [selectedIds, setSelectedIds] = useState(new Set());
+    const [appConfig, setAppConfig] = useState(null);
     const offset = useRef(0);
     const LIMIT = 30;
 
@@ -143,6 +144,11 @@ function App() {
     );
 
     // Initial load
+    // Load app config for smart features
+    useEffect(() => {
+        invoke("get_config").then(setAppConfig).catch(() => {});
+    }, []);
+
     useEffect(() => {
         fetchItems(true);
         fetchStatus();
@@ -498,6 +504,9 @@ function App() {
                                 selectedIds={selectedIds}
                                 onSelectToggle={handleSelectToggle}
                                 onSelectRange={handleSelectRange}
+                                config={appConfig}
+                                onToast={showToast}
+                                onItemUpdate={handleItemUpdate}
                             />
                             <SelectionBar
                                 selectedIds={selectedIds}
@@ -526,6 +535,7 @@ function App() {
                                 item={previewItem}
                                 onPaste={handlePaste}
                                 onToast={showToast}
+                                onItemUpdate={handleItemUpdate}
                             />
                         )}
                     </div>

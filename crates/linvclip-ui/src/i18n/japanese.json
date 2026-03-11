@@ -107,7 +107,13 @@
     "checking": "確認中…",
     "update_available": "バージョン {v} が利用可能です！",
     "up_to_date": "最新版です。",
-    "download": "ダウンロード"
+    "download": "ダウンロード",
+    "smart_features": "Smart Features",
+    "auto_ocr": "Auto-OCR images",
+    "smart_paste": "Smart paste detection",
+    "redact_sensitive": "Redact sensitive content",
+    "sensitive_expiry": "Auto-delete sensitive items after (minutes, 0 = off)",
+    "clear_after_paste": "Clear clipboard after paste"
   },
   "selection": {
     "count": "{n}件選択中",
@@ -159,7 +165,8 @@
     "word_count": "文字数カウント",
     "add_tag": "タグを追加",
     "remove_tags": "タグを削除",
-    "save_as_snippet": "スニペットとして保存"
+    "save_as_snippet": "スニペットとして保存",
+    "ocr": "Extract Text (OCR)"
   },
   "snippets": {
     "search": "スニペットを検索...",
@@ -221,5 +228,29 @@
     "words": "単語",
     "chars": "文字",
     "detected_language": "検出された言語"
+  },
+  "ocr": {
+    "extract": "Extract Text (OCR)",
+    "extracting": "Extracting text…",
+    "extracted": "Text Extracted",
+    "copy_text": "Copy Text",
+    "not_available": "Tesseract OCR is not installed",
+    "no_text_found": "No text found in image",
+    "save_as_item": "Save as Clipboard Item",
+    "button_label": "OCR"
+  },
+  "smart": {
+    "email": "Email",
+    "phone": "Phone",
+    "url": "URL",
+    "color": "Color",
+    "json": "JSON",
+    "filepath": "Path",
+    "ip": "IP",
+    "date": "Date"
+  },
+  "security": {
+    "sensitive_detected": "Sensitive content detected",
+    "click_to_reveal": "Click to reveal"
   }
 }

@@ -192,6 +192,11 @@ pub enum IpcRequest {
         id: String,
         variables: HashMap<String, String>,
     },
+    /// Update the preview_text of an item (e.g. after OCR).
+    UpdatePreviewText {
+        id: String,
+        preview_text: String,
+    },
 }
 
 /// IPC response from daemon to client.

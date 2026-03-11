@@ -467,6 +467,20 @@ impl Database {
         self.get(id)
     }
 
+    /// Update the preview_text of an item (e.g. after OCR extraction).
+    pub fn update_preview_text(&self, id: &str, preview_text: &str) -> DbResult<ClipboardItem> {
+        let conn = self.pool.get()?;
+        let updated = conn.execute(
+            "UPDATE clipboard_items SET preview_text = ?1 WHERE id = ?2",
+            params![preview_text, id],
+        )?;
+        if updated == 0 {
+            return Err(DbError::NotFound(id.to_string()));
+        }
+        drop(conn);
+        self.get(id)
+    }
+
     /// Remove a tag from an item.
     pub fn remove_tag(&self, id: &str, tag: &str) -> DbResult<ClipboardItem> {
         let conn = self.pool.get()?;

@@ -97,19 +97,23 @@
     "accent_color": "Cor de Destaque",
     "accent_auto": "Auto (padrão do tema)",
     "accent_custom": "Cor personalizada",
-
     "window_size": "Tamanho da Janela",
     "win_custom": "Personalizado",
     "win_width": "Largura",
     "win_height": "Altura",
     "preview_panel_width": "Largura do Painel de Visualização",
-
     "updates": "Atualizações",
     "check_updates": "Verificar Atualizações",
     "checking": "Verificando…",
     "update_available": "Versão {v} disponível!",
     "up_to_date": "Você está atualizado.",
-    "download": "Baixar"
+    "download": "Baixar",
+    "smart_features": "Smart Features",
+    "auto_ocr": "Auto-OCR images",
+    "smart_paste": "Smart paste detection",
+    "redact_sensitive": "Redact sensitive content",
+    "sensitive_expiry": "Auto-delete sensitive items after (minutes, 0 = off)",
+    "clear_after_paste": "Clear clipboard after paste"
   },
   "selection": {
     "count": "{n} selecionados",
@@ -161,7 +165,8 @@
     "word_count": "Contar Palavras",
     "add_tag": "Adicionar Tag",
     "remove_tags": "Remover Tags",
-    "save_as_snippet": "Salvar como Snippet"
+    "save_as_snippet": "Salvar como Snippet",
+    "ocr": "Extract Text (OCR)"
   },
   "snippets": {
     "search": "Pesquisar snippets...",
@@ -223,5 +228,29 @@
     "words": "palavras",
     "chars": "caracteres",
     "detected_language": "Idioma Detectado"
+  },
+  "ocr": {
+    "extract": "Extract Text (OCR)",
+    "extracting": "Extracting text…",
+    "extracted": "Text Extracted",
+    "copy_text": "Copy Text",
+    "not_available": "Tesseract OCR is not installed",
+    "no_text_found": "No text found in image",
+    "save_as_item": "Save as Clipboard Item",
+    "button_label": "OCR"
+  },
+  "smart": {
+    "email": "Email",
+    "phone": "Phone",
+    "url": "URL",
+    "color": "Color",
+    "json": "JSON",
+    "filepath": "Path",
+    "ip": "IP",
+    "date": "Date"
+  },
+  "security": {
+    "sensitive_detected": "Sensitive content detected",
+    "click_to_reveal": "Click to reveal"
   }
 }

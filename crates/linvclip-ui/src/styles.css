@@ -3913,3 +3913,130 @@ select:focus-visible {
     justify-content: flex-end;
     gap: 8px;
 }
+
+/* ============================================
+   Phase 6 — Smart Clipboard: OCR, Smart Paste, Redaction
+   ============================================ */
+
+/* OCR button on image items */
+.ocr-btn {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    background: var(--accent, #818cf8);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 2;
+}
+.clip-image-preview {
+    position: relative;
+}
+.clip-image-preview:hover .ocr-btn,
+.ocr-btn:focus {
+    opacity: 1;
+}
+.ocr-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+/* Sensitive badge */
+.sensitive-badge {
+    font-size: 0.7rem;
+    margin-left: 2px;
+}
+
+/* Sensitive text blur */
+.clip-text-sensitive {
+    filter: blur(3px);
+    transition: filter 0.2s;
+    cursor: pointer;
+}
+.clip-item:hover .clip-text-sensitive,
+.clip-item.selected .clip-text-sensitive {
+    filter: none;
+}
+
+/* Smart chips */
+.smart-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin-top: 3px;
+}
+.smart-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: var(--surface-2, #27273a);
+    color: var(--text-secondary, #a1a1aa);
+    border: 1px solid var(--border, #333);
+    border-radius: 10px;
+    padding: 1px 7px;
+    font-size: 0.65rem;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+.smart-chip:hover {
+    background: var(--accent, #818cf8);
+    color: #fff;
+}
+.color-swatch {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    border: 1px solid var(--border, #555);
+}
+
+/* Preview pane OCR */
+.preview-ocr-section {
+    margin-top: 8px;
+}
+.preview-ocr-btn {
+    background: var(--accent, #818cf8);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+.preview-ocr-btn:hover {
+    opacity: 0.85;
+}
+.preview-ocr-btn:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}
+.preview-ocr-result {
+    margin-top: 8px;
+    background: var(--surface-2, #1e1e2e);
+    border: 1px solid var(--border, #333);
+    border-radius: 6px;
+    padding: 8px;
+}
+.preview-ocr-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 0.75rem;
+    color: var(--text-secondary, #a1a1aa);
+}
+.preview-ocr-text {
+    font-size: 0.8rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 200px;
+    overflow-y: auto;
+    color: var(--text-primary, #e2e8f0);
+    margin: 0;
+}
