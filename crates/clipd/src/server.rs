@@ -10,7 +10,7 @@ use std::time::Instant;
 use tokio::net::UnixListener;
 use tokio::sync::{Mutex, Semaphore};
 use tokio_util::sync::CancellationToken;
-use wl_clipboard_rs::copy::{self, Options as WlCopyOptions, MimeType as WlCopyMime};
+use wl_clipboard_rs::copy::{self, MimeType as WlCopyMime, Options as WlCopyOptions};
 
 /// Run the IPC server on a Unix domain socket.
 pub async fn run(
@@ -201,16 +201,16 @@ async fn handle_request(
                             },
                         }
                     }
-                    ContentType::PlainText
-                    | ContentType::RichText
-                    | ContentType::Uri => match clip.set_text(&item.content) {
-                        Ok(()) => IpcResponse::Ok {
-                            message: "Pasted to clipboard".to_string(),
-                        },
-                        Err(e) => IpcResponse::Error {
-                            message: format!("Clipboard set failed: {}", e),
-                        },
-                    },
+                    ContentType::PlainText | ContentType::RichText | ContentType::Uri => {
+                        match clip.set_text(&item.content) {
+                            Ok(()) => IpcResponse::Ok {
+                                message: "Pasted to clipboard".to_string(),
+                            },
+                            Err(e) => IpcResponse::Error {
+                                message: format!("Clipboard set failed: {}", e),
+                            },
+                        }
+                    }
                     ContentType::Image => {
                         let img_path = std::path::Path::new(&item.content);
                         if img_path.exists() {
@@ -307,14 +307,12 @@ async fn handle_request(
                 },
             }
         }
-        IpcRequest::ListSnippets { folder } => {
-            match db.list_snippets(folder.as_deref()) {
-                Ok(snippets) => IpcResponse::Snippets(snippets),
-                Err(e) => IpcResponse::Error {
-                    message: format!("List snippets failed: {}", e),
-                },
-            }
-        }
+        IpcRequest::ListSnippets { folder } => match db.list_snippets(folder.as_deref()) {
+            Ok(snippets) => IpcResponse::Snippets(snippets),
+            Err(e) => IpcResponse::Error {
+                message: format!("List snippets failed: {}", e),
+            },
+        },
 
         IpcRequest::SearchSnippets { query } => match db.search_snippets(&query) {
             Ok(snippets) => IpcResponse::Snippets(snippets),
@@ -337,7 +335,8 @@ async fn handle_request(
             abbreviation,
             variables,
         } => {
-            let snippet = shared::models::Snippet::new(name, content, folder, abbreviation, variables);
+            let snippet =
+                shared::models::Snippet::new(name, content, folder, abbreviation, variables);
             match db.create_snippet(&snippet) {
                 Ok(()) => IpcResponse::Snippet(snippet),
                 Err(e) => IpcResponse::Error {
@@ -385,9 +384,7 @@ async fn handle_request(
                 match clip.set_text(&rendered) {
                     Ok(()) => {
                         let _ = db.increment_snippet_use(&id);
-                        IpcResponse::Ok {
-                            message: rendered,
-                        }
+                        IpcResponse::Ok { message: rendered }
                     }
                     Err(e) => IpcResponse::Error {
                         message: format!("Clipboard set failed: {}", e),

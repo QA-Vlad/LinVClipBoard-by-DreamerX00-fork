@@ -552,7 +552,8 @@ fn row_to_snippet(row: &rusqlite::Row) -> Snippet {
     }
 }
 
-const SNIPPET_COLS: &str = "id, name, content, folder, abbreviation, variables, use_count, created_at, updated_at";
+const SNIPPET_COLS: &str =
+    "id, name, content, folder, abbreviation, variables, use_count, created_at, updated_at";
 
 impl Database {
     /// List snippets, optionally filtered by folder.

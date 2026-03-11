@@ -32,10 +32,7 @@ fn get_active_app_name() -> Option<String> {
     }
 
     // 2. Sway / wlroots
-    if let Ok(out) = Command::new("swaymsg")
-        .args(["-t", "get_tree"])
-        .output()
-    {
+    if let Ok(out) = Command::new("swaymsg").args(["-t", "get_tree"]).output() {
         if out.status.success() {
             // Parse the focused node's app_id from the JSON tree
             if let Ok(tree) = serde_json::from_slice::<serde_json::Value>(&out.stdout) {
@@ -110,9 +107,7 @@ fn find_focused_app(node: &serde_json::Value) -> Option<String> {
 /// (case-insensitive substring match).
 fn is_blacklisted(app_name: &str, blacklist: &[String]) -> bool {
     let lower = app_name.to_lowercase();
-    blacklist
-        .iter()
-        .any(|b| lower.contains(&b.to_lowercase()))
+    blacklist.iter().any(|b| lower.contains(&b.to_lowercase()))
 }
 
 /// Run the clipboard monitor loop.
@@ -181,7 +176,11 @@ pub async fn run(
                     match db.insert(&item) {
                         Ok(true) => {
                             last_text_checksum = checksum;
-                            tracing::debug!("Captured text: {} chars (from {:?})", item.size_bytes, &item.app_source);
+                            tracing::debug!(
+                                "Captured text: {} chars (from {:?})",
+                                item.size_bytes,
+                                &item.app_source
+                            );
                             had_activity = true;
                         }
                         Ok(false) => {
@@ -204,7 +203,11 @@ pub async fn run(
                     match db.insert(&item) {
                         Ok(true) => {
                             last_image_checksum = checksum;
-                            tracing::debug!("Captured image: {} bytes (from {:?})", item.size_bytes, &item.app_source);
+                            tracing::debug!(
+                                "Captured image: {} bytes (from {:?})",
+                                item.size_bytes,
+                                &item.app_source
+                            );
                             had_activity = true;
                         }
                         Ok(false) => {
@@ -296,7 +299,9 @@ fn try_get_html_wayland() -> Option<String> {
     ) {
         Ok((mut reader, _)) => {
             let mut buf = String::new();
-            if std::io::Read::read_to_string(&mut reader, &mut buf).is_ok() && !buf.trim().is_empty() {
+            if std::io::Read::read_to_string(&mut reader, &mut buf).is_ok()
+                && !buf.trim().is_empty()
+            {
                 Some(buf)
             } else {
                 None
@@ -375,10 +380,7 @@ fn urlish_decode(s: &str) -> String {
     let mut i = 0;
     while i < bytes.len() {
         if bytes[i] == b'%' && i + 2 < bytes.len() {
-            if let Ok(byte) = u8::from_str_radix(
-                &s[i + 1..i + 3],
-                16,
-            ) {
+            if let Ok(byte) = u8::from_str_radix(&s[i + 1..i + 3], 16) {
                 result.push(byte);
                 i += 3;
                 continue;
@@ -430,13 +432,7 @@ fn capture_text(
             preview
         };
         let size = html.len() as u64;
-        let item = ClipboardItem::new(
-            ContentType::Html,
-            html,
-            preview,
-            checksum.clone(),
-            size,
-        );
+        let item = ClipboardItem::new(ContentType::Html, html, preview, checksum.clone(), size);
         return Ok(Some((item, checksum)));
     }
 
@@ -467,13 +463,7 @@ fn capture_text(
             format!("{} +{} more", first3.join(", "), files.len() - 3)
         };
         let size = content.len() as u64;
-        let item = ClipboardItem::new(
-            ContentType::Files,
-            content,
-            preview,
-            checksum.clone(),
-            size,
-        );
+        let item = ClipboardItem::new(ContentType::Files, content, preview, checksum.clone(), size);
         return Ok(Some((item, checksum)));
     }
 

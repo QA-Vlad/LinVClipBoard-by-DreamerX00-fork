@@ -295,7 +295,13 @@ async fn create_snippet(
     variables: String,
 ) -> Result<Snippet, String> {
     let socket = AppConfig::socket_path();
-    let request = IpcRequest::CreateSnippet { name, content, folder, abbreviation, variables };
+    let request = IpcRequest::CreateSnippet {
+        name,
+        content,
+        folder,
+        abbreviation,
+        variables,
+    };
     match send_request(&socket, &request).await {
         Ok(IpcResponse::Snippet(s)) => Ok(s),
         Ok(IpcResponse::Error { message }) => Err(message),
@@ -314,7 +320,14 @@ async fn update_snippet(
     variables: String,
 ) -> Result<Snippet, String> {
     let socket = AppConfig::socket_path();
-    let request = IpcRequest::UpdateSnippet { id, name, content, folder, abbreviation, variables };
+    let request = IpcRequest::UpdateSnippet {
+        id,
+        name,
+        content,
+        folder,
+        abbreviation,
+        variables,
+    };
     match send_request(&socket, &request).await {
         Ok(IpcResponse::Snippet(s)) => Ok(s),
         Ok(IpcResponse::Error { message }) => Err(message),
@@ -454,7 +467,10 @@ async fn get_image_base64(path: String) -> Result<String, String> {
 /// Extract text from an image using Tesseract OCR (CLI).
 /// Gracefully returns a helpful error if tesseract is not installed.
 #[tauri::command]
-async fn extract_text_from_image(image_path: String, lang: Option<String>) -> Result<String, String> {
+async fn extract_text_from_image(
+    image_path: String,
+    lang: Option<String>,
+) -> Result<String, String> {
     let path = std::path::Path::new(&image_path);
     if !path.exists() {
         return Err("Image file not found".to_string());
@@ -532,13 +548,11 @@ async fn check_for_updates() -> Result<UpdateInfo, String> {
         .await
         .map_err(|e| format!("Parse error: {}", e))?;
 
-    let tag = body["tag_name"]
-        .as_str()
-        .ok_or("No tag_name in response")?;
+    let tag = body["tag_name"].as_str().ok_or("No tag_name in response")?;
     let latest = tag.trim_start_matches('v');
-    let html_url = body["html_url"].as_str().unwrap_or(
-        "https://github.com/DreamerX00/LinVClipBoard/releases",
-    );
+    let html_url = body["html_url"]
+        .as_str()
+        .unwrap_or("https://github.com/DreamerX00/LinVClipBoard/releases");
 
     let release_notes = body["body"].as_str().unwrap_or("").to_string();
 
@@ -558,9 +572,7 @@ async fn check_for_updates() -> Result<UpdateInfo, String> {
         .unwrap_or_default();
 
     // Simple semver comparison: split by '.' and compare numerically
-    let parse_ver = |s: &str| -> Vec<u32> {
-        s.split('.').filter_map(|p| p.parse().ok()).collect()
-    };
+    let parse_ver = |s: &str| -> Vec<u32> { s.split('.').filter_map(|p| p.parse().ok()).collect() };
     let cur_parts = parse_ver(current);
     let lat_parts = parse_ver(latest);
     let has_update = lat_parts > cur_parts;
@@ -610,8 +622,8 @@ async fn download_update(
     let total = resp.content_length().unwrap_or(0);
     let mut downloaded: u64 = 0;
 
-    let mut file = std::fs::File::create(&dest)
-        .map_err(|e| format!("Cannot create file: {}", e))?;
+    let mut file =
+        std::fs::File::create(&dest).map_err(|e| format!("Cannot create file: {}", e))?;
 
     use std::io::Write;
     let mut stream = resp.bytes_stream();
@@ -741,7 +753,10 @@ exit $RET
         Ok("installed".to_string())
     } else {
         let stderr = String::from_utf8_lossy(&output.stderr);
-        if stderr.contains("dismissed") || stderr.contains("Not authorized") || output.status.code() == Some(126) {
+        if stderr.contains("dismissed")
+            || stderr.contains("Not authorized")
+            || output.status.code() == Some(126)
+        {
             Err("auth_cancelled".to_string())
         } else {
             Err(format!("Install failed: {}", stderr.trim()))
@@ -764,7 +779,9 @@ fn get_gif_api_key() -> Result<String, String> {
 
 /// Helper: parse a KLIPY v1 GIF object from JSON.
 fn parse_gif_item(r: &serde_json::Value) -> Option<GifItem> {
-    let id = r["id"].as_i64().or_else(|| r["id"].as_u64().map(|v| v as i64))?;
+    let id = r["id"]
+        .as_i64()
+        .or_else(|| r["id"].as_u64().map(|v| v as i64))?;
     let slug = r["slug"].as_str().unwrap_or("").to_string();
     let title = r["title"].as_str().unwrap_or("").to_string();
 
@@ -920,7 +937,10 @@ async fn register_gif_share(slug: String, query: String) -> Result<String, Strin
     let app_key = get_gif_api_key()?;
 
     let client = reqwest::Client::new();
-    let url = format!("https://api.klipy.com/api/v1/{}/gifs/share/{}", app_key, slug);
+    let url = format!(
+        "https://api.klipy.com/api/v1/{}/gifs/share/{}",
+        app_key, slug
+    );
 
     let mut body_map = serde_json::Map::new();
     body_map.insert(
@@ -961,8 +981,7 @@ fn gif_cache_dir() -> Result<std::path::PathBuf, String> {
 /// multiple MIME types simultaneously, so URL-based sharing is the standard.
 #[tauri::command]
 async fn copy_gif(url: String) -> Result<String, String> {
-    let mut clipboard =
-        arboard::Clipboard::new().map_err(|e| format!("Clipboard error: {}", e))?;
+    let mut clipboard = arboard::Clipboard::new().map_err(|e| format!("Clipboard error: {}", e))?;
     clipboard
         .set_text(&url)
         .map_err(|e| format!("Failed to set clipboard: {}", e))?;
@@ -1005,7 +1024,10 @@ fn cleanup_expired_gif_cache() {
     let now = std::time::SystemTime::now();
     for entry in entries.flatten() {
         if let Ok(meta) = entry.metadata() {
-            let age = meta.modified().ok().and_then(|m| now.duration_since(m).ok());
+            let age = meta
+                .modified()
+                .ok()
+                .and_then(|m| now.duration_since(m).ok());
             if let Some(age) = age {
                 if age > max_age {
                     let _ = std::fs::remove_file(entry.path());
@@ -1138,10 +1160,7 @@ async fn fetch_link_preview(url: String) -> Result<LinkPreview, String> {
         .map_err(|e| format!("Fetch failed: {e}"))?;
 
     // Only read up to 1MB of HTML
-    let body = resp
-        .text()
-        .await
-        .map_err(|e| format!("Read body: {e}"))?;
+    let body = resp.text().await.map_err(|e| format!("Read body: {e}"))?;
     let body = if body.len() > 1_048_576 {
         body[..1_048_576].to_string()
     } else {
@@ -1152,17 +1171,27 @@ async fn fetch_link_preview(url: String) -> Result<LinkPreview, String> {
 
     let og = |prop: &str| -> Option<String> {
         let sel = Selector::parse(&format!("meta[property=\"og:{prop}\"]")).ok()?;
-        doc.select(&sel).next()?.value().attr("content").map(|s| s.to_string())
+        doc.select(&sel)
+            .next()?
+            .value()
+            .attr("content")
+            .map(|s| s.to_string())
     };
 
     let meta_name = |name: &str| -> Option<String> {
         let sel = Selector::parse(&format!("meta[name=\"{name}\"]")).ok()?;
-        doc.select(&sel).next()?.value().attr("content").map(|s| s.to_string())
+        doc.select(&sel)
+            .next()?
+            .value()
+            .attr("content")
+            .map(|s| s.to_string())
     };
 
     let title = og("title").or_else(|| {
         let sel = Selector::parse("title").ok()?;
-        doc.select(&sel).next().map(|el| el.text().collect::<String>())
+        doc.select(&sel)
+            .next()
+            .map(|el| el.text().collect::<String>())
     });
 
     let description = og("description").or_else(|| meta_name("description"));
@@ -1186,7 +1215,13 @@ async fn fetch_link_preview(url: String) -> Result<LinkPreview, String> {
         })
     };
 
-    Ok(LinkPreview { title, description, image, site_name, favicon })
+    Ok(LinkPreview {
+        title,
+        description,
+        image,
+        site_name,
+        favicon,
+    })
 }
 
 /// Position the window based on the configured mode.
@@ -1345,7 +1380,7 @@ pub fn run() {
             let window = app.get_webview_window("main").unwrap();
 
             // Clean up expired GIF cache files on startup
-            std::thread::spawn(|| cleanup_expired_gif_cache());
+            std::thread::spawn(cleanup_expired_gif_cache);
 
             // --- System Tray ---
             // NOTE: On Linux with AppIndicator, a menu is REQUIRED for the icon to appear.
