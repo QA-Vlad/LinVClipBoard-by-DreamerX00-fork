@@ -669,97 +669,133 @@ async fn install_update(path: String) -> Result<String, String> {
         return Err("Not a .deb file".to_string());
     }
 
-    // Capture current user environment so the wrapper script can restart the UI.
+    // Capture current user environment so the restart script works.
     let username = std::env::var("USER").unwrap_or_default();
     let display = std::env::var("DISPLAY").unwrap_or_default();
     let wayland = std::env::var("WAYLAND_DISPLAY").unwrap_or_default();
     let xdg_runtime = std::env::var("XDG_RUNTIME_DIR").unwrap_or_default();
     let home = std::env::var("HOME").unwrap_or_default();
     let dbus_addr = std::env::var("DBUS_SESSION_BUS_ADDRESS").unwrap_or_default();
+    let pid = std::process::id();
 
-    // Resolve the actual binary path (may be ~/.local/bin or /usr/bin)
-    let ui_bin = std::env::current_exe()
-        .unwrap_or_else(|_| std::path::PathBuf::from("/usr/bin/linvclip-ui"))
-        .to_string_lossy()
-        .to_string();
-
-    let script = format!(
+    // Write a self-contained restart script BEFORE dpkg runs.
+    // This script will be executed by a detached background process AFTER dpkg
+    // finishes, so it survives even if pkexec's session terminates.
+    let restart_script_path = format!("/tmp/linvclip-restart-{pid}.sh");
+    let restart_script = format!(
         r#"#!/bin/bash
-# Kill the current UI before dpkg (avoids prerm race)
-kill {pid} 2>/dev/null || true
-sleep 0.5
-
-# Remove any conflicting old package names before installing
-dpkg --list 2>/dev/null | grep -qw linvclipboard && dpkg -r linvclipboard 2>/dev/null || true
-
-dpkg -i --force-overwrite "{path}"
-RET=$?
-
-if [ $RET -eq 0 ]; then
-    sleep 1
-
-    # Also update the user-local binary if install.sh was used
-    LOCAL_BIN="{home}/.local/bin"
-    if [ -d "$LOCAL_BIN" ]; then
-        # Copy from /usr/bin (deb target) to ~/.local/bin if it exists there
-        [ -f /usr/bin/linvclip-ui ] && cp /usr/bin/linvclip-ui "$LOCAL_BIN/" 2>/dev/null || true
-    fi
-
-    # Restart clipd daemon and UI as the original user with their env
-    ENV_SCRIPT="/tmp/linvclip-restart-{pid}.sh"
-    cat > "$ENV_SCRIPT" << 'USEREOF'
-#!/bin/bash
+# Restart script — runs as the original user after dpkg finishes.
 export DBUS_SESSION_BUS_ADDRESS="{dbus_addr}"
 export XDG_RUNTIME_DIR="{xdg_runtime}"
 export HOME="{home}"
 export DISPLAY="{display}"
 export WAYLAND_DISPLAY="{wayland}"
 
+# Wait for dpkg to fully finish and release file locks
+sleep 2
+
+# Update user-local binary if manual install.sh was used
+LOCAL_BIN="{home}/.local/bin"
+if [ -d "$LOCAL_BIN" ]; then
+    for bin in clipd clipctl linvclip-ui; do
+        [ -f "/usr/bin/$bin" ] && cp "/usr/bin/$bin" "$LOCAL_BIN/" 2>/dev/null || true
+    done
+fi
+
 # Reload and restart the daemon
 systemctl --user daemon-reload 2>/dev/null
 systemctl --user restart clipd.service 2>/dev/null
 
-# Restart the UI
-sleep 0.5
-UI_BIN="{ui_bin}"
+# Wait a moment for daemon to be ready
+sleep 1
+
+# Kill any stale UI processes (shouldn't exist, but just in case)
+pkill -x linvclip-ui 2>/dev/null || true
+sleep 0.3
+
+# Launch the NEW UI binary
+UI_BIN="/usr/bin/linvclip-ui"
 [ -f "{home}/.local/bin/linvclip-ui" ] && UI_BIN="{home}/.local/bin/linvclip-ui"
-[ -f /usr/bin/linvclip-ui ] && UI_BIN="/usr/bin/linvclip-ui"
-if ! pgrep -f linvclip-ui >/dev/null 2>&1; then
-    setsid "$UI_BIN" >/dev/null 2>&1 &
-fi
-USEREOF
-    chmod +x "$ENV_SCRIPT"
-    su "{username}" -c "bash $ENV_SCRIPT"
-    rm -f "$ENV_SCRIPT"
-fi
+nohup setsid "$UI_BIN" >/dev/null 2>&1 &
+disown
+
+# Self-cleanup
+rm -f "{restart_script_path}"
+"#
+    );
+    std::fs::write(&restart_script_path, &restart_script).map_err(|e| e.to_string())?;
+
+    // The main install script runs as root via pkexec.
+    // It does NOT try to restart — the restart is handled by a separate
+    // detached user-level process that survives pkexec termination.
+    let install_script = format!(
+        r#"#!/bin/bash
+set -e
+
+# 1. Kill the current UI so dpkg's prerm doesn't race with it
+kill {pid} 2>/dev/null || true
+sleep 0.3
+
+# 2. Install the new .deb (--force-overwrite handles file conflicts)
+#    The deb's postinst will try to start clipd and UI, but we handle
+#    restart ourselves via the restart script for reliability.
+#    First, stop any postinst-launched UI so our restart is authoritative.
+DEBIAN_FRONTEND=noninteractive dpkg -i --force-overwrite "{path}"
+RET=$?
+
+# 3. Kill any UI that postinst may have launched (we restart cleanly below)
+pkill -x linvclip-ui 2>/dev/null || true
+
+# 4. Launch the restart script as the original user in a fully detached process.
+#    Using nohup + setsid + & ensures it survives when pkexec exits.
+su "{username}" -c "nohup setsid bash '{restart_script_path}' >/dev/null 2>&1 &"
+
 exit $RET
-"#,
-        pid = std::process::id(),
+"#
     );
 
-    let script_path = format!("/tmp/linvclip-update-{}.sh", std::process::id());
-    std::fs::write(&script_path, &script).map_err(|e| e.to_string())?;
+    let install_script_path = format!("/tmp/linvclip-update-{pid}.sh");
+    std::fs::write(&install_script_path, &install_script).map_err(|e| e.to_string())?;
 
-    // pkexec runs the script as root; even if dpkg kills us, the script continues.
-    let output = tokio::process::Command::new("pkexec")
-        .args(["bash", &script_path])
-        .output()
-        .await
-        .map_err(|e| format!("Failed to launch installer: {}", e))?;
+    // pkexec runs the install script as root.
+    // Since we kill ourselves (the UI) in step 1, this .output() call may
+    // never return. To handle this, we use a timeout. If the process dies
+    // before output() returns, tokio will get a broken pipe / connection
+    // reset, which we treat as a successful install (the restart script
+    // handles bringing the new version up).
+    let result = tokio::time::timeout(
+        std::time::Duration::from_secs(120),
+        tokio::process::Command::new("pkexec")
+            .args(["bash", &install_script_path])
+            .output(),
+    )
+    .await;
 
-    let _ = std::fs::remove_file(&script_path);
+    // Clean up the install script (restart script cleans itself up)
+    let _ = std::fs::remove_file(&install_script_path);
 
-    if output.status.success() {
-        Ok("installed".to_string())
-    } else {
-        let stderr = String::from_utf8_lossy(&output.stderr);
-        if stderr.contains("dismissed")
-            || stderr.contains("Not authorized")
-            || output.status.code() == Some(126)
-        {
-            Err("auth_cancelled".to_string())
-        } else {
-            Err(format!("Install failed: {}", stderr.trim()))
+    match result {
+        Ok(Ok(output)) => {
+            if output.status.success() {
+                Ok("installed".to_string())
+            } else {
+                let stderr = String::from_utf8_lossy(&output.stderr);
+                if stderr.contains("dismissed")
+                    || stderr.contains("Not authorized")
+                    || output.status.code() == Some(126)
+                {
+                    // User cancelled auth — clean up restart script too
+                    let _ = std::fs::remove_file(&restart_script_path);
+                    Err("auth_cancelled".to_string())
+                } else {
+                    Err(format!("Install failed: {}", stderr.trim()))
+                }
+            }
+        }
+        Ok(Err(_)) | Err(_) => {
+            // Process died (we got killed by our own script) or timeout.
+            // This is expected — the restart script will bring up the new version.
+            Ok("installed".to_string())
         }
     }
 }

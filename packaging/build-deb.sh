@@ -240,10 +240,16 @@ enable_clipd() {
     # Restart clipd — use restart to handle both fresh install and upgrade
     run_as systemctl --user restart clipd.service 2>/dev/null || true
 
-    # Kill any existing UI instances, then start exactly one
-    pkill -x linvclip-ui 2>/dev/null || true
-    sleep 0.5
-    run_as "setsid nohup /usr/bin/linvclip-ui >/dev/null 2>&1 &" 2>/dev/null || true
+    # Kill any existing UI instances, then start exactly one.
+    # UNLESS a self-update restart script exists — that means the UI triggered
+    # this install and will handle its own restart after dpkg finishes.
+    if ls /tmp/linvclip-restart-*.sh >/dev/null 2>&1; then
+        echo "  Self-update detected — skipping UI launch (restart script will handle it)"
+    else
+        pkill -x linvclip-ui 2>/dev/null || true
+        sleep 0.5
+        run_as "setsid nohup /usr/bin/linvclip-ui >/dev/null 2>&1 &" 2>/dev/null || true
+    fi
 }
 
 if [ -n "$SUDO_USER" ] && [ "$SUDO_USER" != "root" ]; then
