@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 
-function SearchBar({ value, onChange, placeholder }) {
+function SearchBar({ value, onChange, placeholder, onFocus, onBlur }) {
     const inputRef = useRef(null);
 
     // Auto-focus on mount
@@ -20,6 +20,8 @@ function SearchBar({ value, onChange, placeholder }) {
                 placeholder={placeholder || "Search..."}
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
+                onFocus={onFocus}
+                onBlur={onBlur}
                 autoComplete="off"
                 spellCheck="false"
                 aria-label={placeholder || "Search"}

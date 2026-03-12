@@ -3,6 +3,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { open } from "@tauri-apps/plugin-shell";
 import { useTranslation } from "../i18n/index.jsx";
+import { useKeybindings, KEYBINDING_ACTIONS } from "../contexts/KeybindingContext.jsx";
 import UpdateModal from "./UpdateModal.jsx";
 
 const WINDOW_PRESETS = [
@@ -15,6 +16,9 @@ const WINDOW_PRESETS = [
 
 function SettingsPanel({ onClose, zoom, onZoomChange }) {
     const { t, lang, setLang, availableLanguages } = useTranslation();
+    const { bindings, vimMode, setVimMode, setBinding, resetBindings, findConflict, eventToCombo } = useKeybindings();
+    const [editingAction, setEditingAction] = useState(null); // action currently being rebound
+    const [keybindConflict, setKeybindConflict] = useState(null);
     const [config, setConfig] = useState(null);
     const [error, setError] = useState(null);
     const [advancedOpen, setAdvancedOpen] = useState(false);
@@ -537,6 +541,78 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
                     {/* ── ⌨️ Keyboard Shortcuts ── */}
                     <div className="settings-section">
                         <div className="settings-section-label">⌨️ {t("settings.keyboard_shortcuts")}</div>
+
+                        {/* Vim mode toggle */}
+                        <label className="checkbox-label">
+                            <input
+                                type="checkbox"
+                                checked={vimMode}
+                                onChange={(e) => setVimMode(e.target.checked)}
+                            />
+                            {t("settings.vim_mode")}
+                        </label>
+                        {vimMode && (
+                            <p className="settings-hint">{t("settings.vim_mode_desc")}</p>
+                        )}
+
+                        {/* Keybinding editor */}
+                        <div className="keybind-editor">
+                            {Object.entries(KEYBINDING_ACTIONS).map(([category, actions]) => (
+                                <div key={category} className="keybind-category">
+                                    <div className="keybind-category-title">{category}</div>
+                                    {actions.map(({ action, label }) => (
+                                        <div key={action} className="keybind-row">
+                                            <span className="keybind-action">{t(label)}</span>
+                                            {editingAction === action ? (
+                                                <button
+                                                    className="keybind-key keybind-key-editing"
+                                                    autoFocus
+                                                    onKeyDown={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        if (e.key === "Escape") {
+                                                            setEditingAction(null);
+                                                            setKeybindConflict(null);
+                                                            return;
+                                                        }
+                                                        const combo = eventToCombo(e);
+                                                        const conflict = findConflict(combo, action);
+                                                        if (conflict) {
+                                                            setKeybindConflict({ combo, action: conflict });
+                                                        } else {
+                                                            setBinding(action, combo);
+                                                            setEditingAction(null);
+                                                            setKeybindConflict(null);
+                                                        }
+                                                    }}
+                                                    onBlur={() => { setEditingAction(null); setKeybindConflict(null); }}
+                                                >
+                                                    {t("settings.press_key")}
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    className="keybind-key"
+                                                    onClick={() => { setEditingAction(action); setKeybindConflict(null); }}
+                                                >
+                                                    {bindings[action] || "—"}
+                                                </button>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
+
+                        {keybindConflict && (
+                            <div className="keybind-conflict" role="alert">
+                                ⚠️ {t("settings.conflict_warning")}: "{keybindConflict.combo}" → {keybindConflict.action}
+                            </div>
+                        )}
+
+                        <button className="keybind-reset-btn" onClick={resetBindings}>
+                            🔄 {t("settings.reset_defaults")}
+                        </button>
+
                         <div className="shortcuts-info">
                             <p className="shortcuts-instruction">{t("settings.shortcut_instructions")}</p>
                             <ol className="shortcuts-steps">
@@ -544,11 +620,6 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
                                 <li>{t("settings.shortcut_step2")}</li>
                                 <li>{t("settings.shortcut_step3")}</li>
                             </ol>
-                            <div className="shortcuts-keys">
-                                <kbd>Ctrl</kbd>+<kbd>+</kbd> / <kbd>Ctrl</kbd>+<kbd>-</kbd> Zoom
-                                &nbsp;&middot;&nbsp;
-                                <kbd>Ctrl</kbd>+<kbd>0</kbd> Reset
-                            </div>
                         </div>
                     </div>
 

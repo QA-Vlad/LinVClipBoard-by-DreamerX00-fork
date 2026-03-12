@@ -75,8 +75,9 @@ Priority: optional
 Architecture: ${ARCH}
 Installed-Size: ${INSTALLED_SIZE}
 Maintainer: LinVClipBoard Contributors
-Replaces: linvclipboard
+Replaces: linvclipboard, lin-v-clip-board
 Breaks: linvclipboard (<< ${VERSION}-1)
+Conflicts: lin-v-clip-board
 Recommends: wtype | xdotool
 Suggests: ydotool
 Description: Clipboard history manager for Linux
@@ -93,6 +94,44 @@ EOF
 cat > "${PKG_DIR}/DEBIAN/preinst" <<'PREINST'
 #!/bin/sh
 set -e
+
+# ── Neuter old prerm scripts to prevent SIGPIPE disaster ──────────────
+#
+# During an upgrade, dpkg's order is:
+#   1. NEW preinst (this script)
+#   2. OLD prerm            ← this is the problem
+#   3. Unpack new files
+#   4. NEW postinst
+#
+# Old versions' prerm scripts unconditionally run `pkill -x linvclip-ui`,
+# which kills the running UI.  When the in-app updater is active, the UI
+# owns the stdout/stderr pipes that pkexec (and therefore dpkg) writes to.
+# Killing the UI breaks those pipes, and the next write delivers SIGPIPE
+# which silently kills dpkg mid-install — leaving a half-installed package,
+# no update, and a stale binary.
+#
+# By replacing the old prerm with a no-op HERE (before dpkg invokes it),
+# dpkg completes safely.  Our NEW prerm (installed alongside) handles
+# cleanup correctly (only kills on full "remove", not "upgrade").
+for pkg in linvclipboard lin-v-clip-board; do
+    OLD_PRERM="/var/lib/dpkg/info/${pkg}.prerm"
+    if [ -f "$OLD_PRERM" ]; then
+        echo "Neutering old ${pkg}.prerm to prevent SIGPIPE during upgrade..."
+        cat > "$OLD_PRERM" <<'NEUTERED'
+#!/bin/sh
+# Neutered by linvclipboard preinst to prevent SIGPIPE during upgrade.
+exit 0
+NEUTERED
+        chmod 755 "$OLD_PRERM"
+    fi
+done
+
+# Remove the old Tauri-generated "lin-v-clip-board" package if installed.
+# It declares Conflicts: linvclipboard which blocks our install.
+if dpkg -s lin-v-clip-board >/dev/null 2>&1; then
+    echo "Removing old lin-v-clip-board package..."
+    dpkg --remove --force-depends lin-v-clip-board 2>/dev/null || true
+fi
 
 # Remove old manual-install binaries that shadow /usr/bin/ paths
 # (from install.sh / make install which put them in ~/.local/bin/)

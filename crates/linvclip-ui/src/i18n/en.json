@@ -113,7 +113,13 @@
     "smart_paste": "Smart paste detection",
     "redact_sensitive": "Redact sensitive content",
     "sensitive_expiry": "Auto-delete sensitive items after (minutes, 0 = off)",
-    "clear_after_paste": "Clear clipboard after paste"
+    "clear_after_paste": "Clear clipboard after paste",
+    "vim_mode": "Enable Vim-style navigation",
+    "vim_mode_desc": "Use j/k to navigate, gg to jump to top, dd to delete, / to search, y to yank (paste)",
+    "keybinding_editor": "Keybinding Editor",
+    "press_key": "Press a key…",
+    "conflict_warning": "Key already bound to",
+    "reset_defaults": "Reset to Defaults"
   },
   "selection": {
     "count": "{n} selected",
@@ -252,5 +258,34 @@
   "security": {
     "sensitive_detected": "Sensitive content detected",
     "click_to_reveal": "Click to reveal"
+  },
+  "vim": {
+    "normal_mode": "NORMAL",
+    "insert_mode": "INSERT",
+    "cheatsheet_title": "Keyboard Shortcuts"
+  },
+  "keybind": {
+    "select_next": "Move Down",
+    "select_prev": "Move Up",
+    "select_first": "Jump to First",
+    "select_last": "Jump to Last",
+    "page_down": "Page Down",
+    "page_up": "Page Up",
+    "paste_selected": "Paste Selected",
+    "delete_selected": "Delete Selected",
+    "pin_selected": "Pin/Unpin",
+    "copy_selected": "Copy Selected",
+    "search_focus": "Focus Search",
+    "close_window": "Close / Escape",
+    "toggle_preview": "Toggle Preview",
+    "context_menu": "Context Menu",
+    "select_all": "Select All",
+    "clear_search": "Clear Search",
+    "show_cheatsheet": "Show Shortcuts",
+    "tab_clipboard": "Tab: Clipboard",
+    "tab_emojis": "Tab: Emojis",
+    "tab_symbols": "Tab: Symbols",
+    "tab_gifs": "Tab: GIFs",
+    "tab_snippets": "Tab: Snippets"
   }
 }

@@ -21,10 +21,14 @@ import QrModal from "./components/QrModal";
 import PreviewPane from "./components/PreviewPane";
 import SelectionBar from "./components/SelectionBar";
 import SnippetPicker from "./components/SnippetPicker";
+import CheatSheet from "./components/CheatSheet";
+import { useKeybindings } from "./contexts/KeybindingContext.jsx";
 
 function App() {
     const { t } = useTranslation();
     const { zoom, setZoom, zoomIn, zoomOut, zoomReset } = useZoom();
+    const { resolveAction, vimMode, vimState, setVimState, handleSearchFocus, handleSearchBlur } = useKeybindings();
+    const [showCheatSheet, setShowCheatSheet] = useState(false);
     const [activeTab, setActiveTab] = useState("clipboard");
     const [filterType, setFilterType] = useState("all");
     const [items, setItems] = useState([]);
@@ -358,85 +362,123 @@ function App() {
     const selectedIdsRef = useRef(selectedIds);
     useEffect(() => { selectedIdsRef.current = selectedIds; }, [selectedIds]);
 
-    // ─── Global keyboard handler via document listener ───
+    // ─── Global keyboard handler via keybinding context ───
     // Uses refs so the handler always sees fresh state without re-attaching.
     useEffect(() => {
         const handleKeyDown = (e) => {
+            // Don't intercept keys when settings, cheat sheet, or modals are open
+            if (showCheatSheet) return;
+
+            const result = resolveAction(e);
+            if (!result) return;
+
+            const { action, preventDefault } = result;
+            if (preventDefault) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
             const curItems = itemsRef.current;
             const curIdx = selectedIndexRef.current;
 
-            switch (e.key) {
-                case "Escape":
-                    e.preventDefault();
-                    e.stopPropagation();
-                    // If multi-select active, clear it first; otherwise hide window
+            switch (action) {
+                case "close_window":
+                case "exit_search":
                     if (selectedIdsRef.current.size > 0) {
                         setSelectedIds(new Set());
+                    } else if (document.activeElement?.tagName === "INPUT") {
+                        document.activeElement.blur();
+                        setVimState("normal");
                     } else {
                         hideWindow();
                     }
                     break;
-                case "ArrowDown":
-                    e.preventDefault();
+                case "select_next":
                     setSelectedIndex((i) => Math.min(i + 1, curItems.length - 1));
                     break;
-                case "ArrowUp":
-                    e.preventDefault();
+                case "select_prev":
                     setSelectedIndex((i) => Math.max(i - 1, 0));
                     break;
-                case "ArrowRight":
-                    if (document.activeElement?.tagName === "INPUT") return;
-                    e.preventDefault();
-                    setShowPreview(true);
+                case "select_first":
+                    setSelectedIndex(0);
                     break;
-                case "ArrowLeft":
-                    if (document.activeElement?.tagName === "INPUT") return;
-                    e.preventDefault();
+                case "select_last":
+                    setSelectedIndex(Math.max(0, curItems.length - 1));
+                    break;
+                case "page_down":
+                    setSelectedIndex((i) => Math.min(i + 10, curItems.length - 1));
+                    break;
+                case "page_up":
+                    setSelectedIndex((i) => Math.max(i - 10, 0));
+                    break;
+                case "paste_selected":
+                    if (curItems[curIdx]) handlePaste(curItems[curIdx].id);
+                    break;
+                case "delete_selected":
+                    if (curItems[curIdx]) handleDelete(curItems[curIdx].id);
+                    break;
+                case "pin_selected":
+                    if (curItems[curIdx]) handlePin(curItems[curIdx].id);
+                    break;
+                case "copy_selected":
+                    if (curItems[curIdx]) handlePaste(curItems[curIdx].id);
+                    break;
+                case "search_focus": {
+                    const input = document.querySelector(".search-input");
+                    if (input) { input.focus(); setVimState("insert"); }
+                    break;
+                }
+                case "clear_search":
+                    setSearchQuery("");
+                    break;
+                case "toggle_preview":
+                    setShowPreview((p) => !p);
+                    break;
+                case "close_preview":
                     setShowPreview(false);
                     break;
-                case "Enter":
-                    // Don't capture Enter if user is typing in search
-                    if (document.activeElement?.tagName === "INPUT") return;
-                    e.preventDefault();
+                case "context_menu":
                     if (curItems[curIdx]) {
-                        handlePaste(curItems[curIdx].id);
+                        // Simulate context menu at item position
+                        const el = document.querySelector(".clip-item.selected");
+                        if (el) {
+                            const rect = el.getBoundingClientRect();
+                            setCtxMenu({ item: curItems[curIdx], x: rect.right - 20, y: rect.top + 10 });
+                        }
                     }
                     break;
-                case "Delete":
-                    if (document.activeElement?.tagName === "INPUT") return;
-                    if (curItems[curIdx]) {
-                        handleDelete(curItems[curIdx].id);
-                    }
+                case "select_all": {
+                    const allIds = new Set(curItems.map((it) => it.id));
+                    setSelectedIds(allIds);
                     break;
-            }
-
-            // Ctrl+A: select all visible items
-            if ((e.ctrlKey || e.metaKey) && e.key === "a") {
-                if (document.activeElement?.tagName === "INPUT") return;
-                e.preventDefault();
-                const allIds = new Set(curItems.map((it) => it.id));
-                setSelectedIds(allIds);
-                return;
-            }
-
-            // Zoom shortcuts: Ctrl++ / Ctrl+- / Ctrl+0
-            if (e.ctrlKey || e.metaKey) {
-                if (e.key === "+" || e.key === "=") {
-                    e.preventDefault();
-                    zoomIn();
-                } else if (e.key === "-") {
-                    e.preventDefault();
-                    zoomOut();
-                } else if (e.key === "0") {
-                    e.preventDefault();
-                    zoomReset();
                 }
+                case "tab_clipboard": setActiveTab("clipboard"); break;
+                case "tab_emojis": setActiveTab("emojis"); break;
+                case "tab_symbols": setActiveTab("symbols"); break;
+                case "tab_gifs": setActiveTab("gifs"); break;
+                case "tab_snippets": setActiveTab("snippets"); break;
+                case "show_cheatsheet":
+                    setShowCheatSheet(true);
+                    break;
+                case "vim_toggle_select":
+                    if (curItems[curIdx]) {
+                        const id = curItems[curIdx].id;
+                        setSelectedIds((prev) => {
+                            const next = new Set(prev);
+                            if (next.has(id)) next.delete(id); else next.add(id);
+                            return next;
+                        });
+                    }
+                    break;
+                case "zoom_in": zoomIn(); break;
+                case "zoom_out": zoomOut(); break;
+                case "zoom_reset": zoomReset(); break;
             }
         };
 
-        document.addEventListener("keydown", handleKeyDown, true); // capture phase
+        document.addEventListener("keydown", handleKeyDown, true);
         return () => document.removeEventListener("keydown", handleKeyDown, true);
-    }, [zoomIn, zoomOut, zoomReset]); // zoom callbacks are stable via useCallback
+    }, [resolveAction, zoomIn, zoomOut, zoomReset, showCheatSheet]);
 
     // Clear search when switching tabs
     const handleTabChange = (tab) => {
@@ -483,6 +525,8 @@ function App() {
                     value={searchQuery}
                     onChange={setSearchQuery}
                     placeholder={searchPlaceholder}
+                    onFocus={handleSearchFocus}
+                    onBlur={handleSearchBlur}
                 />
 
                 <main role="main" aria-label={t("tabs." + activeTab)}>
@@ -541,6 +585,11 @@ function App() {
                     </div>
                 </main>
 
+                {vimMode && (
+                    <div className={`vim-mode-indicator vim-mode-${vimState}`}>
+                        -- {vimState === "insert" ? t("vim.insert_mode") : t("vim.normal_mode")} --
+                    </div>
+                )}
                 <Footer />
             </div>
 
@@ -589,6 +638,10 @@ function App() {
                     onClose={() => setQrText(null)}
                     onToast={showToast}
                 />
+            )}
+
+            {showCheatSheet && (
+                <CheatSheet onClose={() => setShowCheatSheet(false)} />
             )}
         </div>
     );
