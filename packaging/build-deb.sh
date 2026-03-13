@@ -227,15 +227,16 @@ fi
 free_shortcut() {
     USER="$1"
     HOME_DIR="$2"
+    [ -n "$USER" ] && [ -n "$HOME_DIR" ] || return 0
     # Run gsettings as the actual user, not root
     ORIG=$(su - "$USER" -c "gsettings get org.freedesktop.ibus.panel.emoji hotkey" 2>/dev/null) || return 0
     # Save original if not already saved
     SAVE_FILE="${HOME_DIR}/.config/linvclip/.ibus-emoji-hotkey-backup"
     if [ ! -f "$SAVE_FILE" ]; then
-        mkdir -p "${HOME_DIR}/.config/linvclip"
-        chown "$USER":"$USER" "${HOME_DIR}/.config/linvclip"
-        echo "$ORIG" > "$SAVE_FILE"
-        chown "$USER":"$USER" "$SAVE_FILE"
+        mkdir -p "${HOME_DIR}/.config/linvclip" 2>/dev/null || true
+        chown "$USER":"$USER" "${HOME_DIR}/.config/linvclip" 2>/dev/null || true
+        echo "$ORIG" > "$SAVE_FILE" 2>/dev/null || true
+        chown "$USER":"$USER" "$SAVE_FILE" 2>/dev/null || true
     fi
     su - "$USER" -c "gsettings set org.freedesktop.ibus.panel.emoji hotkey '[]'" 2>/dev/null || true
 }
@@ -259,7 +260,7 @@ enable_clipd() {
     # XDG_RUNTIME_DIR and DBUS_SESSION_BUS_ADDRESS so that
     # "systemctl --user" finds the right user manager instance.
     run_as() {
-        su "$USER" -c "XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR} DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS} $*"
+        su "$USER" -c "XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR} DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS} $*" 2>/dev/null || true
     }
 
     # Remove any lingering user-level service files that shadow /usr/lib/systemd/user/
