@@ -118,7 +118,15 @@
     "vim_mode_desc": "Use j/k to navigate, gg to jump to top, dd to delete, / to search, y to yank",
     "press_key": "Press a key…",
     "conflict_warning": "Key already bound to",
-    "reset_defaults": "Reset to Defaults"
+    "reset_defaults": "Reset to Defaults",
+    "tab_general": "Geral",
+    "tab_appearance": "Aparência",
+    "tab_window": "Janela",
+    "tab_keyboard": "Teclado",
+    "tab_features": "Recursos",
+    "tab_advanced": "Avançado",
+    "tray_items": "Itens do Menu da Bandeja",
+    "tray_items_desc": "Número de itens recentes na bandeja do sistema"
   },
   "selection": {
     "count": "{n} selecionados",

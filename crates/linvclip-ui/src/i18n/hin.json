@@ -118,7 +118,15 @@
     "vim_mode_desc": "Use j/k to navigate, gg to jump to top, dd to delete, / to search, y to yank",
     "press_key": "Press a key…",
     "conflict_warning": "Key already bound to",
-    "reset_defaults": "Reset to Defaults"
+    "reset_defaults": "Reset to Defaults",
+    "tab_general": "सामान्य",
+    "tab_appearance": "दिखावट",
+    "tab_window": "विंडो",
+    "tab_keyboard": "कीबोर्ड",
+    "tab_features": "सुविधाएँ",
+    "tab_advanced": "उन्नत",
+    "tray_items": "ट्रे मेनू आइटम",
+    "tray_items_desc": "सिस्टम ट्रे में हाल के आइटम की संख्या"
   },
   "selection": {
     "count": "{n} चयनित",

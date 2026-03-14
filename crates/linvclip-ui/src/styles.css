@@ -1635,6 +1635,67 @@ kbd {
     background: var(--bg-glass);
 }
 
+/* ── Settings Tab Bar ── */
+.settings-panel-tabbed {
+    width: 420px;
+}
+
+.settings-tab-bar {
+    display: flex;
+    gap: 2px;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.settings-tab-bar::-webkit-scrollbar {
+    display: none;
+}
+
+.settings-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 6px 8px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: all var(--transition-fast);
+    flex: 1;
+    min-width: 0;
+}
+
+.settings-tab:hover {
+    background: var(--bg-glass);
+    color: var(--text-secondary);
+}
+
+.settings-tab-active {
+    background: var(--bg-glass-active);
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.settings-tab-icon {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.settings-tab-label {
+    font-size: 10px;
+    line-height: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .settings-body {
     padding: 12px 16px;
     display: flex;

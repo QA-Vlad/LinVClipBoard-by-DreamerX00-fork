@@ -72,7 +72,7 @@ pub struct UiConfig {
     pub theme: String,
     pub window_width: u32,
     pub window_height: u32,
-    /// Global shortcut to toggle the overlay (e.g. "Super+.").
+    /// Global shortcut to toggle the overlay (e.g. "Ctrl+/").
     #[serde(default = "default_shortcut")]
     pub shortcut: String,
     /// UI language code: "en", "pt", etc.
@@ -87,10 +87,13 @@ pub struct UiConfig {
     /// Accent color override: "auto" (use theme default) or a hex string like "#818cf8".
     #[serde(default = "default_accent_color")]
     pub accent_color: String,
+    /// Number of recent items to show in the system tray menu (3–15).
+    #[serde(default = "default_tray_items")]
+    pub tray_items: u32,
 }
 
 fn default_shortcut() -> String {
-    "Super+.".to_string()
+    "Ctrl+/".to_string()
 }
 
 fn default_language() -> String {
@@ -107,6 +110,10 @@ fn default_window_position() -> String {
 
 fn default_accent_color() -> String {
     "auto".to_string()
+}
+
+fn default_tray_items() -> u32 {
+    5
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -140,11 +147,12 @@ impl Default for AppConfig {
                 theme: "auto".to_string(),
                 window_width: 420,
                 window_height: 520,
-                shortcut: "Super+.".to_string(),
+                shortcut: "Ctrl+/".to_string(),
                 language: "en".to_string(),
                 zoom: 100,
                 window_position: "mouse".to_string(),
                 accent_color: "auto".to_string(),
+                tray_items: 5,
             },
             features: FeaturesConfig::default(),
             storage: StorageConfig {

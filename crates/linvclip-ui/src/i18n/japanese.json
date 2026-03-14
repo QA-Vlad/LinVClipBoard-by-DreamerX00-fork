@@ -118,7 +118,15 @@
     "vim_mode_desc": "Use j/k to navigate, gg to jump to top, dd to delete, / to search, y to yank",
     "press_key": "Press a key…",
     "conflict_warning": "Key already bound to",
-    "reset_defaults": "Reset to Defaults"
+    "reset_defaults": "Reset to Defaults",
+    "tab_general": "一般",
+    "tab_appearance": "外観",
+    "tab_window": "ウィンドウ",
+    "tab_keyboard": "キーボード",
+    "tab_features": "機能",
+    "tab_advanced": "詳細",
+    "tray_items": "トレイメニュー項目",
+    "tray_items_desc": "システムトレイに表示する最近の項目数"
   },
   "selection": {
     "count": "{n}件選択中",

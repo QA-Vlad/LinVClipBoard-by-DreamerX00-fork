@@ -1,25 +1,50 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Build a single .deb package containing clipd, clipctl, and linvclip-ui.
+# All-in-one build + package script for LinVClipBoard.
+# Compiles Rust binaries, builds the frontend, and produces a single .deb.
+#
+# Usage:  ./packaging/build-deb.sh            # build everything + package
+#         ./packaging/build-deb.sh --skip-build  # package only (binaries must exist)
 
-# Extract version from workspace Cargo.toml (#25)
-VERSION=$(grep '^version' "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/Cargo.toml" | head -1 | sed 's/.*"\(.*\)".*/\1/')
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+VERSION=$(grep '^version' "${PROJECT_DIR}/Cargo.toml" | head -1 | sed 's/.*"\(.*\)".*/\1/')
 ARCH="amd64"
 PKG_NAME="linvclipboard"
 PKG_DIR="$(mktemp -d)"
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 RELEASE_DIR="${PROJECT_DIR}/target/release"
 OUT="${PROJECT_DIR}/target/debian/${PKG_NAME}_${VERSION}-1_${ARCH}.deb"
 
 trap 'rm -rf "$PKG_DIR"' EXIT
 
-echo "==> Packaging ${PKG_NAME} ${VERSION}"
+SKIP_BUILD=false
+if [ "${1:-}" = "--skip-build" ]; then
+    SKIP_BUILD=true
+fi
+
+if [ "$SKIP_BUILD" = false ]; then
+    echo "==> [1/4] Building Rust release binaries (clipd, clipctl, linvclip-ui)..."
+    cd "${PROJECT_DIR}"
+    cargo build --release
+
+    echo "==> [2/4] Building frontend..."
+    cd "${PROJECT_DIR}/crates/linvclip-ui"
+    npm run build
+
+    echo "==> [3/4] Building Tauri app (linvclip-ui binary)..."
+    cd "${PROJECT_DIR}/crates/linvclip-ui"
+    npx tauri build --bundles none
+
+    cd "${PROJECT_DIR}"
+    echo "==> [4/4] Packaging ${PKG_NAME} ${VERSION}..."
+else
+    echo "==> Packaging ${PKG_NAME} ${VERSION} (skip-build mode)"
+fi
 
 # Verify binaries exist
 for bin in clipd clipctl linvclip-ui; do
     if [ ! -f "${RELEASE_DIR}/${bin}" ]; then
-        echo "ERROR: ${RELEASE_DIR}/${bin} not found. Run 'make build' and build the UI first." >&2
+        echo "ERROR: ${RELEASE_DIR}/${bin} not found. Run without --skip-build." >&2
         exit 1
     fi
 done
@@ -308,7 +333,7 @@ echo ""
 echo "LinVClipBoard installed successfully!"
 echo "The clipboard daemon (clipd) has been enabled and started."
 echo ""
-echo "Press Super+. (Win+Period) to open the overlay,"
+echo "Press Ctrl+/ to open the overlay,"
 echo "or use 'clipctl' from the terminal."
 echo ""
 POSTINST

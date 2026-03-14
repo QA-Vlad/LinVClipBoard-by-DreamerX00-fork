@@ -1364,15 +1364,16 @@ fn position_window(window: &tauri::WebviewWindow) {
     let _ = window.center();
 }
 
-/// Refresh the tray menu with the latest 5 clipboard items.
+/// Refresh the tray menu with the latest clipboard items (count from config).
 async fn refresh_tray_menu(app: &tauri::AppHandle) {
     use shared::models::IpcResponse;
     use tauri::menu::{MenuBuilder, MenuItemBuilder};
 
+    let tray_limit = AppConfig::load().ui.tray_items.clamp(3, 15);
     let socket = AppConfig::socket_path();
     let request = IpcRequest::List {
         offset: 0,
-        limit: 5,
+        limit: tray_limit,
     };
 
     let items = match send_request(&socket, &request).await {
@@ -1570,7 +1571,7 @@ pub fn run() {
                 }
             });
 
-            // --- Global Shortcut: configurable (defaults to Super+.) (#21) ---
+            // --- Global Shortcut: configurable (defaults to Ctrl+/) (#21) ---
             use tauri_plugin_global_shortcut::ShortcutState;
 
             let config = AppConfig::load();

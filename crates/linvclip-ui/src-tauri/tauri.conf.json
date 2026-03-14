@@ -1,6 +1,6 @@
 {
     "productName": "LinVClipBoard",
-    "version": "2.3.0",
+    "version": "2.4.0",
     "identifier": "com.linvclipboard.app",
     "build": {
         "frontendDist": "../dist",
@@ -36,7 +36,15 @@
             "deb": {
                 "provides": ["linvclipboard"],
                 "conflicts": ["linvclipboard"],
-                "replaces": ["linvclipboard"]
+                "replaces": ["linvclipboard"],
+                "desktopTemplate": "../../../install/deb-desktop.desktop",
+                "postInstallScript": "../../../install/deb-postinst.sh",
+                "files": {
+                    "/usr/bin/clipd": "../../../target/release/clipd",
+                    "/usr/bin/clipctl": "../../../target/release/clipctl",
+                    "/usr/share/linvclipboard/clipd.service": "../../../install/clipd.service",
+                    "/usr/share/icons/hicolor/128x128/apps/linvclipboard.png": "icons/icon.png"
+                }
             }
         }
     },
