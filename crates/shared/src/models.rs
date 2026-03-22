@@ -55,6 +55,7 @@ pub struct ClipboardItem {
     pub preview_text: String,
     pub created_at: DateTime<Utc>,
     pub pinned: bool,
+    pub pin_order: i64,
     pub app_source: Option<String>,
     pub checksum: String,
     /// Content size in bytes.
@@ -76,6 +77,7 @@ impl ClipboardItem {
             preview_text,
             created_at: Utc::now(),
             pinned: false,
+            pin_order: 0,
             app_source: None,
             checksum,
             size_bytes,
@@ -194,6 +196,8 @@ pub enum IpcRequest {
     },
     /// Update the preview_text of an item (e.g. after OCR).
     UpdatePreviewText { id: String, preview_text: String },
+    /// Reorder pinned items. ids is the new ordered list of pinned item IDs.
+    ReorderPins { ids: Vec<String> },
 }
 
 /// IPC response from daemon to client.

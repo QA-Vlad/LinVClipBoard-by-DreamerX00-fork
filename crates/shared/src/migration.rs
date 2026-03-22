@@ -1,7 +1,7 @@
 use rusqlite::Connection;
 
 /// Current schema version. Bump this when adding migrations.
-const CURRENT_SCHEMA_VERSION: u32 = 4;
+const CURRENT_SCHEMA_VERSION: u32 = 6;
 
 /// Run all pending migrations on the given connection.
 ///
@@ -136,6 +136,27 @@ Best regards,
 — {{date}}', 'Personal', '/note', '[{\"name\":\"title\",\"default\":\"\"},{\"name\":\"content\",\"default\":\"\"},{\"name\":\"date\",\"default\":\"\"}]', 0, datetime('now'), datetime('now'));"
         )?;
         conn.execute("INSERT INTO schema_version (version) VALUES (?1)", [4])?;
+    }
+
+    // ── Migration 5: add pin_order column ────────────────────────────────
+    if current < 5 {
+        tracing::info!("Migration v5: adding pin_order column to clipboard_items");
+        conn.execute_batch(
+            "ALTER TABLE clipboard_items ADD COLUMN pin_order INTEGER NOT NULL DEFAULT 0;
+             CREATE INDEX IF NOT EXISTS idx_pin_order ON clipboard_items(pin_order);
+             UPDATE clipboard_items SET pin_order = rowid WHERE pinned = 1;",
+        )?;
+        conn.execute("INSERT INTO schema_version (version) VALUES (?1)", [5])?;
+    }
+
+    // ── Migration 6: composite index for main list query ─────────────────
+    if current < 6 {
+        tracing::info!("Migration v6: adding composite index for pinned/order/created_at");
+        conn.execute_batch(
+            "CREATE INDEX IF NOT EXISTS idx_pinned_order_created \
+             ON clipboard_items(pinned DESC, pin_order ASC, created_at DESC);",
+        )?;
+        conn.execute("INSERT INTO schema_version (version) VALUES (?1)", [6])?;
     }
 
     tracing::info!("Migrations complete — now at v{}", CURRENT_SCHEMA_VERSION);

@@ -220,6 +220,20 @@ async fn bulk_delete(ids: Vec<String>) -> Result<String, String> {
     }
 }
 
+/// Reorder pinned items.
+#[tauri::command]
+async fn reorder_pins(ids: Vec<String>) -> Result<String, String> {
+    let socket = AppConfig::socket_path();
+    let request = IpcRequest::ReorderPins { ids };
+
+    match send_request(&socket, &request).await {
+        Ok(IpcResponse::Ok { message }) => Ok(message),
+        Ok(IpcResponse::Error { message }) => Err(message),
+        Err(e) => Err(format!("Connection failed: {}", e)),
+        _ => Err("Unexpected response".to_string()),
+    }
+}
+
 /// Bulk pin/unpin items.
 #[tauri::command]
 async fn bulk_pin(ids: Vec<String>, pinned: bool) -> Result<String, String> {
@@ -423,33 +437,41 @@ async fn clear_all() -> Result<String, String> {
     result
 }
 
-/// Get the current configuration.
+/// Get the current configuration (read directly from file).
 #[tauri::command]
 async fn get_config() -> Result<AppConfig, String> {
-    let socket = AppConfig::socket_path();
-    let request = IpcRequest::GetConfig;
-
-    match send_request(&socket, &request).await {
-        Ok(IpcResponse::Config(config)) => Ok(config),
-        Ok(IpcResponse::Error { message }) => Err(message),
-        // Fallback: load directly from file when daemon doesn't support GetConfig
-        Err(_) => Ok(AppConfig::load()),
-        _ => Ok(AppConfig::load()),
-    }
+    Ok(AppConfig::load())
 }
 
-/// Save configuration.
+/// Save configuration directly to file.
 #[tauri::command]
-async fn save_config(config: AppConfig) -> Result<String, String> {
-    let socket = AppConfig::socket_path();
-    let request = IpcRequest::SaveConfig { config };
-
-    match send_request(&socket, &request).await {
-        Ok(IpcResponse::Ok { message }) => Ok(message),
-        Ok(IpcResponse::Error { message }) => Err(message),
-        Err(e) => Err(format!("Connection failed: {}", e)),
-        _ => Err("Unexpected response".to_string()),
+async fn save_config(config: AppConfig, app: tauri::AppHandle) -> Result<String, String> {
+    let path = AppConfig::config_path();
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent).map_err(|e| format!("Failed to create config dir: {}", e))?;
     }
+    let content = toml::to_string_pretty(&config).map_err(|e| format!("Failed to serialize config: {}", e))?;
+    std::fs::write(&path, content).map_err(|e| format!("Failed to write config: {}", e))?;
+    // Apply tray left-click behavior immediately without restart.
+    // On KDE/AppIndicator, show_menu_on_left_click is ignored — the only reliable
+    // way to prevent the menu from appearing on left click is to remove the menu.
+    if let Some(tray) = app.tray_by_id("main-tray") {
+        if config.ui.tray_click_opens_app {
+            let _ = tray.set_menu(None::<tauri::menu::Menu<tauri::Wry>>);
+        } else {
+            // Restore minimal menu so the icon remains visible on AppIndicator DEs
+            use tauri::menu::{MenuBuilder, MenuItemBuilder};
+            if let (Ok(show_item), Ok(quit_item)) = (
+                MenuItemBuilder::with_id("toggle", "📋 Show / Hide").build(&app),
+                MenuItemBuilder::with_id("quit", "❌ Quit").build(&app),
+            ) {
+                if let Ok(menu) = MenuBuilder::new(&app).item(&show_item).separator().item(&quit_item).build() {
+                    let _ = tray.set_menu(Some(menu));
+                }
+            }
+        }
+    }
+    Ok("Config saved".to_string())
 }
 
 /// Get a base64-encoded image for preview (#38).
@@ -1369,7 +1391,8 @@ async fn refresh_tray_menu(app: &tauri::AppHandle) {
     use shared::models::IpcResponse;
     use tauri::menu::{MenuBuilder, MenuItemBuilder};
 
-    let tray_limit = AppConfig::load().ui.tray_items.clamp(3, 15);
+    let cfg = AppConfig::load();
+    let tray_limit = cfg.ui.tray_items.clamp(3, 15);
     let socket = AppConfig::socket_path();
     let request = IpcRequest::List {
         offset: 0,
@@ -1420,6 +1443,9 @@ async fn refresh_tray_menu(app: &tauri::AppHandle) {
 
     if let Some(tray) = app.tray_by_id("main-tray") {
         let _ = tray.set_menu(Some(menu));
+        // Re-apply show_menu_on_left_click after every set_menu call,
+        // because on some AppIndicator backends set_menu resets it to true.
+        let _ = tray.set_show_menu_on_left_click(!cfg.ui.tray_click_opens_app);
     }
 }
 
@@ -1436,6 +1462,7 @@ pub fn run() {
             paste_raw_text,
             type_text,
             pin_item,
+            reorder_pins,
             delete_item,
             bulk_delete,
             bulk_pin,
@@ -1475,91 +1502,123 @@ pub fn run() {
             std::thread::spawn(cleanup_expired_gif_cache);
 
             // --- System Tray ---
-            // NOTE: On Linux with AppIndicator, a menu is REQUIRED for the icon to appear.
-            use tauri::menu::{MenuBuilder, MenuItemBuilder};
-            use tauri::tray::TrayIconBuilder;
+            let is_kde = std::env::var("XDG_CURRENT_DESKTOP")
+                .unwrap_or_default()
+                .to_uppercase()
+                .contains("KDE");
 
-            // Build initial menu (will be refreshed with actual items shortly)
-            let show_item = MenuItemBuilder::with_id("toggle", "📋 Show / Hide").build(app)?;
-            let quit_item = MenuItemBuilder::with_id("quit", "❌ Quit").build(app)?;
-            let tray_menu = MenuBuilder::new(app)
-                .item(&show_item)
-                .separator()
-                .item(&quit_item)
-                .build()?;
+            if is_kde {
+                // On KDE, libappindicator always shows the menu on left-click and ignores
+                // show_menu_on_left_click(false). Use native KDE SNI via ksni instead.
+                struct KdeTray {
+                    app: tauri::AppHandle,
+                }
+                impl ksni::Tray for KdeTray {
+                    fn id(&self) -> String { "linvclipboard".into() }
+                    fn icon_name(&self) -> String { "edit-paste".into() }
+                    fn title(&self) -> String { "LinVClipBoard".into() }
+                    fn activate(&mut self, _x: i32, _y: i32) {
+                        if let Some(win) = self.app.get_webview_window("main") {
+                            if let Ok(visible) = win.is_visible() {
+                                if visible { let _ = win.hide(); }
+                                else { let _ = win.show(); let _ = win.set_focus(); }
+                            }
+                        }
+                    }
+                    fn menu(&self) -> Vec<ksni::MenuItem<Self>> {
+                        let app_quit = self.app.clone();
+                        vec![
+                            ksni::MenuItem::Standard(ksni::menu::StandardItem {
+                                label: "📋 Показать / Скрыть".into(),
+                                activate: Box::new(|this: &mut Self| this.activate(0, 0)),
+                                ..Default::default()
+                            }),
+                            ksni::MenuItem::Separator,
+                            ksni::MenuItem::Standard(ksni::menu::StandardItem {
+                                label: "❌ Выход".into(),
+                                activate: Box::new(move |_| { app_quit.exit(0); }),
+                                ..Default::default()
+                            }),
+                        ]
+                    }
+                }
+                let kde_tray = KdeTray { app: app.handle().clone() };
+                let svc = ksni::TrayService::new(kde_tray);
+                let _kde_handle = svc.spawn();
+            } else {
+                // Non-KDE: use Tauri's AppIndicator tray (menu required for icon visibility).
+                use tauri::menu::{MenuBuilder, MenuItemBuilder};
+                use tauri::tray::TrayIconBuilder;
 
-            let icon = app.default_window_icon().cloned().unwrap_or_else(|| {
-                tauri::image::Image::from_bytes(include_bytes!("../icons/icon.png"))
-                    .expect("Failed to load tray icon")
-            });
+                let show_item = MenuItemBuilder::with_id("toggle", "📋 Show / Hide").build(app)?;
+                let quit_item = MenuItemBuilder::with_id("quit", "❌ Quit").build(app)?;
+                let tray_menu = MenuBuilder::new(app)
+                    .item(&show_item)
+                    .separator()
+                    .item(&quit_item)
+                    .build()?;
 
-            let tray_window = window.clone();
-            let _tray = TrayIconBuilder::with_id("main-tray")
-                .icon(icon)
-                .menu(&tray_menu)
-                .tooltip("LinVClipBoard")
-                .show_menu_on_left_click(true)
-                .on_menu_event(move |app, event| {
-                    let id = event.id().as_ref().to_string();
-                    match id.as_str() {
-                        "toggle" => {
-                            if let Some(win) = app.get_webview_window("main") {
-                                if let Ok(visible) = win.is_visible() {
-                                    if visible {
-                                        let _ = win.hide();
-                                    } else {
-                                        let _ = win.show();
-                                        let _ = win.set_focus();
+                let icon = app.default_window_icon().cloned().unwrap_or_else(|| {
+                    tauri::image::Image::from_bytes(include_bytes!("../icons/icon.png"))
+                        .expect("Failed to load tray icon")
+                });
+
+                let tray_window = window.clone();
+                let _tray = TrayIconBuilder::with_id("main-tray")
+                    .icon(icon)
+                    .menu(&tray_menu)
+                    .tooltip("LinVClipBoard")
+                    .show_menu_on_left_click(true)
+                    .on_menu_event(move |app, event| {
+                        let id = event.id().as_ref().to_string();
+                        match id.as_str() {
+                            "toggle" => {
+                                if let Some(win) = app.get_webview_window("main") {
+                                    if let Ok(visible) = win.is_visible() {
+                                        if visible { let _ = win.hide(); }
+                                        else { let _ = win.show(); let _ = win.set_focus(); }
                                     }
                                 }
                             }
+                            "quit" => { app.exit(0); }
+                            _ if id.starts_with("paste_") => {
+                                let item_id = id.strip_prefix("paste_").unwrap().to_string();
+                                let app_handle = app.clone();
+                                tauri::async_runtime::spawn(async move {
+                                    let socket = AppConfig::socket_path();
+                                    let request = IpcRequest::Paste { id: item_id };
+                                    let _ = send_request(&socket, &request).await;
+                                    if let Some(win) = app_handle.get_webview_window("main") {
+                                        let _ = win.show();
+                                        let _ = win.set_focus();
+                                        tokio::time::sleep(std::time::Duration::from_millis(600)).await;
+                                        let _ = win.hide();
+                                    }
+                                });
+                            }
+                            _ => {}
                         }
-                        "quit" => {
-                            app.exit(0);
-                        }
-                        _ if id.starts_with("paste_") => {
-                            let item_id = id.strip_prefix("paste_").unwrap().to_string();
-                            let app_handle = app.clone();
-                            tauri::async_runtime::spawn(async move {
-                                let socket = AppConfig::socket_path();
-                                let request = IpcRequest::Paste { id: item_id };
-                                let _ = send_request(&socket, &request).await;
-                                // Show window briefly for feedback, then hide
-                                if let Some(win) = app_handle.get_webview_window("main") {
-                                    let _ = win.show();
-                                    let _ = win.set_focus();
-                                    tokio::time::sleep(std::time::Duration::from_millis(600)).await;
-                                    let _ = win.hide();
-                                }
-                            });
-                        }
-                        _ => {}
-                    }
-                })
-                .on_tray_icon_event(move |_tray, event| {
-                    // Fallback for non-AppIndicator DEs (e.g., KDE, Sway)
-                    use tauri::tray::TrayIconEvent;
-                    if let TrayIconEvent::Click { .. } = event {
-                        if let Ok(visible) = tray_window.is_visible() {
-                            if visible {
-                                let _ = tray_window.hide();
-                            } else {
-                                let _ = tray_window.show();
-                                let _ = tray_window.set_focus();
+                    })
+                    .on_tray_icon_event(move |_tray, event| {
+                        use tauri::tray::TrayIconEvent;
+                        if let TrayIconEvent::Click { .. } = event {
+                            if let Ok(visible) = tray_window.is_visible() {
+                                if visible { let _ = tray_window.hide(); }
+                                else { let _ = tray_window.show(); let _ = tray_window.set_focus(); }
                             }
                         }
-                    }
-                })
-                .build(app)?;
+                    })
+                    .build(app)?;
 
-            // --- Background task: refresh tray menu with latest 5 items ---
-            let app_handle = app.handle().clone();
-            tauri::async_runtime::spawn(async move {
-                loop {
-                    tokio::time::sleep(std::time::Duration::from_secs(5)).await;
-                    refresh_tray_menu(&app_handle).await;
-                }
-            });
+                // Background task: refresh tray menu with latest clipboard items
+                let app_handle = app.handle().clone();
+                tauri::async_runtime::spawn(async move {
+                    loop {
+                        tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+                        refresh_tray_menu(&app_handle).await;
+                    }
+                });
+            }
 
             // --- Intercept window close → hide to tray instead of quitting ---
             let close_window = app.get_webview_window("main").unwrap();

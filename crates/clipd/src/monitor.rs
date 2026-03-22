@@ -4,7 +4,7 @@ use shared::config::AppConfig;
 use shared::db::Database;
 use shared::models::{ClipboardItem, ContentType};
 use std::process::Command;
-use std::sync::Arc;
+use std::sync::{Arc, OnceLock};
 use std::time::Duration;
 use tokio_util::sync::CancellationToken;
 use uuid::Uuid;
@@ -12,54 +12,100 @@ use wl_clipboard_rs::paste::{
     get_contents as wl_get_contents, ClipboardType, MimeType as WlMimeType, Seat,
 };
 
-/// Detect the currently focused application name.
-///
-/// Tries X11 (`xdotool`) first, then common Wayland compositors
-/// (`swaymsg`, `hyprctl`), and finally falls back to reading
-/// `/proc/<pid>/comm` via `xdotool getactivewindow getwindowpid`.
-fn get_active_app_name() -> Option<String> {
-    // 1. X11 — xdotool window-class
-    if let Ok(out) = Command::new("xdotool")
+/// Which tool successfully detects the active app.
+#[derive(Debug, Clone, Copy, PartialEq)]
+enum ActiveAppTool {
+    Xdotool,
+    Swaymsg,
+    Hyprctl,
+    None,
+}
+
+/// Cached result of tool detection — probed once, reused forever.
+static ACTIVE_APP_TOOL: OnceLock<ActiveAppTool> = OnceLock::new();
+
+/// Probe which tool is available and working on this system.
+fn detect_active_app_tool() -> ActiveAppTool {
+    if Command::new("xdotool")
         .args(["getactivewindow", "getwindowclassname"])
         .output()
+        .map(|o| o.status.success())
+        .unwrap_or(false)
     {
-        if out.status.success() {
-            let name = String::from_utf8_lossy(&out.stdout).trim().to_lowercase();
-            if !name.is_empty() {
-                return Some(name);
-            }
-        }
+        return ActiveAppTool::Xdotool;
     }
+    if Command::new("swaymsg")
+        .args(["-t", "get_tree"])
+        .output()
+        .map(|o| o.status.success())
+        .unwrap_or(false)
+    {
+        return ActiveAppTool::Swaymsg;
+    }
+    if Command::new("hyprctl")
+        .arg("activewindow")
+        .output()
+        .map(|o| o.status.success())
+        .unwrap_or(false)
+    {
+        return ActiveAppTool::Hyprctl;
+    }
+    ActiveAppTool::None
+}
 
-    // 2. Sway / wlroots
-    if let Ok(out) = Command::new("swaymsg").args(["-t", "get_tree"]).output() {
-        if out.status.success() {
-            // Parse the focused node's app_id from the JSON tree
-            if let Ok(tree) = serde_json::from_slice::<serde_json::Value>(&out.stdout) {
-                if let Some(name) = find_focused_app(&tree) {
-                    return Some(name.to_lowercase());
+/// Detect the currently focused application name.
+///
+/// Probes which tool works on this system on the first call (cached via
+/// `OnceLock`), then only runs that one tool on every subsequent call.
+fn get_active_app_name() -> Option<String> {
+    let tool = ACTIVE_APP_TOOL.get_or_init(detect_active_app_tool);
+
+    match tool {
+        ActiveAppTool::Xdotool => {
+            let out = Command::new("xdotool")
+                .args(["getactivewindow", "getwindowclassname"])
+                .output()
+                .ok()?;
+            if out.status.success() {
+                let name = String::from_utf8_lossy(&out.stdout).trim().to_lowercase();
+                if !name.is_empty() {
+                    return Some(name);
                 }
             }
+            None
         }
-    }
-
-    // 3. Hyprland
-    if let Ok(out) = Command::new("hyprctl").arg("activewindow").output() {
-        if out.status.success() {
-            let text = String::from_utf8_lossy(&out.stdout);
-            for line in text.lines() {
-                let trimmed = line.trim();
-                if let Some(class) = trimmed.strip_prefix("class:") {
-                    let name = class.trim().to_lowercase();
-                    if !name.is_empty() {
-                        return Some(name);
+        ActiveAppTool::Swaymsg => {
+            let out = Command::new("swaymsg")
+                .args(["-t", "get_tree"])
+                .output()
+                .ok()?;
+            if out.status.success() {
+                if let Ok(tree) = serde_json::from_slice::<serde_json::Value>(&out.stdout) {
+                    return find_focused_app(&tree).map(|n| n.to_lowercase());
+                }
+            }
+            None
+        }
+        ActiveAppTool::Hyprctl => {
+            let out = Command::new("hyprctl")
+                .arg("activewindow")
+                .output()
+                .ok()?;
+            if out.status.success() {
+                let text = String::from_utf8_lossy(&out.stdout);
+                for line in text.lines() {
+                    if let Some(class) = line.trim().strip_prefix("class:") {
+                        let name = class.trim().to_lowercase();
+                        if !name.is_empty() {
+                            return Some(name);
+                        }
                     }
                 }
             }
+            None
         }
+        ActiveAppTool::None => None,
     }
-
-    None
 }
 
 /// Recursively find the `app_id` (Wayland) or `window_properties.class`

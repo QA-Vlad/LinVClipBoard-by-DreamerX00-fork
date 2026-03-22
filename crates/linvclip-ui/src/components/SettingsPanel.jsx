@@ -273,6 +273,13 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
         }));
     };
 
+    const handleTrayClickOpensAppChange = (checked) => {
+        updateConfig((prev) => ({
+            ...prev,
+            ui: { ...prev.ui, tray_click_opens_app: checked },
+        }));
+    };
+
     if (!config) {
         return (
             <div className="settings-overlay" onClick={handleClose}>
@@ -302,7 +309,7 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
                 >
                     {availableLanguages.map((code) => (
                         <option key={code} value={code}>
-                            {{ en: "English", pt: "Português", ja: "日本語", hi: "हिन्दी" }[code] || code}
+                            {{ en: "English", ru: "Русский", pt: "Português", ja: "日本語", hi: "हिन्दी" }[code] || code}
                         </option>
                     ))}
                 </select>
@@ -325,6 +332,19 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
                     />
                     <span className="zoom-value">{currentTrayItems}</span>
                 </div>
+            </div>
+
+            {/* Tray click behavior */}
+            <div className="settings-section">
+                <label className="checkbox-label">
+                    <input
+                        type="checkbox"
+                        checked={config.ui?.tray_click_opens_app ?? false}
+                        onChange={(e) => handleTrayClickOpensAppChange(e.target.checked)}
+                    />
+                    {t("settings.tray_click_opens_app")}
+                </label>
+                <p className="settings-hint">{t("settings.tray_click_opens_app_desc")}</p>
             </div>
         </>
     );
@@ -671,6 +691,19 @@ function SettingsPanel({ onClose, zoom, onZoomChange }) {
                         }
                     />
                     {t("settings.auto_ocr")}
+                </label>
+                <label className="checkbox-label">
+                    <input
+                        type="checkbox"
+                        checked={config.features?.show_ocr_button ?? true}
+                        onChange={(e) =>
+                            updateConfig((prev) => ({
+                                ...prev,
+                                features: { ...prev.features, show_ocr_button: e.target.checked },
+                            }))
+                        }
+                    />
+                    {t("settings.show_ocr_button")}
                 </label>
                 <label className="checkbox-label">
                     <input

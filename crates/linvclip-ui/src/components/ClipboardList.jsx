@@ -1,7 +1,41 @@
-import { useRef, useEffect, useState, useCallback, useMemo } from "react";
+import { useRef, useEffect, useState, useCallback, useMemo, memo } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { useTranslation } from "../i18n/index.jsx";
 import { detectSmartContent, hasSensitiveContent, redactText } from "../utils/smartDetect.js";
+
+// Pure helpers defined outside component — never recreated on render
+const getTypeIcon = (contentType) => {
+    switch (contentType) {
+        case "plain_text": return "📝";
+        case "html": return "🌐";
+        case "image": return "🖼️";
+        case "rich_text": return "📄";
+        case "files": return "📁";
+        case "uri": return "🔗";
+        default: return "📋";
+    }
+};
+
+const formatPreview = (text, maxLen = 80) => {
+    if (!text) return "";
+    const clean = text.replace(/\n/g, " ↵ ").replace(/\s+/g, " ").trim();
+    if (clean.length > maxLen) return clean.slice(0, maxLen - 3) + "...";
+    return clean;
+};
+
+const looksLikeCode = (text) => {
+    if (!text) return false;
+    const codePatterns = /[{};=>]|function |const |let |var |import |def |class |<\/?\w+>/;
+    return codePatterns.test(text);
+};
+
+const formatTime = (dateStr) => {
+    const date = new Date(dateStr);
+    const hh = String(date.getHours()).padStart(2, "0");
+    const mm = String(date.getMinutes()).padStart(2, "0");
+    const ss = String(date.getSeconds()).padStart(2, "0");
+    return `${hh}:${mm}:${ss}`;
+};
 
 /** Small hook to lazily load image thumbnails (#38). */
 function useImagePreview(item) {
@@ -22,6 +56,8 @@ function useImagePreview(item) {
 function ClipboardList({
     items,
     selectedIndex,
+    onSelect,
+    onTogglePreview,
     onPaste,
     onPin,
     onDelete,
@@ -35,10 +71,70 @@ function ClipboardList({
     config,
     onToast,
     onItemUpdate,
+    isPinnedFilter,
+    onReorder,
 }) {
     const { t } = useTranslation();
     const listRef = useRef(null);
     const selectedRef = useRef(null);
+    const dragItem = useRef(null);
+    const dragOverItem = useRef(null);
+    const dragOverSide = useRef(null); // "above" | "below"
+    const [dropIndicator, setDropIndicator] = useState(null); // { id, side }
+
+    const handleDragHandlePointerDown = useCallback((e, fromId) => {
+        if (e.button !== 0) return;
+        e.preventDefault();
+        e.stopPropagation();
+        dragItem.current = fromId;
+
+        const onMove = (moveEvent) => {
+            const el = document.elementFromPoint(moveEvent.clientX, moveEvent.clientY);
+            const itemEl = el?.closest("[data-item-id]");
+            const targetId = itemEl?.dataset?.itemId;
+            if (!targetId || targetId === fromId) {
+                setDropIndicator(null);
+                dragOverItem.current = null;
+                dragOverSide.current = null;
+                return;
+            }
+            const rect = itemEl.getBoundingClientRect();
+            const side = moveEvent.clientY < rect.top + rect.height / 2 ? "above" : "below";
+            dragOverItem.current = targetId;
+            dragOverSide.current = side;
+            setDropIndicator({ id: targetId, side });
+        };
+
+        const onUp = () => {
+            document.removeEventListener("pointermove", onMove);
+            document.removeEventListener("pointerup", onUp);
+
+            const toId = dragOverItem.current;
+            const side = dragOverSide.current;
+            dragItem.current = null;
+            dragOverItem.current = null;
+            dragOverSide.current = null;
+            setDropIndicator(null);
+
+            if (!toId || toId === fromId || !onReorder) return;
+
+            const pinnedItems = items.filter((i) => i.pinned);
+            const fromIdx = pinnedItems.findIndex((i) => i.id === fromId);
+            let toIdx = pinnedItems.findIndex((i) => i.id === toId);
+            if (fromIdx === -1 || toIdx === -1) return;
+
+            const reordered = [...pinnedItems];
+            const [moved] = reordered.splice(fromIdx, 1);
+            // Adjust index after removal
+            toIdx = reordered.findIndex((i) => i.id === toId);
+            const insertAt = side === "above" ? toIdx : toIdx + 1;
+            reordered.splice(insertAt, 0, moved);
+            onReorder(reordered.map((i) => i.id));
+        };
+
+        document.addEventListener("pointermove", onMove);
+        document.addEventListener("pointerup", onUp);
+    }, [items, onReorder]);
 
     // Scroll selected item into view
     useEffect(() => {
@@ -59,46 +155,7 @@ function ClipboardList({
         }
     };
 
-    const formatTime = (dateStr) => {
-        const date = new Date(dateStr);
-        const hh = String(date.getHours()).padStart(2, "0");
-        const mm = String(date.getMinutes()).padStart(2, "0");
-        const ss = String(date.getSeconds()).padStart(2, "0");
-        return `${hh}:${mm}:${ss}`;
-    };
-
-    const getTypeIcon = (contentType) => {
-        switch (contentType) {
-            case "plain_text":
-                return "📝";
-            case "html":
-                return "🌐";
-            case "image":
-                return "🖼️";
-            case "rich_text":
-                return "📄";
-            case "files":
-                return "📁";
-            case "uri":
-                return "🔗";
-            default:
-                return "📋";
-        }
-    };
-
-    const formatPreview = (text, maxLen = 80) => {
-        if (!text) return "";
-        const clean = text.replace(/\n/g, " ↵ ").replace(/\s+/g, " ").trim();
-        if (clean.length > maxLen) return clean.slice(0, maxLen - 3) + "...";
-        return clean;
-    };
-
     /** Heuristic: content looks like code if it has braces, semicolons, arrows, etc. */
-    const looksLikeCode = (text) => {
-        if (!text) return false;
-        const codePatterns = /[{};=>]|function |const |let |var |import |def |class |<\/?\w+>/;
-        return codePatterns.test(text);
-    };
 
     if (items.length === 0 && !loading) {
         return (
@@ -121,20 +178,18 @@ function ClipboardList({
             aria-label="Clipboard items"
         >
             {items.map((item, index) => (
-                <ClipItem
+                <ClipItemMemo
                     key={item.id}
                     item={item}
                     index={index}
                     selectedIndex={selectedIndex}
+                    onSelect={onSelect}
+                    onTogglePreview={onTogglePreview}
                     selectedRef={selectedRef}
                     onPaste={onPaste}
                     onPin={onPin}
                     onDelete={onDelete}
                     onContextMenu={onContextMenu}
-                    getTypeIcon={getTypeIcon}
-                    formatPreview={formatPreview}
-                    formatTime={formatTime}
-                    looksLikeCode={looksLikeCode}
                     t={t}
                     isChecked={selectedIds ? selectedIds.has(item.id) : false}
                     isMultiSelect={isMultiSelect}
@@ -143,6 +198,9 @@ function ClipboardList({
                     config={config}
                     onToast={onToast}
                     onItemUpdate={onItemUpdate}
+                    isDraggable={item.pinned}
+                    dropIndicatorSide={dropIndicator?.id === item.id ? dropIndicator.side : null}
+                    onDragHandlePointerDown={handleDragHandlePointerDown}
                 />
             ))}
 
@@ -198,15 +256,13 @@ function ClipItem({
     item,
     index,
     selectedIndex,
+    onSelect,
+    onTogglePreview,
     selectedRef,
     onPaste,
     onPin,
     onDelete,
     onContextMenu,
-    getTypeIcon,
-    formatPreview,
-    formatTime,
-    looksLikeCode,
     t,
     isChecked,
     isMultiSelect,
@@ -215,6 +271,9 @@ function ClipItem({
     config,
     onToast,
     onItemUpdate,
+    isDraggable,
+    dropIndicatorSide,
+    onDragHandlePointerDown,
 }) {
     const imgSrc = useImagePreview(item);
     const [ocrLoading, setOcrLoading] = useState(false);
@@ -292,6 +351,8 @@ function ClipItem({
             if (onSelectRange) onSelectRange(index);
             return;
         }
+        // Always update selected index so preview pane follows clicks
+        if (onSelect) onSelect(index);
         // Normal click: if in multi-select mode, toggle; otherwise paste
         if (isMultiSelect) {
             if (onSelectToggle) onSelectToggle(item.id);
@@ -303,10 +364,20 @@ function ClipItem({
     return (
         <div
             ref={index === selectedIndex ? selectedRef : null}
+            data-item-id={item.id}
             className={`clip-item ${index === selectedIndex ? "selected" : ""} ${
                 item.pinned ? "pinned" : ""
-            } ${isChecked ? "checked" : ""}`}
+            } ${isChecked ? "checked" : ""} ${isDraggable ? "draggable" : ""} ${
+                dropIndicatorSide ? `drop-${dropIndicatorSide}` : ""
+            }`}
             onClick={handleClick}
+            onDoubleClick={() => { if (onTogglePreview) onTogglePreview(); }}
+            onMouseEnter={() => { if (onSelect) onSelect(index); }}
+            onPointerDown={isDraggable ? (e) => {
+                const tag = e.target.tagName.toLowerCase();
+                if (tag === "button" || tag === "input" || tag === "select") return;
+                onDragHandlePointerDown(e, item.id);
+            } : undefined}
             onContextMenu={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -316,6 +387,10 @@ function ClipItem({
             aria-selected={index === selectedIndex}
             aria-label={`${getTypeIcon(item.content_type)} ${formatPreview(item.preview_text, 40)}`}
         >
+            {isDraggable && (
+                <span className="drag-handle" title="Тяни для изменения порядка">⠿</span>
+            )}
+
             {/* Checkmark overlay for multi-select */}
             {(isMultiSelect || isChecked) && (
                 <div className="check-overlay" onClick={(e) => { e.stopPropagation(); if (onSelectToggle) onSelectToggle(item.id); }}>
@@ -355,14 +430,16 @@ function ClipItem({
                                 <span className="image-dims">{item.preview_text}</span>
                             )}
                             <span className="clip-type-label">clipboard-image.png</span>
-                            <button
-                                className="ocr-btn"
-                                onClick={handleOcr}
-                                disabled={ocrLoading}
-                                title={t("ocr.extract")}
-                            >
-                                {ocrLoading ? "⏳" : "📝"} {t("ocr.button_label")}
-                            </button>
+                            {(config?.features?.show_ocr_button ?? true) && (
+                                <button
+                                    className="ocr-btn"
+                                    onClick={handleOcr}
+                                    disabled={ocrLoading}
+                                    title={t("ocr.extract")}
+                                >
+                                    {ocrLoading ? "⏳" : "📝"} {t("ocr.button_label")}
+                                </button>
+                            )}
                         </div>
                     ) : item.content_type === "files" ? (
                         <p className="clip-text clip-text-files">
@@ -426,5 +503,8 @@ function ClipItem({
         </div>
     );
 }
+
+// Memoize ClipItem — only re-renders when its own data actually changes
+const ClipItemMemo = memo(ClipItem);
 
 export default ClipboardList;

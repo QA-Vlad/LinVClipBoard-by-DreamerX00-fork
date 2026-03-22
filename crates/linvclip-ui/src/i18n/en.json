@@ -1,7 +1,8 @@
 {
   "app": {
     "title": "LinVClipBoard",
-    "footer": "Crafted by DreamerX"
+    "footer": "Crafted by DreamerX",
+    "hide_to_tray": "Hide to tray"
   },
   "tabs": {
     "clipboard": "Clipboard",
@@ -110,6 +111,7 @@
     "download": "Download",
     "smart_features": "Smart Features",
     "auto_ocr": "Auto-OCR images",
+    "show_ocr_button": "Show OCR button",
     "smart_paste": "Smart paste detection",
     "redact_sensitive": "Redact sensitive content",
     "sensitive_expiry": "Auto-delete sensitive items after (minutes, 0 = off)",
@@ -127,7 +129,9 @@
     "tab_features": "Features",
     "tab_advanced": "Advanced",
     "tray_items": "Tray Menu Items",
-    "tray_items_desc": "Number of recent items shown in system tray"
+    "tray_items_desc": "Number of recent items shown in system tray",
+    "tray_click_opens_app": "Left click opens app",
+    "tray_click_opens_app_desc": "Left-clicking the tray icon opens the app instead of the context menu"
   },
   "selection": {
     "count": "{n} selected",

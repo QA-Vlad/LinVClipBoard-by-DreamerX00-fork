@@ -3,8 +3,9 @@ import en from "./en.json";
 import pt from "./pt.json";
 import ja from "./japanese.json";
 import hi from "./hin.json";
+import ru from "./ru.json";
 
-const locales = { en, pt, ja, hi };
+const locales = { en, ru, pt, ja, hi };
 const I18nContext = createContext(null);
 
 /**

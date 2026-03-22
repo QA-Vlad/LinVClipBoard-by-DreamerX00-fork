@@ -50,6 +50,9 @@ pub struct FeaturesConfig {
     /// Auto-detect and redact sensitive content.
     #[serde(default = "default_true")]
     pub redact_sensitive: bool,
+    /// Show OCR button on image items.
+    #[serde(default = "default_true")]
+    pub show_ocr_button: bool,
 }
 
 fn default_true() -> bool {
@@ -62,6 +65,7 @@ impl Default for FeaturesConfig {
             auto_ocr: false,
             smart_paste: true,
             redact_sensitive: true,
+            show_ocr_button: true,
         }
     }
 }
@@ -90,6 +94,9 @@ pub struct UiConfig {
     /// Number of recent items to show in the system tray menu (3–15).
     #[serde(default = "default_tray_items")]
     pub tray_items: u32,
+    /// If true, left-clicking the tray icon opens the app instead of showing the menu.
+    #[serde(default)]
+    pub tray_click_opens_app: bool,
 }
 
 fn default_shortcut() -> String {
@@ -153,6 +160,7 @@ impl Default for AppConfig {
                 window_position: "mouse".to_string(),
                 accent_color: "auto".to_string(),
                 tray_items: 5,
+                tray_click_opens_app: false,
             },
             features: FeaturesConfig::default(),
             storage: StorageConfig {

@@ -154,9 +154,9 @@ impl Database {
             conn.query_row("SELECT COUNT(*) FROM clipboard_items", [], |row| row.get(0))?;
 
         let mut stmt = conn.prepare(
-            "SELECT id, content_type, content, preview_text, created_at, pinned, app_source, checksum, size_bytes
+            "SELECT id, content_type, content, preview_text, created_at, pinned, app_source, checksum, size_bytes, pin_order
              FROM clipboard_items
-             ORDER BY pinned DESC, created_at DESC
+             ORDER BY pinned DESC, pin_order ASC, created_at DESC
              LIMIT ?1 OFFSET ?2",
         )?;
 
@@ -187,11 +187,11 @@ impl Database {
         )?;
 
         let mut stmt = conn.prepare(
-            "SELECT c.id, c.content_type, c.content, c.preview_text, c.created_at, c.pinned, c.app_source, c.checksum, c.size_bytes
+            "SELECT c.id, c.content_type, c.content, c.preview_text, c.created_at, c.pinned, c.app_source, c.checksum, c.size_bytes, c.pin_order
              FROM clipboard_items c
              JOIN clipboard_fts f ON c.rowid = f.rowid
              WHERE clipboard_fts MATCH ?1
-             ORDER BY c.pinned DESC, c.created_at DESC
+             ORDER BY c.pinned DESC, c.pin_order ASC, c.created_at DESC
              LIMIT ?2",
         )?;
 
@@ -207,7 +207,7 @@ impl Database {
         let conn = self.pool.get()?;
 
         let mut stmt = conn.prepare(
-            "SELECT id, content_type, content, preview_text, created_at, pinned, app_source, checksum, size_bytes
+            "SELECT id, content_type, content, preview_text, created_at, pinned, app_source, checksum, size_bytes, pin_order
              FROM clipboard_items WHERE id = ?1",
         )?;
 
@@ -234,20 +234,34 @@ impl Database {
 
     /// Bulk delete items inside a single transaction.
     pub fn bulk_delete(&self, ids: &[String]) -> DbResult<u64> {
-        // Collect blob paths before deletion so we can remove files after commit.
-        let blob_paths: Vec<String> = ids
-            .iter()
-            .filter_map(|id| self.get(id).ok())
-            .filter(|item| item.content_type == ContentType::Image)
-            .map(|item| item.content.clone())
-            .collect();
+        if ids.is_empty() {
+            return Ok(0);
+        }
 
         let conn = self.pool.get()?;
+
+        // Collect blob paths in one query instead of N individual SELECTs.
+        let placeholders = ids.iter().enumerate()
+            .map(|(i, _)| format!("?{}", i + 1))
+            .collect::<Vec<_>>()
+            .join(", ");
+        let sql = format!(
+            "SELECT content FROM clipboard_items WHERE content_type = 'image' AND id IN ({})",
+            placeholders
+        );
+        let mut stmt = conn.prepare(&sql)?;
+        let blob_paths: Vec<String> = stmt
+            .query_map(rusqlite::params_from_iter(ids.iter()), |row| row.get(0))?
+            .filter_map(|r| r.ok())
+            .collect();
+
+        // Delete all in one transaction with a single parameterized query.
+        let del_sql = format!(
+            "DELETE FROM clipboard_items WHERE id IN ({})",
+            placeholders
+        );
         let tx = conn.unchecked_transaction()?;
-        let mut count = 0u64;
-        for id in ids {
-            count += tx.execute("DELETE FROM clipboard_items WHERE id = ?1", params![id])? as u64;
-        }
+        let count = tx.execute(&del_sql, rusqlite::params_from_iter(ids.iter()))? as u64;
         tx.commit()?;
 
         // Clean up blob files outside the transaction.
@@ -281,11 +295,30 @@ impl Database {
     pub fn toggle_pin(&self, id: &str) -> DbResult<ClipboardItem> {
         let conn = self.pool.get()?;
         conn.execute(
-            "UPDATE clipboard_items SET pinned = NOT pinned WHERE id = ?1",
+            "UPDATE clipboard_items SET pinned = NOT pinned,
+             pin_order = CASE
+                 WHEN pinned = 0 THEN (SELECT COALESCE(MAX(pin_order), -1) + 1 FROM clipboard_items WHERE pinned = 1)
+                 ELSE 0
+             END
+             WHERE id = ?1",
             params![id],
         )?;
         drop(conn);
         self.get(id)
+    }
+
+    /// Reorder pinned items. ids is the desired order (first = top).
+    pub fn reorder_pins(&self, ids: &[String]) -> DbResult<()> {
+        let conn = self.pool.get()?;
+        let tx = conn.unchecked_transaction()?;
+        for (i, id) in ids.iter().enumerate() {
+            tx.execute(
+                "UPDATE clipboard_items SET pin_order = ?1 WHERE id = ?2 AND pinned = 1",
+                params![i as i64, id],
+            )?;
+        }
+        tx.commit()?;
+        Ok(())
     }
 
     /// Clear all non-pinned items.
@@ -525,6 +558,7 @@ fn row_to_item(row: &rusqlite::Row) -> ClipboardItem {
         app_source: row.get(6).ok(),
         checksum: row.get(7).unwrap_or_default(),
         size_bytes: row.get::<_, i64>(8).unwrap_or(0) as u64,
+        pin_order: row.get::<_, i64>(9).unwrap_or(0),
     }
 }
 

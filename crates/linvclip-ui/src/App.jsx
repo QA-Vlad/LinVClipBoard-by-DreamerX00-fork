@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { invoke } from "@tauri-apps/api/core";
@@ -107,9 +107,11 @@ function App() {
     useEffect(() => { itemsRef.current = items; }, [items]);
     useEffect(() => { selectedIndexRef.current = selectedIndex; }, [selectedIndex]);
 
+    const loadingRef = useRef(false);
     const fetchItems = useCallback(
         async (reset = false) => {
-            if (loading) return;
+            if (loadingRef.current) return;
+            loadingRef.current = true;
             setLoading(true);
             try {
                 if (reset) {
@@ -141,10 +143,11 @@ function App() {
             } catch (err) {
                 console.error("Failed to fetch items:", err);
             } finally {
+                loadingRef.current = false;
                 setLoading(false);
             }
         },
-        [searchQuery, loading]
+        [searchQuery]
     );
 
     // Initial load
@@ -169,13 +172,13 @@ function App() {
         };
         setupListener();
 
-        // Fallback polling every 5s in case events are missed
+        // Fallback polling every 30s in case events are missed
         const interval = setInterval(() => {
             if (!searchQuery.trim()) {
                 fetchItems(true);
             }
             fetchStatus();
-        }, 5000);
+        }, 30000);
 
         return () => {
             clearInterval(interval);
@@ -218,8 +221,6 @@ function App() {
         try {
             await invoke("paste_item", { id });
             showToast("✅ Copied!");
-            // Auto-close after showing feedback
-            setTimeout(() => hideWindow(), 500);
         } catch (err) {
             showToast("❌ Failed");
             console.error("Paste failed:", err);
@@ -236,6 +237,21 @@ function App() {
             );
         } catch (err) {
             console.error("Pin failed:", err);
+        }
+    };
+
+    const handleReorderPins = async (orderedIds) => {
+        try {
+            // Optimistically update local state
+            setItems((prev) => {
+                const idToItem = Object.fromEntries(prev.map((i) => [i.id, i]));
+                const reordered = orderedIds.map((id, idx) => ({ ...idToItem[id], pin_order: idx }));
+                const unpinned = prev.filter((i) => !i.pinned);
+                return [...reordered, ...unpinned];
+            });
+            await invoke("reorder_pins", { ids: orderedIds });
+        } catch (err) {
+            console.error("Reorder pins failed:", err);
         }
     };
 
@@ -326,12 +342,24 @@ function App() {
         return () => clearTimeout(timer);
     }, [showPreview]);
 
+    // Client-side filtering for clipboard items
+    const filteredItems = useMemo(() => items.filter((item) => {
+        if (filterType === "all") return true;
+        if (filterType === "pinned") return item.pinned;
+        if (filterType === "text") return item.content_type === "plain_text";
+        if (filterType === "image") return item.content_type === "image";
+        if (filterType === "html") return item.content_type === "html";
+        if (filterType === "uri") return item.content_type === "uri";
+        if (filterType === "files") return item.content_type === "files";
+        return true;
+    }), [items, filterType]);
+
     // Update preview item when selection changes
     useEffect(() => {
         if (showPreview && filteredItems[selectedIndex]) {
             setPreviewItem(filteredItems[selectedIndex]);
         }
-    }, [selectedIndex, showPreview, items, filterType]);
+    }, [selectedIndex, showPreview, filteredItems]);
 
     // Multi-select handlers
     const handleSelectToggle = useCallback((id) => {
@@ -354,7 +382,7 @@ function App() {
             }
             return next;
         });
-    }, [selectedIndex, items, filterType]);
+    }, [selectedIndex, filteredItems]);
 
     const clearSelection = useCallback(() => setSelectedIds(new Set()), []);
 
@@ -487,18 +515,6 @@ function App() {
         if (tab !== "clipboard") setFilterType("all");
     };
 
-    // Client-side filtering for clipboard items
-    const filteredItems = items.filter((item) => {
-        if (filterType === "all") return true;
-        if (filterType === "pinned") return item.pinned;
-        if (filterType === "text") return item.content_type === "plain_text";
-        if (filterType === "image") return item.content_type === "image";
-        if (filterType === "html") return item.content_type === "html";
-        if (filterType === "uri") return item.content_type === "uri";
-        if (filterType === "files") return item.content_type === "files";
-        return true;
-    });
-
     // Determine search placeholder based on active tab
     const searchPlaceholder =
         activeTab === "emojis"
@@ -538,6 +554,8 @@ function App() {
                             <ClipboardList
                                 items={filteredItems}
                                 selectedIndex={selectedIndex}
+                                onSelect={setSelectedIndex}
+                                onTogglePreview={() => setShowPreview((p) => !p)}
                                 onPaste={handlePaste}
                                 onPin={handlePin}
                                 onDelete={handleDelete}
@@ -551,6 +569,8 @@ function App() {
                                 config={appConfig}
                                 onToast={showToast}
                                 onItemUpdate={handleItemUpdate}
+                                isPinnedFilter={filterType === "pinned"}
+                                onReorder={handleReorderPins}
                             />
                             <SelectionBar
                                 selectedIds={selectedIds}
@@ -580,6 +600,7 @@ function App() {
                                 onPaste={handlePaste}
                                 onToast={showToast}
                                 onItemUpdate={handleItemUpdate}
+                                config={appConfig}
                             />
                         )}
                     </div>

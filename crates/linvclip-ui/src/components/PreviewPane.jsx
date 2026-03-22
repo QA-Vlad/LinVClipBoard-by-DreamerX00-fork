@@ -40,7 +40,7 @@ function detectContentType(item) {
     return "text";
 }
 
-function PreviewPane({ item, onPaste, onToast, onItemUpdate }) {
+function PreviewPane({ item, onPaste, onToast, onItemUpdate, config }) {
     const { t } = useTranslation();
     const [highlightedHtml, setHighlightedHtml] = useState("");
     const [imgSrc, setImgSrc] = useState(null);
@@ -175,6 +175,7 @@ function PreviewPane({ item, onPaste, onToast, onItemUpdate }) {
                             </div>
                         )}
                         <div className="preview-ocr-section">
+                            {(config?.features?.show_ocr_button ?? true) && (
                             <button
                                 className="preview-ocr-btn"
                                 onClick={handleOcr}
@@ -182,6 +183,7 @@ function PreviewPane({ item, onPaste, onToast, onItemUpdate }) {
                             >
                                 {ocrLoading ? `⏳ ${t("ocr.extracting")}` : `📝 ${t("ocr.extract")}`}
                             </button>
+                            )}
                             {ocrText && (
                                 <div className="preview-ocr-result">
                                     <div className="preview-ocr-header">

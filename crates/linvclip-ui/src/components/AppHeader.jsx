@@ -1,7 +1,10 @@
 import { useTranslation } from "../i18n/index.jsx";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 
 function AppHeader({ onOpenSettings, onClearAll, showPreview, onTogglePreview }) {
     const { t } = useTranslation();
+
+    const handleHide = () => getCurrentWindow().hide();
 
     return (
         <div className="app-header" data-tauri-drag-region>
@@ -34,6 +37,14 @@ function AppHeader({ onOpenSettings, onClearAll, showPreview, onTogglePreview })
                     aria-label={t("confirm.clear_all")}
                 >
                     🗑️
+                </button>
+                <button
+                    className="header-btn header-btn-close"
+                    onClick={handleHide}
+                    title={t("app.hide_to_tray")}
+                    aria-label={t("app.hide_to_tray")}
+                >
+                    ✕
                 </button>
             </div>
         </div>

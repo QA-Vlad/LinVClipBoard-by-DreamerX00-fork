@@ -28,3 +28,5 @@ image = { version = "0.25", default-features = false, features = ["png"] }
 syntect = { version = "5", default-features = false, features = ["default-fancy"] }
 scraper = "0.22"
 html2text = "0.14"
+toml = "0.8"
+ksni = "0.2"

@@ -432,6 +432,18 @@ body,
     background: rgba(248, 113, 113, 0.15);
 }
 
+.header-btn-close {
+    opacity: 0.5;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.header-btn-close:hover {
+    opacity: 1;
+    background: rgba(248, 113, 113, 0.15);
+    color: #f87171;
+}
+
 /* ---- Tab Bar ---- */
 .tab-bar {
     display: flex;
@@ -674,6 +686,35 @@ body,
 
 .clip-item.pinned {
     background: var(--bg-pinned);
+}
+
+.drag-handle {
+    display: flex;
+    align-items: center;
+    color: var(--text-muted);
+    font-size: 14px;
+    cursor: grab;
+    padding: 0 2px;
+    opacity: 0.4;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.clip-item.draggable:hover .drag-handle {
+    opacity: 0.8;
+}
+
+.clip-item.draggable[draggable="true"]:active {
+    cursor: grabbing;
+}
+
+.clip-item.drop-above {
+    border-top: 2px solid var(--accent);
+    margin-top: 0;
+}
+
+.clip-item.drop-below {
+    border-bottom: 2px solid var(--accent);
 }
 
 .clip-item.pinned.selected {

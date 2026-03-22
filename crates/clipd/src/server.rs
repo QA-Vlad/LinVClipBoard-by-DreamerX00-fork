@@ -155,6 +155,15 @@ async fn handle_request(
             },
         },
 
+        IpcRequest::ReorderPins { ids } => match db.reorder_pins(&ids) {
+            Ok(()) => IpcResponse::Ok {
+                message: format!("Reordered {} pinned items", ids.len()),
+            },
+            Err(e) => IpcResponse::Error {
+                message: format!("Reorder pins failed: {}", e),
+            },
+        },
+
         IpcRequest::Paste { id } => match db.get(&id) {
             Ok(item) => {
                 let mut clip = clipboard.lock().await;
