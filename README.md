@@ -211,6 +211,45 @@ rm -rf ~/.config/linvclip ~/.local/share/linvclip
 
 ---
 
+## 🙏 Credits
+
+This is a personal fork of the original [LinVClipBoard](https://github.com/DreamerX00/LinVClipBoard) by **[DreamerX00](https://github.com/DreamerX00)**.
+
+Huge thanks to DreamerX00 for building such a clean, well-architected clipboard manager. The original project is the real deal — go give it a star ⭐
+
+---
+
+## 🔧 Changes in this fork
+
+### Bug fixes
+- **Config persistence** — settings (language, theme, etc.) no longer reset on reopen; config is now read/written directly from file instead of going through the daemon's stale in-memory state
+
+### KDE Wayland tray
+- Left-click on the tray icon now opens/closes the app instead of showing a context menu
+- Uses native `ksni` SNI protocol on KDE, bypassing libappindicator which doesn't support this
+- New optional setting: **"Left click opens app"** (Settings → General)
+
+### UI / UX
+- **Close-to-tray button** in the app header (✕)
+- **Double-click** on any clipboard item toggles the preview pane
+- Preview pane now updates on **hover** and **click** (previously only keyboard navigation updated it)
+- New optional setting: **"Show OCR button"** — hide the Extract Text (OCR) button if you don't use it (Settings → Features)
+
+### Performance
+- `filteredItems` wrapped in `useMemo` — no longer recalculated on every render
+- `React.memo` on clipboard list items — prevents unnecessary re-renders
+- Helper functions (`formatPreview`, `formatTime`, etc.) moved outside component — no longer recreated on every render
+- `fetchItems` loading guard via `useRef` instead of state — eliminates cascading hook recreations
+- Fallback polling interval: 5s → 30s (push events are the primary update mechanism)
+- `bulk_delete` N+1 query fixed — now uses a single `WHERE id IN (...)` instead of N separate SELECTs
+- Composite SQLite index on `(pinned DESC, pin_order ASC, created_at DESC)` for the main list query
+- `get_active_app_name()` tool detection cached via `OnceLock` — no more 3× fork+exec on every 250ms poll
+
+### Localization
+- Added **Russian** locale (`ru.json`)
+
+---
+
 ## 📄 License
 
-[MIT](LICENSE) — Built with ❤️ by **DreamerX**
+[MIT](LICENSE) — Original work by **DreamerX00**, fork maintained by **QA-Vlad**
